@@ -1,0 +1,3449 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deep Roshni — Handcrafted Diwali Candles</title>
+    <meta name="description"
+        content="Handcrafted Diwali candles, diyas & festive gift boxes. Single pieces or bulk orders, cash on delivery, order directly on WhatsApp.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="icon" type="image/png" href="images/logo.png">
+    <link rel="apple-touch-icon" href="images/logo.png">
+
+    <style>
+        /* ============================================================
+   TOKENS
+   ============================================================ */
+        :root {
+            --maroon-950: #210810;
+            --maroon-900: #360d18;
+            --maroon-800: #4a1220;
+            --ink: #180a08;
+            --gold: #d4af37;
+            --gold-light: #f4dd8e;
+            --marigold: #e8871e;
+            --marigold-deep: #c96a12;
+            --cream: #f7ead0;
+            --cream-dim: #e7d6b3;
+            --ember: #b5233b;
+            --line: rgba(244, 221, 142, 0.18);
+
+            --font-display: 'Marcellus', serif;
+            --font-body: 'Poppins', sans-serif;
+
+            --radius-s: 6px;
+            --radius-m: 14px;
+            --radius-l: 28px;
+
+            --ease: cubic-bezier(.22, .68, 0, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            background: var(--ink);
+            color: var(--cream);
+            font-family: var(--font-body);
+            font-weight: 400;
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button {
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: var(--font-display);
+            font-weight: 400;
+            margin: 0;
+            letter-spacing: .01em;
+        }
+
+        p {
+            margin: 0;
+        }
+
+        .container {
+            width: min(1180px, 92%);
+            margin-inline: auto;
+        }
+
+        .eyebrow {
+            font-family: var(--font-body);
+            font-size: .78rem;
+            color: var(--marigold);
+            font-weight: 600;
+            letter-spacing: .06em;
+        }
+
+        ::selection {
+            background: var(--marigold);
+            color: var(--ink);
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: .001ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: .001ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        /* subtle diya-glow texture backdrop reused across dark sections */
+        .glow-field {
+            position: relative;
+            background:
+                radial-gradient(ellipse 60% 40% at 15% 10%, rgba(232, 135, 30, .16), transparent 60%),
+                radial-gradient(ellipse 50% 35% at 90% 85%, rgba(212, 175, 55, .13), transparent 60%),
+                var(--maroon-950);
+        }
+
+        /* ============================================================
+   FLOATING PARTICLES (diya sparks)
+   ============================================================ */
+        .spark-layer {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .spark {
+            position: absolute;
+            bottom: -10px;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--gold-light), var(--marigold) 60%, transparent 70%);
+            opacity: 0;
+            animation: rise linear infinite;
+            box-shadow: 0 0 8px 2px rgba(232, 135, 30, .55);
+        }
+
+        @keyframes rise {
+            0% {
+                transform: translateY(0) translateX(0) scale(.6);
+                opacity: 0;
+            }
+
+            8% {
+                opacity: .9;
+            }
+
+            50% {
+                transform: translateY(-52vh) translateX(var(--drift, 12px)) scale(1);
+            }
+
+            90% {
+                opacity: .5;
+            }
+
+            100% {
+                transform: translateY(-100vh) translateX(calc(var(--drift, 12px) * 2)) scale(.4);
+                opacity: 0;
+            }
+        }
+
+        /* ============================================================
+   NAV
+   ============================================================ */
+        .site-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 200;
+            background: linear-gradient(to bottom, rgba(24, 10, 8, .92), rgba(24, 10, 8, .75));
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--line);
+            transition: padding .35s var(--ease);
+        }
+
+        .nav-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 0;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: var(--font-display);
+            font-size: 1.35rem;
+            color: var(--cream);
+        }
+
+        .brand-logo {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1.5px solid var(--gold);
+            box-shadow: 0 0 12px rgba(232, 135, 30, 0.4);
+            flex-shrink: 0;
+            transition: transform .3s ease, box-shadow .3s ease;
+        }
+
+        .brand:hover .brand-logo {
+            transform: scale(1.08) rotate(4deg);
+            box-shadow: 0 0 16px rgba(244, 221, 142, 0.6);
+        }
+
+        .hero-brand-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(232, 135, 30, 0.14);
+            border: 1px solid rgba(244, 221, 142, 0.25);
+            padding: 4px 16px 4px 6px;
+            border-radius: 999px;
+            margin-bottom: 18px;
+            width: fit-content;
+        }
+
+        .hero-brand-pill .eyebrow {
+            margin-bottom: 0;
+            letter-spacing: .12em;
+        }
+
+        .hero-brand-logo {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--gold);
+            box-shadow: 0 0 8px rgba(232, 135, 30, 0.4);
+            flex-shrink: 0;
+        }
+
+        .about-brand-header {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .about-brand-header .eyebrow {
+            margin-bottom: 0;
+        }
+
+        .about-seal-logo {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1.5px solid var(--gold);
+            box-shadow: 0 0 10px rgba(232, 135, 30, 0.35);
+            flex-shrink: 0;
+        }
+
+        .cart-empty-logo {
+            width: 62px;
+            height: 62px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--gold);
+            box-shadow: 0 0 14px rgba(232, 135, 30, 0.35);
+            margin: 0 auto 12px auto;
+            display: block;
+        }
+
+        .brand .flame {
+            width: 16px;
+            height: 20px;
+            background: linear-gradient(180deg, var(--gold-light), var(--marigold) 55%, var(--ember));
+            border-radius: 50% 50% 50% 50% / 65% 65% 35% 35%;
+            filter: drop-shadow(0 0 6px var(--marigold));
+            animation: flicker 2.4s ease-in-out infinite;
+            transform-origin: bottom center;
+        }
+
+        @keyframes flicker {
+
+            0%,
+            100% {
+                transform: scaleY(1) rotate(0deg);
+            }
+
+            25% {
+                transform: scaleY(1.08) rotate(-2deg);
+            }
+
+            50% {
+                transform: scaleY(.94) rotate(1deg);
+            }
+
+            75% {
+                transform: scaleY(1.05) rotate(2deg);
+            }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 34px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links a {
+            font-size: .92rem;
+            color: var(--cream-dim);
+            position: relative;
+            padding: 4px 0;
+            transition: color .25s;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -2px;
+            width: 0;
+            height: 1px;
+            background: var(--marigold);
+            transition: width .3s var(--ease);
+        }
+
+        .nav-links a:hover {
+            color: var(--gold-light);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .icon-btn {
+            position: relative;
+            background: none;
+            border: none;
+            color: var(--cream);
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background .25s;
+        }
+
+        .icon-btn:hover {
+            background: rgba(244, 221, 142, .1);
+        }
+
+        .icon-btn svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--cream-dim);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: var(--marigold);
+            color: var(--ink);
+            font-size: .65rem;
+            font-weight: 700;
+            width: 17px;
+            height: 17px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--cream);
+            width: 38px;
+            height: 38px;
+        }
+
+        .hamburger svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        @media (max-width:880px) {
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: 0;
+                height: 100vh;
+                width: min(78vw, 320px);
+                background: var(--maroon-950);
+                flex-direction: column;
+                gap: 0;
+                padding: 100px 32px 32px;
+                transform: translateX(100%);
+                transition: transform .4s var(--ease);
+                border-left: 1px solid var(--line);
+            }
+
+            .nav-links.open {
+                transform: translateX(0);
+            }
+
+            .nav-links a {
+                font-size: 1.1rem;
+                padding: 14px 0;
+                border-bottom: 1px solid var(--line);
+            }
+
+            .hamburger {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+
+        /* ============================================================
+   HERO — interactive 3D candle display
+   ============================================================ */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-top: 90px;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 72% 48%, rgba(232, 135, 30, .16), transparent 26%),
+                linear-gradient(180deg, rgba(24, 10, 8, .32), rgba(24, 10, 8, .95) 82%, var(--ink)),
+                url('https://images.unsplash.com/photo-1608865413608-6cfd1fc622b3?auto=format&fit=crop&w=1600&q=80') center 35%/cover no-repeat;
+        }
+
+        .hero-inner {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: center;
+        }
+
+        .hero-copy .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+
+        .hero-copy .eyebrow::before {
+            content: '';
+            width: 26px;
+            height: 1px;
+            background: var(--marigold);
+        }
+
+        .hero-copy h1 {
+            font-size: clamp(2.6rem, 5.4vw, 4.4rem);
+            color: var(--cream);
+            line-height: 1.05;
+            max-width: 12ch;
+        }
+
+        .hero-copy h1 em {
+            font-style: normal;
+            color: var(--gold-light);
+            background: linear-gradient(90deg, var(--gold-light), var(--marigold));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero-copy p.lede {
+            margin-top: 22px;
+            max-width: 46ch;
+            color: var(--cream-dim);
+            font-size: 1.02rem;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-top: 34px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 26px;
+            border-radius: 999px;
+            font-size: .94rem;
+            font-weight: 600;
+            border: 1px solid transparent;
+            transition: transform .3s var(--ease), box-shadow .3s var(--ease), background .3s;
+        }
+
+        .btn:active {
+            transform: scale(.97);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--marigold), var(--ember));
+            color: var(--cream);
+            box-shadow: 0 10px 30px -8px rgba(232, 135, 30, .6);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 34px -8px rgba(232, 135, 30, .75);
+        }
+
+        .btn-ghost {
+            border-color: var(--line);
+            color: var(--cream);
+        }
+
+        .btn-ghost:hover {
+            background: rgba(244, 221, 142, .08);
+            border-color: var(--gold);
+        }
+
+        .btn-wa {
+            background: #25D366;
+            color: #0b3016;
+        }
+
+        .btn-wa:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 28px -8px rgba(37, 211, 102, .5);
+        }
+
+        .btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 34px;
+            margin-top: 44px;
+        }
+
+        .stat b {
+            display: block;
+            font-family: var(--font-display);
+            font-size: 1.7rem;
+            color: var(--gold-light);
+        }
+
+        .stat span {
+            font-size: .78rem;
+            color: var(--cream-dim);
+        }
+
+        /* Premium candle showcase */
+        .hero-visual {
+            position: relative;
+            min-height: 520px;
+            display: grid;
+            place-items: center;
+            perspective: 1400px;
+        }
+
+        .candle-scene {
+            position: relative;
+            width: min(100%, 500px);
+            height: 500px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 22px;
+            transform-style: preserve-3d;
+        }
+
+        .candle-scene::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 42px;
+            width: 390px;
+            height: 90px;
+            transform: translateX(-50%);
+            background: radial-gradient(ellipse, rgba(232, 135, 30, .22), transparent 68%);
+            filter: blur(10px);
+        }
+
+        .candle {
+            position: relative;
+            width: 112px;
+            height: 255px;
+            border-radius: 18px 18px 12px 12px;
+            background: linear-gradient(90deg, #7e1627 0%, #bd3146 22%, #f0645b 48%, #a51f35 78%, #57101c 100%);
+            box-shadow: inset 9px 0 16px rgba(255, 255, 255, .13), inset -12px 0 20px rgba(0, 0, 0, .28), 0 28px 35px rgba(0, 0, 0, .42);
+            transform-style: preserve-3d;
+            transition: transform .5s var(--ease), filter .4s;
+        }
+
+        .candle:nth-child(2) {
+            height: 315px;
+            width: 128px;
+            background: linear-gradient(90deg, #9b4a14, #e08a25 35%, #ffd36b 52%, #c66b16 80%, #71310e);
+            z-index: 2;
+        }
+
+        .candle:nth-child(3) {
+            height: 225px;
+            background: linear-gradient(90deg, #6d1420, #a91f35 35%, #e95a58 52%, #8f1a2c 80%, #48101a);
+        }
+
+        .candle::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            right: 8px;
+            top: -9px;
+            height: 22px;
+            border-radius: 50%;
+            background: radial-gradient(ellipse at 50% 42%, #ffe8a5 0 8%, #f3c56c 9% 35%, #8e3417 66%, #4a160f 100%);
+            box-shadow: inset 0 -4px 6px rgba(0, 0, 0, .35);
+        }
+
+        .candle::after {
+            content: '✦';
+            position: absolute;
+            left: 50%;
+            bottom: 24px;
+            transform: translateX(-50%);
+            font-size: 20px;
+            color: rgba(255, 238, 173, .75);
+        }
+
+        .candle .wick {
+            position: absolute;
+            left: 50%;
+            top: -28px;
+            width: 4px;
+            height: 23px;
+            transform: translateX(-50%);
+            border-radius: 50%;
+            background: #24100b;
+            z-index: 3;
+        }
+
+        .flame {
+            position: absolute;
+            left: 50%;
+            top: -83px;
+            width: 43px;
+            height: 66px;
+            transform: translateX(-50%) rotate(2deg);
+            border-radius: 55% 45% 55% 45% / 65% 65% 35% 35%;
+            background: radial-gradient(ellipse at 50% 72%, #fff7bb 0 14%, #ffd34e 30%, #ff8b18 57%, #e8471d 75%, transparent 77%);
+            filter: drop-shadow(0 0 14px #ff9d28) drop-shadow(0 0 30px rgba(255, 126, 20, .65));
+            animation: realFlame .8s ease-in-out infinite alternate;
+            transform-origin: bottom center;
+            z-index: 4;
+        }
+
+        .flame::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 8px;
+            width: 14px;
+            height: 25px;
+            transform: translateX(-50%);
+            border-radius: 50%;
+            background: #fff8c8;
+            filter: blur(1px);
+        }
+
+        .candle.off .flame {
+            opacity: 0;
+            transform: translateX(-50%) scale(.25);
+            animation: none;
+        }
+
+        .candle.off {
+            filter: saturate(.55) brightness(.72);
+        }
+
+        .candle.off::after {
+            color: rgba(255, 255, 255, .18);
+        }
+
+        @keyframes realFlame {
+            0% {
+                transform: translateX(-50%) rotate(-4deg) scaleY(.94) scaleX(.96)
+            }
+
+            50% {
+                transform: translateX(-50%) rotate(3deg) scaleY(1.08) scaleX(1.03)
+            }
+
+            100% {
+                transform: translateX(-50%) rotate(-2deg) scaleY(.98) scaleX(.94)
+            }
+        }
+
+        .candle:hover {
+            transform: translateY(-8px) rotateY(5deg);
+        }
+
+        .candle-switch {
+            position: absolute;
+            right: 4%;
+            top: 8%;
+            z-index: 8;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 9px 12px 9px 15px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: rgba(24, 10, 8, .72);
+            backdrop-filter: blur(12px);
+            color: var(--cream);
+            box-shadow: 0 14px 35px rgba(0, 0, 0, .3);
+        }
+
+        .switch-label {
+            font-size: .72rem;
+            letter-spacing: .04em;
+            color: var(--cream-dim);
+        }
+
+        .toggle {
+            width: 54px;
+            height: 30px;
+            border: 0;
+            border-radius: 999px;
+            background: #43202a;
+            position: relative;
+            padding: 0;
+        }
+
+        .toggle::after {
+            content: '';
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            left: 4px;
+            top: 4px;
+            border-radius: 50%;
+            background: #8d6c62;
+            transition: .3s var(--ease);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, .35);
+        }
+
+        .toggle.on {
+            background: linear-gradient(90deg, #b94d19, #e9a12c);
+            box-shadow: 0 0 18px rgba(232, 135, 30, .3);
+        }
+
+        .toggle.on::after {
+            left: 28px;
+            background: #fff2bd;
+            box-shadow: 0 0 12px rgba(255, 224, 135, .8);
+        }
+
+        .candle-status {
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 7;
+            padding: 9px 16px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            background: rgba(24, 10, 8, .7);
+            font-size: .75rem;
+            color: var(--gold-light);
+            white-space: nowrap;
+            backdrop-filter: blur(8px);
+        }
+
+        @media (max-width:900px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                text-align: center;
+            }
+
+            .hero-copy {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .hero-copy h1 {
+                max-width: 15ch;
+            }
+
+            .hero-copy p.lede {
+                max-width: 58ch;
+            }
+
+            .hero-stats {
+                justify-content: center;
+            }
+
+            .hero-visual {
+                min-height: 440px;
+            }
+
+            .candle-scene {
+                height: 430px;
+                transform: scale(.9);
+            }
+        }
+
+        @media (max-width:560px) {
+            .hero {
+                padding-top: 82px;
+                min-height: auto;
+                padding-bottom: 55px;
+            }
+
+            .hero-copy h1 {
+                font-size: clamp(2.25rem, 12vw, 3.2rem);
+            }
+
+            .hero-copy p.lede {
+                font-size: .9rem;
+            }
+
+            .hero-cta {
+                width: 100%;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .hero-cta .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .hero-stats {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+                width: 100%;
+                margin-top: 30px;
+            }
+
+            .stat b {
+                font-size: 1.25rem;
+            }
+
+            .stat span {
+                font-size: .62rem;
+            }
+
+            .hero-visual {
+                min-height: 390px;
+                margin-top: 0;
+            }
+
+            .candle-scene {
+                height: 360px;
+                gap: 10px;
+                transform: scale(.7);
+                transform-origin: center bottom;
+            }
+
+            .candle-switch {
+                right: 50%;
+                transform: translateX(50%);
+                top: 2%;
+            }
+
+            .candle-status {
+                bottom: 0;
+                font-size: .68rem;
+            }
+        }
+
+        /* ============================================================
+   TICKER
+   ============================================================ */
+        .ticker {
+            background: var(--marigold);
+            color: var(--ink);
+            overflow: hidden;
+            white-space: nowrap;
+            border-block: 1px solid rgba(0, 0, 0, .15);
+        }
+
+        .ticker-track {
+            display: inline-flex;
+            animation: ticker 26s linear infinite;
+        }
+
+        .ticker-track span {
+            padding: 12px 40px;
+            font-weight: 600;
+            font-size: .85rem;
+            letter-spacing: .02em;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .ticker-track span::after {
+            content: '✦';
+            opacity: .6;
+        }
+
+        @keyframes ticker {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        /* ============================================================
+   SECTION HEADS
+   ============================================================ */
+        .section {
+            padding: 100px 0;
+        }
+
+        .section-head {
+            max-width: 640px;
+            margin-bottom: 56px;
+        }
+
+        .section-head .eyebrow {
+            display: block;
+            margin-bottom: 14px;
+        }
+
+        .section-head h2 {
+            font-size: clamp(2rem, 3.6vw, 2.9rem);
+            color: var(--cream);
+        }
+
+        .section-head p {
+            margin-top: 16px;
+            color: var(--cream-dim);
+            max-width: 52ch;
+        }
+
+        .section-head.center {
+            margin-inline: auto;
+            text-align: center;
+        }
+
+        /* ============================================================
+   PRODUCT GRID
+   ============================================================ */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+        }
+
+        @media (max-width:980px) {
+            .product-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width:620px) {
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            position: relative;
+            background: linear-gradient(165deg, rgba(255, 255, 255, .05), rgba(255, 255, 255, .015));
+            border: 1px solid var(--line);
+            border-radius: var(--radius-l);
+            overflow: hidden;
+            transform-style: preserve-3d;
+            transition: transform .12s ease-out, box-shadow .35s var(--ease), border-color .35s;
+            will-change: transform;
+        }
+
+        .card:hover {
+            border-color: rgba(212, 175, 55, .5);
+            box-shadow: 0 24px 50px -20px rgba(0, 0, 0, .6);
+        }
+
+        .card-media {
+            position: relative;
+            aspect-ratio: 4/3.1;
+            overflow: hidden;
+        }
+
+        .card-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transform: scale(1.02) translateZ(0);
+            transition: transform .6s var(--ease);
+        }
+
+        .card:hover .card-media img {
+            transform: scale(1.1);
+        }
+
+        .card-media::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 55%, rgba(24, 10, 8, .85));
+        }
+
+        .tag {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            z-index: 2;
+            background: rgba(24, 10, 8, .75);
+            border: 1px solid var(--line);
+            color: var(--gold-light);
+            font-size: .68rem;
+            font-weight: 600;
+            letter-spacing: .04em;
+            padding: 6px 12px;
+            border-radius: 999px;
+        }
+
+        .card-body {
+            padding: 22px;
+            transform: translateZ(20px);
+        }
+
+        .card-body h3 {
+            font-size: 1.24rem;
+            color: var(--cream);
+        }
+
+        .card-body .desc {
+            font-size: .86rem;
+            color: var(--cream-dim);
+            margin-top: 8px;
+            min-height: 2.6em;
+        }
+
+        .price-row {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .price-row .now {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            color: var(--gold-light);
+        }
+
+        .price-row .was {
+            font-size: .85rem;
+            color: var(--cream-dim);
+            text-decoration: line-through;
+            opacity: .6;
+        }
+
+        .qty-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-top: 18px;
+        }
+
+        .qty-stepper {
+            display: flex;
+            align-items: center;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .qty-stepper button {
+            background: none;
+            border: none;
+            color: var(--cream);
+            width: 32px;
+            height: 32px;
+            font-size: 1rem;
+        }
+
+        .qty-stepper button:hover {
+            background: rgba(244, 221, 142, .1);
+        }
+
+        .qty-stepper .qty-val {
+            width: 30px;
+            text-align: center;
+            font-size: .9rem;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .card-actions .btn {
+            flex: 1;
+            justify-content: center;
+            padding: 11px 14px;
+            font-size: .82rem;
+        }
+
+        /* ============================================================
+   3D ROTATING SHOWCASE (coverflow)
+   ============================================================ */
+        .showcase {
+            position: relative;
+            padding-block: 40px;
+        }
+
+        .showcase-stage {
+            position: relative;
+            height: 380px;
+            perspective: 1500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .showcase-ring {
+            position: relative;
+            width: 220px;
+            height: 300px;
+            transform-style: preserve-3d;
+            animation: spin-ring 22s linear infinite;
+        }
+
+        .showcase-ring:hover {
+            animation-play-state: paused;
+        }
+
+        .ring-item {
+            position: absolute;
+            inset: 0;
+            border-radius: var(--radius-m);
+            overflow: hidden;
+            border: 1px solid var(--line);
+            box-shadow: 0 20px 40px -16px rgba(0, 0, 0, .7);
+        }
+
+        .ring-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        @keyframes spin-ring {
+            from {
+                transform: rotateY(0deg);
+            }
+
+            to {
+                transform: rotateY(360deg);
+            }
+        }
+
+        .showcase-caption {
+            text-align: center;
+            margin-top: 24px;
+            color: var(--cream-dim);
+            font-size: .9rem;
+        }
+
+        /* ============================================================
+   BULK ORDER
+   ============================================================ */
+        .bulk {
+            position: relative;
+            border-radius: var(--radius-l);
+            overflow: hidden;
+            border: 1px solid var(--line);
+            background: linear-gradient(135deg, rgba(232, 135, 30, .14), rgba(212, 175, 55, .06));
+            padding: 56px;
+        }
+
+        .bulk-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: center;
+        }
+
+        @media (max-width:900px) {
+            .bulk {
+                padding: 34px 24px;
+            }
+
+            .bulk-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .steps {
+            list-style: none;
+            margin: 26px 0 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .steps li {
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+        }
+
+        .step-num {
+            flex: none;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: 1px solid var(--gold);
+            color: var(--gold-light);
+            font-family: var(--font-display);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: .95rem;
+        }
+
+        .steps h4 {
+            font-size: 1rem;
+            color: var(--cream);
+            margin-bottom: 4px;
+        }
+
+        .steps p {
+            font-size: .85rem;
+            color: var(--cream-dim);
+        }
+
+        .bulk-form {
+            background: rgba(24, 10, 8, .55);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-m);
+            padding: 28px;
+        }
+
+        .field {
+            margin-bottom: 18px;
+        }
+
+        .field label {
+            display: block;
+            font-size: .8rem;
+            color: var(--cream-dim);
+            margin-bottom: 8px;
+        }
+
+        .field select,
+        .field input,
+        .field textarea {
+            width: 100%;
+            background: rgba(255, 255, 255, .04);
+            border: 1px solid var(--line);
+            color: var(--cream);
+            padding: 12px 14px;
+            border-radius: var(--radius-s);
+            font-family: inherit;
+            font-size: .92rem;
+        }
+
+        .field textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .field select:focus,
+        .field input:focus,
+        .field textarea:focus {
+            outline: 2px solid var(--gold);
+            outline-offset: 1px;
+        }
+
+        .bulk-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+            padding-top: 16px;
+            border-top: 1px dashed var(--line);
+        }
+
+        .bulk-total b {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            color: var(--gold-light);
+        }
+
+        /* ============================================================
+   WHY US / FEATURES
+   ============================================================ */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        @media (max-width:980px) {
+            .features {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width:560px) {
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .feature {
+            padding: 28px 22px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-m);
+            background: linear-gradient(165deg, rgba(255, 255, 255, .04), transparent);
+            transition: transform .3s var(--ease), border-color .3s;
+        }
+
+        .feature:hover {
+            transform: translateY(-6px);
+            border-color: rgba(212, 175, 55, .5);
+        }
+
+        .feature .ico {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(232, 135, 30, .14);
+            margin-bottom: 16px;
+        }
+
+        .feature .ico svg {
+            width: 22px;
+            height: 22px;
+            stroke: var(--gold-light);
+        }
+
+        .feature h4 {
+            font-size: 1.02rem;
+            color: var(--cream);
+            margin-bottom: 6px;
+        }
+
+        .feature p {
+            font-size: .85rem;
+            color: var(--cream-dim);
+        }
+
+        /* ============================================================
+   PAYMENT STRIP
+   ============================================================ */
+        .payments {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .pay-chip {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            border: 1px solid var(--line);
+            border-radius: 999px;
+            font-size: .85rem;
+            color: var(--cream-dim);
+            background: rgba(255, 255, 255, .03);
+        }
+
+        .pay-chip svg {
+            width: 18px;
+            height: 18px;
+            stroke: var(--gold-light);
+        }
+
+        /* ============================================================
+   GALLERY STRIP
+   ============================================================ */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        @media (max-width:800px) {
+            .gallery {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .gallery figure {
+            margin: 0;
+            border-radius: var(--radius-m);
+            overflow: hidden;
+            aspect-ratio: 1/1.1;
+            position: relative;
+        }
+
+        .gallery img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform .5s var(--ease);
+        }
+
+        .gallery figure:hover img {
+            transform: scale(1.08) rotate(-1deg);
+        }
+
+        /* ============================================================
+   FOOTER
+   ============================================================ */
+        footer {
+            border-top: 1px solid var(--line);
+            padding: 64px 0 30px;
+            background: var(--maroon-950);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr 1fr 1.2fr;
+            gap: 40px;
+        }
+
+        @media (max-width:820px) {
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .footer-grid h5 {
+            font-size: .9rem;
+            color: var(--gold-light);
+            margin-bottom: 16px;
+            font-family: var(--font-body);
+            font-weight: 600;
+        }
+
+        .footer-grid ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .footer-grid a {
+            font-size: .87rem;
+            color: var(--cream-dim);
+        }
+
+        .footer-grid a:hover {
+            color: var(--gold-light);
+        }
+
+        .foot-note {
+            margin-top: 50px;
+            padding-top: 24px;
+            border-top: 1px solid var(--line);
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: .78rem;
+            color: var(--cream-dim);
+        }
+
+        /* ============================================================
+   FLOATING WHATSAPP BUTTON
+   ============================================================ */
+        .wa-float {
+            position: fixed;
+            right: 22px;
+            bottom: 22px;
+            z-index: 300;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #25D366;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 12px 30px -8px rgba(37, 211, 102, .7);
+            animation: pulse-wa 2.6s ease-in-out infinite;
+        }
+
+        .wa-float svg {
+            width: 30px;
+            height: 30px;
+            fill: #fff;
+        }
+
+        @keyframes pulse-wa {
+
+            0%,
+            100% {
+                box-shadow: 0 12px 30px -8px rgba(37, 211, 102, .7);
+            }
+
+            50% {
+                box-shadow: 0 12px 30px -4px rgba(37, 211, 102, 1), 0 0 0 10px rgba(37, 211, 102, .15);
+            }
+        }
+
+        /* ============================================================
+   CART DRAWER
+   ============================================================ */
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 4, 3, .6);
+            backdrop-filter: blur(2px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .3s;
+            z-index: 250;
+        }
+
+        .overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .cart-drawer {
+            position: fixed;
+            top: 0;
+            right: 0;
+            height: 100vh;
+            width: min(420px, 92vw);
+            z-index: 260;
+            background: var(--maroon-950);
+            border-left: 1px solid var(--line);
+            transform: translateX(100%);
+            transition: transform .4s var(--ease);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cart-drawer.open {
+            transform: translateX(0);
+        }
+
+        .cart-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 22px 24px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .cart-head h3 {
+            color: var(--cream);
+        }
+
+        .cart-items {
+            flex: 1;
+            overflow-y: auto;
+            padding: 18px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            border-bottom: 1px solid var(--line);
+            padding-bottom: 16px;
+        }
+
+        .cart-item img {
+            width: 64px;
+            height: 64px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .cart-item .ci-info {
+            flex: 1;
+        }
+
+        .cart-item .ci-info h5 {
+            font-size: .92rem;
+            color: var(--cream);
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        .cart-item .ci-info span {
+            font-size: .78rem;
+            color: var(--cream-dim);
+        }
+
+        .cart-item .ci-remove {
+            background: none;
+            border: none;
+            color: var(--cream-dim);
+            font-size: 1.1rem;
+        }
+
+        .cart-empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--cream-dim);
+            font-size: .9rem;
+        }
+
+        .cart-foot {
+            padding: 22px 24px;
+            border-top: 1px solid var(--line);
+        }
+
+        .cart-foot .bulk-total {
+            margin-top: 0;
+            border-top: none;
+            padding-top: 0;
+        }
+
+        .cart-foot .btn {
+            width: 100%;
+            justify-content: center;
+            margin-top: 14px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 96px;
+            right: 22px;
+            z-index: 310;
+            background: var(--gold);
+            color: var(--ink);
+            padding: 13px 22px;
+            border-radius: 999px;
+            font-size: .86rem;
+            font-weight: 600;
+            box-shadow: 0 14px 30px -10px rgba(0, 0, 0, .5);
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all .35s var(--ease);
+            pointer-events: none;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* reveal on scroll */
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity .7s var(--ease), transform .7s var(--ease);
+        }
+
+        .reveal.in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ============================================================
+   DEEP ROSHNI 2026 — PREMIUM CANDLE COMMERCE REDESIGN
+   ============================================================ */
+        :root {
+            --ink: #070507;
+            --maroon-950: #12060b;
+            --maroon-900: #1d0810;
+            --maroon-800: #2d0c18;
+            --cream: #fff6e8;
+            --cream-dim: #cdbba8;
+            --gold: #f5c451;
+            --gold-light: #ffe9a7;
+            --marigold: #ff9f1c;
+            --marigold-deep: #e76f00;
+            --ember: #ff4d3d;
+            --line: rgba(255, 235, 196, .13);
+            --glass: rgba(255, 255, 255, .055);
+            --ease: cubic-bezier(.16, 1, .3, 1);
+        }
+
+        body {
+            background:
+                radial-gradient(circle at 15% 10%, rgba(255, 91, 61, .045), transparent 26%),
+                radial-gradient(circle at 85% 55%, rgba(255, 174, 54, .045), transparent 28%),
+                var(--ink);
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: .035;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.7'/%3E%3C/svg%3E");
+            mix-blend-mode: screen;
+        }
+
+        .site-nav {
+            background: rgba(7, 5, 7, .58);
+            backdrop-filter: blur(22px) saturate(145%);
+            -webkit-backdrop-filter: blur(22px) saturate(145%);
+            border-bottom: 1px solid rgba(255, 255, 255, .08);
+        }
+
+        .nav-row {
+            padding: 18px 0
+        }
+
+        .brand {
+            font-size: 1.45rem;
+            letter-spacing: .02em
+        }
+
+        .brand .flame {
+            box-shadow: 0 0 14px rgba(255, 159, 28, .8)
+        }
+
+        .nav-links a {
+            color: #cdbba8
+        }
+
+        .nav-links a:hover {
+            color: #fff0c2
+        }
+
+        .nav-links a::after {
+            height: 2px;
+            background: linear-gradient(90deg, var(--ember), var(--gold))
+        }
+
+        .icon-btn {
+            background: rgba(255, 255, 255, .045);
+            border: 1px solid rgba(255, 255, 255, .07)
+        }
+
+        .icon-btn:hover {
+            background: rgba(255, 255, 255, .09)
+        }
+
+        .cart-count {
+            background: linear-gradient(135deg, #ffcc62, #ff6a35);
+            box-shadow: 0 0 14px rgba(255, 142, 46, .42)
+        }
+
+        .hero {
+            min-height: 100svh;
+            padding-top: 98px;
+            isolation: isolate;
+            background:
+                radial-gradient(circle at 70% 46%, rgba(255, 154, 45, .13), transparent 18%),
+                radial-gradient(circle at 84% 78%, rgba(255, 73, 61, .08), transparent 26%),
+                linear-gradient(90deg, rgba(7, 5, 7, .98) 0%, rgba(7, 5, 7, .88) 42%, rgba(7, 5, 7, .34) 78%, rgba(7, 5, 7, .72) 100%),
+                radial-gradient(circle at 72% 50%, #2a1112 0%, #0d0809 52%, #070507 100%);
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            inset: auto 0 0;
+            height: 180px;
+            z-index: 1;
+            background: linear-gradient(transparent, var(--ink));
+            pointer-events: none;
+        }
+
+        .hero-grid {
+            grid-template-columns: minmax(0, .88fr) minmax(0, 1.12fr);
+            gap: 36px
+        }
+
+        .hero-copy {
+            position: relative;
+            z-index: 4
+        }
+
+        .hero-copy .eyebrow {
+            color: #ffb43e;
+            letter-spacing: .14em
+        }
+
+        .hero-copy .eyebrow::before {
+            width: 42px;
+            background: linear-gradient(90deg, var(--ember), var(--gold))
+        }
+
+        .hero-copy h1 {
+            font-size: clamp(3.1rem, 6vw, 6.3rem);
+            letter-spacing: -.035em;
+            line-height: .96;
+            max-width: 9.5ch;
+            text-wrap: balance
+        }
+
+        .hero-copy h1 em {
+            background: linear-gradient(100deg, #fff3c8 10%, #ffbd45 48%, #ff6546 100%);
+            -webkit-background-clip: text;
+            background-clip: text
+        }
+
+        .hero-copy p.lede {
+            font-size: 1rem;
+            color: #cdbba8;
+            max-width: 50ch;
+            line-height: 1.8
+        }
+
+        .hero-cta {
+            gap: 12px;
+            margin-top: 30px
+        }
+
+        .btn {
+            min-height: 50px;
+            padding: 14px 23px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, .09);
+            font-size: .88rem;
+            letter-spacing: .01em;
+            transition: transform .35s var(--ease), box-shadow .35s var(--ease), background .35s var(--ease), border-color .35s var(--ease)
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ffb83f, #ff6b35);
+            color: #160a06;
+            box-shadow: 0 18px 42px -16px rgba(255, 119, 45, .75)
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 24px 48px -16px rgba(255, 119, 45, .9)
+        }
+
+        .btn-wa {
+            background: rgba(37, 211, 102, .1);
+            color: #9ff0bb;
+            border-color: rgba(37, 211, 102, .22);
+            box-shadow: none
+        }
+
+        .btn-wa:hover {
+            background: rgba(37, 211, 102, .16)
+        }
+
+        .btn-ghost {
+            background: rgba(255, 255, 255, .045);
+            border-color: rgba(255, 255, 255, .12);
+            color: #fff4df
+        }
+
+        .btn-ghost:hover {
+            background: rgba(255, 159, 28, .1);
+            border-color: rgba(255, 190, 76, .45)
+        }
+
+        .hero-stats {
+            gap: 12px;
+            margin-top: 34px
+        }
+
+        .stat {
+            padding: 12px 15px;
+            border: 1px solid rgba(255, 255, 255, .07);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, .025);
+            backdrop-filter: blur(10px)
+        }
+
+        .stat b {
+            font-size: 1.35rem;
+            color: #ffd873
+        }
+
+        .stat span {
+            font-size: .69rem;
+            color: #aa998a
+        }
+
+        .candle-gallery-wrap {
+            width: 100%;
+            height: 100%;
+            display: grid;
+            place-items: center;
+            position: absolute;
+            inset: 0;
+            z-index: 3;
+            pointer-events: none
+        }
+
+        .candle-gallery-orbit {
+            width: min(100%, 690px);
+            height: 620px;
+            position: relative;
+            transform-style: preserve-3d;
+            pointer-events: auto
+        }
+
+        /* Editorial candle image gallery */
+        .hero-visual {
+            min-height: 650px;
+            position: relative;
+            display: grid;
+            place-items: center;
+            perspective: 1800px
+        }
+
+        .candle-switch {
+            right: 3%;
+            top: 5%;
+            padding: 9px 10px 9px 14px;
+            background: rgba(12, 8, 9, .62);
+            border: 1px solid rgba(255, 232, 190, .15);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, .35);
+            z-index: 20
+        }
+
+        .switch-label {
+            color: #d7c4ae
+        }
+
+        .toggle {
+            background: #30242a
+        }
+
+        .toggle.on {
+            background: linear-gradient(90deg, #ff6d38, #ffc34f);
+            box-shadow: 0 0 25px rgba(255, 146, 52, .28)
+        }
+
+        .candle-scene {
+            width: min(100%, 690px);
+            height: 620px;
+            position: relative;
+            display: block;
+            transform-style: preserve-3d;
+            transition: transform .8s var(--ease);
+            isolation: isolate;
+        }
+
+        .candle-scene::before {
+            content: '';
+            position: absolute;
+            inset: 9% 4% 5%;
+            z-index: -2;
+            border-radius: 48% 52% 45% 55%;
+            background: radial-gradient(circle at 50% 52%, rgba(255, 168, 55, .22), transparent 42%), radial-gradient(circle at 50% 60%, rgba(255, 73, 61, .11), transparent 70%);
+            filter: blur(24px);
+            transform: translateZ(-50px)
+        }
+
+        .candle-scene::after {
+            content: '';
+            position: absolute;
+            left: 9%;
+            right: 5%;
+            bottom: 3%;
+            height: 24%;
+            z-index: -1;
+            border-radius: 50%;
+            background: radial-gradient(ellipse, rgba(255, 142, 48, .24), rgba(255, 72, 45, .08) 38%, transparent 72%);
+            filter: blur(18px)
+        }
+
+        .candle-card {
+            position: absolute;
+            overflow: hidden;
+            border-radius: 26px;
+            border: 1px solid rgba(255, 242, 218, .18);
+            background: #160d0e;
+            box-shadow: 0 35px 80px -28px rgba(0, 0, 0, .9), 0 0 0 1px rgba(255, 160, 64, .04) inset;
+            transform-style: preserve-3d;
+            transition: transform .7s var(--ease), filter .5s ease, opacity .5s ease;
+            will-change: transform;
+        }
+
+        .candle-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 1.1s var(--ease), filter .6s ease
+        }
+
+        .candle-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            background: linear-gradient(145deg, rgba(255, 255, 255, .13), transparent 22%, transparent 58%, rgba(0, 0, 0, .5));
+            pointer-events: none
+        }
+
+        .candle-card::after {
+            content: '';
+            position: absolute;
+            inset: 1px;
+            border-radius: 25px;
+            z-index: 3;
+            box-shadow: inset 0 0 0 1px rgba(255, 207, 121, .05);
+            pointer-events: none
+        }
+
+        .candle-card:hover img {
+            transform: scale(1.055)
+        }
+
+        .candle-card:nth-child(1) {
+            width: 42%;
+            height: 47%;
+            left: 1%;
+            top: 7%;
+            transform: rotate(-7deg) translateZ(20px);
+            z-index: 4
+        }
+
+        .candle-card:nth-child(2) {
+            width: 31%;
+            height: 58%;
+            right: 3%;
+            top: 1%;
+            transform: rotate(6deg) translateZ(50px);
+            z-index: 6
+        }
+
+        .candle-card:nth-child(3) {
+            width: 33%;
+            height: 39%;
+            left: 10%;
+            bottom: 7%;
+            transform: rotate(5deg) translateZ(60px);
+            z-index: 7
+        }
+
+        .candle-card:nth-child(4) {
+            width: 32%;
+            height: 40%;
+            right: 12%;
+            bottom: 5%;
+            transform: rotate(-5deg) translateZ(35px);
+            z-index: 5
+        }
+
+        .candle-card:nth-child(5) {
+            width: 39%;
+            height: 49%;
+            left: 30%;
+            top: 27%;
+            transform: rotate(-1deg) translateZ(100px);
+            z-index: 10;
+            border-color: rgba(255, 190, 85, .35);
+            box-shadow: 0 45px 95px -30px rgba(0, 0, 0, .95), 0 0 50px rgba(255, 135, 41, .13)
+        }
+
+        .candle-card .image-label {
+            position: absolute;
+            left: 16px;
+            bottom: 14px;
+            z-index: 5;
+            padding: 7px 10px;
+            border-radius: 999px;
+            background: rgba(8, 6, 7, .54);
+            border: 1px solid rgba(255, 255, 255, .12);
+            backdrop-filter: blur(10px);
+            font-size: .62rem;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            color: #fff0cf
+        }
+
+        .candle-card.off {
+            filter: brightness(.45) saturate(.55);
+            opacity: .8
+        }
+
+        .candle-card.off img {
+            filter: saturate(.65)
+        }
+
+        .candle-status {
+            bottom: 1%;
+            padding: 10px 15px;
+            background: rgba(9, 6, 7, .66);
+            border: 1px solid rgba(255, 233, 188, .12);
+            color: #ffd77a;
+            backdrop-filter: blur(15px);
+            font-size: .7rem
+        }
+
+        /* Make product cards look like premium candle catalog cards */
+        .glow-field {
+            background: radial-gradient(ellipse 60% 40% at 10% 8%, rgba(255, 126, 45, .11), transparent 60%), radial-gradient(ellipse 50% 35% at 90% 85%, rgba(255, 193, 76, .08), transparent 60%), #0d070a
+        }
+
+        .section {
+            padding: 112px 0
+        }
+
+        .section-head h2 {
+            letter-spacing: -.025em
+        }
+
+        .section-head p {
+            color: #bca999
+        }
+
+        .product-grid {
+            gap: 22px
+        }
+
+        .card {
+            background: linear-gradient(160deg, rgba(255, 255, 255, .065), rgba(255, 255, 255, .018));
+            border: 1px solid rgba(255, 232, 200, .1);
+            border-radius: 24px;
+            box-shadow: 0 25px 70px -45px #000
+        }
+
+        .card:hover {
+            border-color: rgba(255, 188, 83, .42);
+            box-shadow: 0 32px 75px -36px rgba(0, 0, 0, .85), 0 0 0 1px rgba(255, 180, 64, .04) inset
+        }
+
+        .card-media {
+            aspect-ratio: 4/3.25;
+            background: #130b0c
+        }
+
+        .card-media img {
+            transition: transform .9s var(--ease), filter .5s ease
+        }
+
+        .card:hover .card-media img {
+            transform: scale(1.075);
+            filter: saturate(1.08) contrast(1.03)
+        }
+
+        .card-media::after {
+            background: linear-gradient(180deg, transparent 48%, rgba(7, 5, 7, .82))
+        }
+
+        .tag {
+            background: rgba(8, 6, 7, .62);
+            border-color: rgba(255, 229, 184, .16);
+            color: #ffd879;
+            backdrop-filter: blur(12px)
+        }
+
+        .card-body {
+            padding: 21px
+        }
+
+        .card-body h3 {
+            font-size: 1.2rem
+        }
+
+        .card-body .desc {
+            color: #a99584
+        }
+
+        .price-row .now {
+            color: #ffd873
+        }
+
+        .qty-stepper {
+            background: rgba(255, 255, 255, .035);
+            border-color: rgba(255, 255, 255, .1)
+        }
+
+        /* NEW ADD-TO-CART COLOR — warm coral/orange, clearly different from Buy Now */
+        .card-actions .btn-ghost {
+            background: linear-gradient(135deg, #ff5f45, #ff9d2e);
+            color: #190805;
+            border-color: transparent;
+            font-weight: 700;
+            box-shadow: 0 12px 28px -15px rgba(255, 91, 53, .9);
+            position: relative;
+            overflow: hidden
+        }
+
+        .card-actions .btn-ghost::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(110deg, transparent 20%, rgba(255, 255, 255, .28) 45%, transparent 65%);
+            transform: translateX(-120%);
+            transition: transform .7s var(--ease)
+        }
+
+        .card-actions .btn-ghost:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 17px 32px -14px rgba(255, 91, 53, 1)
+        }
+
+        .card-actions .btn-ghost:hover::before {
+            transform: translateX(120%)
+        }
+
+        .card-actions .btn-primary {
+            background: rgba(255, 255, 255, .055);
+            color: #ffeac1;
+            border-color: rgba(255, 232, 194, .15);
+            box-shadow: none
+        }
+
+        .card-actions .btn-primary:hover {
+            background: rgba(255, 194, 89, .1);
+            box-shadow: none
+        }
+
+        @media (max-width:900px) {
+            .hero {
+                min-height: auto;
+                padding-bottom: 50px
+            }
+
+            .hero-grid {
+                grid-template-columns: 1fr;
+                gap: 10px
+            }
+
+            .hero-copy h1 {
+                max-width: 12ch
+            }
+
+            .hero-copy p.lede {
+                max-width: 62ch
+            }
+
+            .hero-stats {
+                justify-content: center
+            }
+
+            .hero-visual {
+                min-height: 590px;
+                margin-top: -5px
+            }
+
+            .candle-scene {
+                height: 570px;
+                transform: scale(.94)
+            }
+        }
+
+        @media (max-width:560px) {
+            .nav-row {
+                padding: 13px 0
+            }
+
+            .brand {
+                font-size: 1.25rem
+            }
+
+            .hero {
+                padding-top: 82px
+            }
+
+            .hero-copy h1 {
+                font-size: clamp(2.55rem, 14vw, 3.7rem);
+                max-width: 10ch
+            }
+
+            .hero-copy p.lede {
+                font-size: .86rem;
+                line-height: 1.7
+            }
+
+            .hero-cta {
+                width: 100%;
+                flex-direction: column
+            }
+
+            .hero-cta .btn {
+                width: 100%;
+                justify-content: center
+            }
+
+            .hero-stats {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 7px
+            }
+
+            .stat {
+                padding: 10px 6px
+            }
+
+            .stat b {
+                font-size: 1.08rem
+            }
+
+            .stat span {
+                font-size: .56rem
+            }
+
+            .hero-visual {
+                min-height: 430px
+            }
+
+            .candle-scene {
+                height: 410px;
+                width: 108%;
+                margin-left: -4%;
+                transform: scale(.82)
+            }
+
+            .candle-card {
+                border-radius: 17px
+            }
+
+            .candle-card:nth-child(1) {
+                left: 0;
+                top: 8%;
+                width: 43%;
+                height: 45%
+            }
+
+            .candle-card:nth-child(2) {
+                right: 1%;
+                top: 2%;
+                width: 31%;
+                height: 53%
+            }
+
+            .candle-card:nth-child(3) {
+                left: 7%;
+                bottom: 6%;
+                width: 34%;
+                height: 38%
+            }
+
+            .candle-card:nth-child(4) {
+                right: 7%;
+                bottom: 4%;
+                width: 32%;
+                height: 38%
+            }
+
+            .candle-card:nth-child(5) {
+                left: 28%;
+                top: 28%;
+                width: 42%;
+                height: 48%;
+                border-radius: 20px
+            }
+
+            .candle-card .image-label {
+                font-size: .5rem;
+                padding: 5px 7px;
+                left: 8px;
+                bottom: 8px
+            }
+
+            .candle-switch {
+                right: 50%;
+                transform: translateX(50%);
+                top: 0
+            }
+
+            .candle-status {
+                font-size: .59rem;
+                max-width: 88%;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis
+            }
+
+            .section {
+                padding: 78px 0
+            }
+
+            .product-grid {
+                gap: 17px
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ============================================================
+     NAV
+     ============================================================ -->
+    <nav class="site-nav">
+        <div class="container nav-row">
+            <a href="#home" class="brand"><img src="images/logo.png" alt="Deep Roshni Logo" class="brand-logo">
+                Deep&nbsp;Roshni</a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#shop">Shop</a></li>
+                <li><a href="#showcase">3D Gallery</a></li>
+                <li><a href="#bulk">Bulk Orders</a></li>
+                <li><a href="#about">Why Us</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="icon-btn" id="cartBtn" aria-label="Open cart">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="9" cy="21" r="1" />
+                        <circle cx="20" cy="21" r="1" />
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                    </svg>
+                    <span class="cart-count" id="cartCount">0</span>
+                </button>
+                <button class="hamburger" id="hamburger" aria-label="Menu">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                        stroke-linecap="round">
+                        <line x1="3" y1="6" x2="21" y2="6" />
+                        <line x1="3" y1="12" x2="21" y2="12" />
+                        <line x1="3" y1="18" x2="21" y2="18" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ============================================================
+     HERO
+     ============================================================ -->
+    <header class="hero" id="home">
+        <div class="hero-3d" id="heroParallax" aria-hidden="true"></div>
+
+        <div class="spark-layer" id="sparkLayer"></div>
+
+        <div class="container hero-inner">
+            <div class="hero-grid">
+                <div class="hero-copy reveal in">
+                    <div class="hero-brand-pill">
+                        <img src="images/logo.png" alt="Deep Roshni Logo" class="hero-brand-logo">
+                        <span class="eyebrow">HANDCRAFTED FOR DIWALI 2026</span>
+                    </div>
+                    <h1>Light your home with <em>warmth</em> this Diwali</h1>
+                    <p class="lede">Hand-poured candles and festive gift boxes — made in small batches with natural wax.
+                        Order a single piece or a bulk hamper for your whole office, straight to WhatsApp.</p>
+                    <div class="hero-cta">
+                        <a href="#shop" class="btn btn-primary">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="9" cy="21" r="1" />
+                                <circle cx="20" cy="21" r="1" />
+                                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+                            </svg>
+                            Shop the collection
+                        </a>
+                        <button class="btn btn-wa"
+                            onclick="openWhatsApp('Hi Deep Roshni! I want to know more about your Diwali candles.')">
+                            <svg viewBox="0 0 32 32" fill="currentColor">
+                                <path
+                                    d="M16.001 3C9.373 3 4 8.373 4 15c0 2.34.653 4.53 1.786 6.396L4 29l7.86-1.744A11.93 11.93 0 0016 27c6.627 0 12-5.373 12-12S22.628 3 16.001 3zm6.965 17.09c-.294.828-1.46 1.52-2.396 1.72-.638.135-1.47.243-4.27-.918-3.582-1.483-5.884-5.11-6.064-5.348-.176-.238-1.44-1.916-1.44-3.655 0-1.74.914-2.593 1.238-2.95.323-.357.705-.446.94-.446.235 0 .47.002.674.012.216.01.507-.082.793.605.294.706.997 2.436 1.084 2.614.088.178.147.387.03.625-.117.238-.176.386-.353.594-.176.208-.372.464-.53.623-.176.176-.36.367-.155.72.206.353.916 1.51 1.968 2.446 1.352 1.204 2.492 1.577 2.845 1.753.353.176.559.147.764-.088.206-.235.881-1.028 1.117-1.38.235-.354.47-.294.793-.177.323.118 2.052.968 2.404 1.144.353.176.588.264.675.412.088.147.088.85-.206 1.678z" />
+                            </svg>
+                            WhatsApp Us
+                        </button>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="stat"><b>4.9★</b><span>2,300+ happy homes</span></div>
+                        <div class="stat"><b>100%</b><span>Natural soy &amp; wax blends</span></div>
+                        <div class="stat"><b>COD</b><span>&amp; online payment</span></div>
+                    </div>
+                </div>
+
+                <div class="hero-visual reveal in">
+                    <div class="candle-switch">
+                        <span class="switch-label" id="candleStatus">Candles ON</span>
+                        <button class="toggle on" id="candleToggle" aria-label="Turn candles on or off"
+                            aria-pressed="true"></button>
+                    </div>
+                    <div class="candle-gallery-wrap">
+                        <div class="candle-gallery-orbit" aria-label="Deep Roshni candle collection">
+                            <div class="candle-card"><img src="images/img_15.jpg" alt="Handcrafted rose candle"><span
+                                    class="image-label">Handcrafted</span></div>
+                            <div class="candle-card"><img src="images/img_6.jpg"
+                                    alt="Heart shaped candles in green and pink"><span class="image-label">Heart
+                                    candles</span></div>
+                            <div class="candle-card"><img src="images/img_30.jpg" alt="Green rose candle"><span
+                                    class="image-label">Colour story</span></div>
+                            <div class="candle-card"><img src="images/img_12.jpg"
+                                    alt="Teddy bear shaped festive candle"><span class="image-label">Festive
+                                    shape</span>
+                            </div>
+                            <div class="candle-card"><img src="images/img_9.jpg"
+                                    alt="Pair of festive rose candles"><span class="image-label">Diwali glow</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="candle-status" id="candleMessage">✨ Five little scenes, one warm festive glow</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ticker -->
+    <div class="ticker">
+        <div class="ticker-track">
+            <span>Free shipping over ₹999</span><span>Cash on Delivery available</span><span>Bulk &amp; corporate
+                gifting</span><span>Handcrafted with natural wax</span><span>Order directly on WhatsApp</span>
+            <span>Free shipping over ₹999</span><span>Cash on Delivery available</span><span>Bulk &amp; corporate
+                gifting</span><span>Handcrafted with natural wax</span><span>Order directly on WhatsApp</span>
+        </div>
+    </div>
+
+    <!-- ============================================================
+     SHOP / PRODUCT GRID
+     ============================================================ -->
+    <section class="section glow-field" id="shop">
+        <div class="container">
+            <div class="section-head reveal">
+                <span class="eyebrow">THE COLLECTION</span>
+                <h2>Candles for every corner of the celebration</h2>
+                <p>Pick a single piece to gift, or stock up for the whole house. Every order can be paid on delivery or
+                    online — we'll confirm details on WhatsApp.</p>
+            </div>
+            <div class="product-grid" id="productGrid"></div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+     3D SHOWCASE
+     ============================================================ -->
+    <section class="section" id="showcase">
+        <div class="container">
+            <div class="section-head center reveal">
+                <span class="eyebrow">A CLOSER LOOK</span>
+                <h2>Our candles, in the round</h2>
+                <p>A slow-turning look at the collection — hover to pause and see the detail.</p>
+            </div>
+            <div class="showcase reveal">
+                <div class="showcase-stage">
+                    <div class="showcase-ring" id="showcaseRing"></div>
+                </div>
+                <p class="showcase-caption">Hover or tap the ring to pause the rotation</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+     BULK ORDERS
+     ============================================================ -->
+    <section class="section glow-field" id="bulk">
+        <div class="container">
+            <div class="bulk reveal">
+                <div class="bulk-grid">
+                    <div>
+                        <span class="eyebrow">FOR OFFICES, SOCIETIES &amp; RESELLERS</span>
+                        <h2 style="margin-top:14px; font-size:clamp(1.7rem,3vw,2.3rem); color:var(--cream);">Bulk Diwali
+                            orders, made simple</h2>
+                        <p style="margin-top:14px; color:var(--cream-dim); max-width:44ch;">Diwali hampers for your
+                            team, a housing society, or your own store shelf — tell us the quantity and we'll send a
+                            custom quote on WhatsApp within the hour.</p>
+                        <ul class="steps">
+                            <li><span class="step-num">1</span>
+                                <div>
+                                    <h4>Pick a product &amp; quantity</h4>
+                                    <p>Use the calculator to estimate your order size.</p>
+                                </div>
+                            </li>
+                            <li><span class="step-num">2</span>
+                                <div>
+                                    <h4>Send it on WhatsApp</h4>
+                                    <p>One tap sends us your requirement — no forms, no signup.</p>
+                                </div>
+                            </li>
+                            <li><span class="step-num">3</span>
+                                <div>
+                                    <h4>Confirm &amp; pay</h4>
+                                    <p>Pay online via UPI or choose Cash on Delivery.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bulk-form">
+                        <div class="field">
+                            <label for="bulkProduct">Product</label>
+                            <select id="bulkProduct"></select>
+                        </div>
+                        <div class="field">
+                            <label for="bulkQty">Quantity (units)</label>
+                            <input type="number" id="bulkQty" min="10" step="10" value="50">
+                        </div>
+                        <div class="field">
+                            <label for="bulkNote">Anything else? (custom scent, box branding, delivery date)</label>
+                            <textarea id="bulkNote"
+                                placeholder="e.g. Need 50 boxes with a printed logo, delivery before 15 Oct"></textarea>
+                        </div>
+                        <div class="bulk-total">
+                            <span style="color:var(--cream-dim); font-size:.86rem;">Estimated total</span>
+                            <b id="bulkEstimate">₹0</b>
+                        </div>
+                        <button class="btn btn-wa" style="width:100%;justify-content:center;"
+                            onclick="sendBulkEnquiry()">
+                            <svg viewBox="0 0 32 32" fill="currentColor">
+                                <path
+                                    d="M16.001 3C9.373 3 4 8.373 4 15c0 2.34.653 4.53 1.786 6.396L4 29l7.86-1.744A11.93 11.93 0 0016 27c6.627 0 12-5.373 12-12S22.628 3 16.001 3zm6.965 17.09c-.294.828-1.46 1.52-2.396 1.72-.638.135-1.47.243-4.27-.918-3.582-1.483-5.884-5.11-6.064-5.348-.176-.238-1.44-1.916-1.44-3.655 0-1.74.914-2.593 1.238-2.95.323-.357.705-.446.94-.446.235 0 .47.002.674.012.216.01.507-.082.793.605.294.706.997 2.436 1.084 2.614.088.178.147.387.03.625-.117.238-.176.386-.353.594-.176.208-.372.464-.53.623-.176.176-.36.367-.155.72.206.353.916 1.51 1.968 2.446 1.352 1.204 2.492 1.577 2.845 1.753.353.176.559.147.764-.088.206-.235.881-1.028 1.117-1.38.235-.354.47-.294.793-.177.323.118 2.052.968 2.404 1.144.353.176.588.264.675.412.088.147.088.85-.206 1.678z" />
+                            </svg>
+                            Send enquiry on WhatsApp
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+     WHY US
+     ============================================================ -->
+    <section class="section" id="about">
+        <div class="container">
+            <div class="section-head reveal">
+                <div class="about-brand-header">
+                    <img src="images/logo.png" alt="Deep Roshni Quality Seal" class="about-seal-logo">
+                    <span class="eyebrow">WHY DEEP ROSHNI</span>
+                </div>
+                <h2>Small-batch candles, made properly</h2>
+            </div>
+            <div class="features">
+                <div class="feature reveal">
+                    <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                            <path
+                                d="M12 2c2 3-1 4-1 7a3 3 0 006 0c0-2-1-3-1-5 3 2 4 6 4 9a8 8 0 11-16 0c0-4 3-7 8-11z" />
+                        </svg></div>
+                    <h4>Hand-poured wax</h4>
+                    <p>Natural soy and paraffin blends poured in small batches for a clean, long burn.</p>
+                </div>
+                <div class="feature reveal">
+                    <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                            <circle cx="12" cy="12" r="9" />
+                            <path d="M12 7v5l3 3" />
+                        </svg></div>
+                    <h4>Fast dispatch</h4>
+                    <p>Orders placed before 5pm ship the same day during the Diwali season.</p>
+                </div>
+                <div class="feature reveal">
+                    <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                            <path d="M20 12V8a2 2 0 00-2-2H4a2 2 0 00-2 2v10a2 2 0 002 2h9" />
+                            <path d="M2 10h20" />
+                            <circle cx="18" cy="18" r="3" />
+                            <path d="M18 16.5v3M16.5 18h3" />
+                        </svg></div>
+                    <h4>COD &amp; online pay</h4>
+                    <p>Pay cash on delivery, or settle instantly by UPI once we confirm on WhatsApp.</p>
+                </div>
+                <div class="feature reveal">
+                    <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                            <path d="M12 21c-4-3-8-6.5-8-11a5 5 0 019-3 5 5 0 019 3c0 4.5-4 8-8 11z" />
+                        </svg></div>
+                    <h4>Made for gifting</h4>
+                    <p>Every box is finished with a festive wrap — ready to hand over as-is.</p>
+                </div>
+            </div>
+
+            <div class="payments reveal" style="margin-top:56px;">
+                <div class="pay-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                        <rect x="2" y="5" width="20" height="14" rx="2" />
+                        <path d="M2 10h20" />
+                    </svg> UPI / Cards / Netbanking</div>
+                <div class="pay-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                        <path d="M3 7l9 6 9-6" />
+                        <rect x="3" y="5" width="18" height="14" rx="2" />
+                    </svg> Cash on Delivery</div>
+                <div class="pay-chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+                        <path
+                            d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 10-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 000-7.78z" />
+                    </svg> Made with love in India</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+     GALLERY
+     ============================================================ -->
+    <section class="section glow-field">
+        <div class="container">
+            <div class="section-head reveal">
+                <span class="eyebrow">FROM OUR WORKSHOP</span>
+                <h2>Every diya, lit by hand</h2>
+            </div>
+            <div class="gallery reveal">
+                <figure><img
+                        src="https://images.unsplash.com/photo-1606285461069-80ba562575dd?auto=format&fit=crop&w=500&q=80"
+                        alt="Red candles arranged on a wooden table"></figure>
+                <figure><img
+                        src="https://images.unsplash.com/photo-1635192592106-77a5aacbe1a3?auto=format&fit=crop&w=500&q=80"
+                        alt="A circular arrangement of lit candles on the floor"></figure>
+                <figure><img
+                        src="https://images.unsplash.com/photo-1577083753695-e010191bacb5?auto=format&fit=crop&w=500&q=80"
+                        alt="Lit clay oil lamps on a decorative tray with flower petals"></figure>
+                <figure><img
+                        src="https://images.unsplash.com/photo-1679396147007-bb5c1af5ba22?auto=format&fit=crop&w=500&q=80"
+                        alt="A row of lit candles sitting on a table"></figure>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+     CONTACT / FOOTER
+     ============================================================ -->
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <a href="#home" class="brand" style="margin-bottom:14px;display:inline-flex;"><img
+                            src="images/logo.png" alt="Deep Roshni Logo" class="brand-logo"> Deep Roshni</a>
+                    <p style="color:var(--cream-dim); font-size:.88rem; max-width:32ch; margin-top:10px;">Handcrafted
+                        candles and diyas for Diwali — single pieces, gift boxes, and bulk orders, delivered across
+                        India.</p>
+                </div>
+                <div>
+                    <h5>Shop</h5>
+                    <ul>
+                        <li><a href="#shop">All candles</a></li>
+                        <li><a href="#bulk">Bulk orders</a></li>
+                        <li><a href="#showcase">Gallery</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5>Support</h5>
+                    <ul>
+                        <li><a href="#"
+                                onclick="openWhatsApp('Hi, I have a question about my order.'); return false;">Track an
+                                order</a></li>
+                        <li><a href="#"
+                                onclick="openWhatsApp('Hi, I would like to know your return policy.'); return false;">Returns
+                                &amp; refunds</a></li>
+                        <li><a href="#"
+                                onclick="openWhatsApp('Hi, I want to place a corporate gifting order.'); return false;">Corporate
+                                gifting</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5>Reach us</h5>
+                    <ul>
+                        <li><a href="#" onclick="openWhatsApp('Hi Deep Roshni!'); return false;">WhatsApp: +91 90000
+                                00000</a></li>
+                        <li><a href="mailto:hello@deeproshni.example">hello@deeproshni.example</a></li>
+                        <li>Mon–Sat, 10am–7pm IST</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="foot-note">
+                <span>© 2026 Deep Roshni. All rights reserved.</span>
+                <span>Made for a warmer Diwali 🪔</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- floating whatsapp -->
+    <button class="wa-float" onclick="openWhatsApp('Hi Deep Roshni! I want to place an order.')"
+        aria-label="Chat on WhatsApp">
+        <svg viewBox="0 0 32 32">
+            <path
+                d="M16.001 3C9.373 3 4 8.373 4 15c0 2.34.653 4.53 1.786 6.396L4 29l7.86-1.744A11.93 11.93 0 0016 27c6.627 0 12-5.373 12-12S22.628 3 16.001 3zm6.965 17.09c-.294.828-1.46 1.52-2.396 1.72-.638.135-1.47.243-4.27-.918-3.582-1.483-5.884-5.11-6.064-5.348-.176-.238-1.44-1.916-1.44-3.655 0-1.74.914-2.593 1.238-2.95.323-.357.705-.446.94-.446.235 0 .47.002.674.012.216.01.507-.082.793.605.294.706.997 2.436 1.084 2.614.088.178.147.387.03.625-.117.238-.176.386-.353.594-.176.208-.372.464-.53.623-.176.176-.36.367-.155.72.206.353.916 1.51 1.968 2.446 1.352 1.204 2.492 1.577 2.845 1.753.353.176.559.147.764-.088.206-.235.881-1.028 1.117-1.38.235-.354.47-.294.793-.177.323.118 2.052.968 2.404 1.144.353.176.588.264.675.412.088.147.088.85-.206 1.678z" />
+        </svg>
+    </button>
+
+    <!-- cart drawer -->
+    <div class="overlay" id="overlay"></div>
+    <aside class="cart-drawer" id="cartDrawer">
+        <div class="cart-head">
+            <h3>Your cart</h3>
+            <button class="icon-btn" id="closeCart" aria-label="Close cart">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+            </button>
+        </div>
+        <div class="cart-items" id="cartItems"></div>
+        <div class="cart-foot">
+            <div class="bulk-total">
+                <span style="color:var(--cream-dim); font-size:.86rem;">Total</span>
+                <b id="cartTotal">₹0</b>
+            </div>
+            <button class="btn btn-wa" onclick="checkoutCart()">
+                <svg viewBox="0 0 32 32" fill="currentColor">
+                    <path
+                        d="M16.001 3C9.373 3 4 8.373 4 15c0 2.34.653 4.53 1.786 6.396L4 29l7.86-1.744A11.93 11.93 0 0016 27c6.627 0 12-5.373 12-12S22.628 3 16.001 3zm6.965 17.09c-.294.828-1.46 1.52-2.396 1.72-.638.135-1.47.243-4.27-.918-3.582-1.483-5.884-5.11-6.064-5.348-.176-.238-1.44-1.916-1.44-3.655 0-1.74.914-2.593 1.238-2.95.323-.357.705-.446.94-.446.235 0 .47.002.674.012.216.01.507-.082.793.605.294.706.997 2.436 1.084 2.614.088.178.147.387.03.625-.117.238-.176.386-.353.594-.176.208-.372.464-.53.623-.176.176-.36.367-.155.72.206.353.916 1.51 1.968 2.446 1.352 1.204 2.492 1.577 2.845 1.753.353.176.559.147.764-.088.206-.235.881-1.028 1.117-1.38.235-.354.47-.294.793-.177.323.118 2.052.968 2.404 1.144.353.176.588.264.675.412.088.147.088.85-.206 1.678z" />
+                </svg>
+                Checkout on WhatsApp
+            </button>
+        </div>
+    </aside>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        /* ================================================================
+           CONFIG — put your own WhatsApp number here.
+           Format: country code + number, NO "+", NO spaces, NO dashes.
+           Example for India: "919000000000"
+           ================================================================ */
+        const WHATSAPP_NUMBER = "+91 8700689036";
+
+        /* ================================================================
+           PRODUCT DATA — edit freely: name, price, image, description
+           ================================================================ */
+        const PRODUCTS = [
+            {
+                id: "vintage-ivory-bloom",
+                name: "Vintage Ivory Bloom Candle",
+                desc: "Layered rose petals hand-poured in organic soy wax with subtle taupe accents.",
+                price: 399,
+                mrp: 549,
+                tag: "Artisan Pick",
+                img: "images/img_1.jpg"
+            },
+            {
+                id: "crimson-cream-peony",
+                name: "Crimson & Cream Peony Candle",
+                desc: "Dual-tone hand-carved floral candle with vibrant crimson undertones.",
+                price: 449,
+                mrp: 599,
+                tag: "Bestseller",
+                img: "images/img_2.jpg"
+            },
+            {
+                id: "scarlet-rose-blossom",
+                name: "Scarlet Rose Petal Candle",
+                desc: "Exquisite rose blossom featuring rich festive red tips on ivory soy wax.",
+                price: 429,
+                mrp: 579,
+                tag: "Festive Special",
+                img: "images/img_3.jpg"
+            },
+            {
+                id: "botanical-bear-gel-jar",
+                name: "Botanical Bear Gel Candle",
+                desc: "Hand-poured clear crystal gel candle with dried botanicals and a sage teddy bear.",
+                price: 349,
+                mrp: 499,
+                tag: "Handcrafted",
+                img: "images/img_4.jpg"
+            },
+            {
+                id: "honeycomb-heart-pink",
+                name: "Honeycomb Heart Candle",
+                desc: "Modern waffle-textured geometric heart candle in soft pastel pink.",
+                price: 299,
+                mrp: 399,
+                tag: "Trending",
+                img: "images/img_5.jpg"
+            },
+            {
+                id: "rose-heart-duo",
+                name: "Rose-Embossed Heart Duo (Set of 2)",
+                desc: "Two romantic heart candles textured with miniature roses in jade green and blush pink.",
+                price: 549,
+                mrp: 749,
+                tag: "Set of 2",
+                img: "images/img_6.jpg"
+            },
+            {
+                id: "cashmere-rose-bloom",
+                name: "Cashmere Rose Blossom",
+                desc: "Delicately sculpted ruffled rose candle infused with warm festive vanilla aroma.",
+                price: 399,
+                mrp: 549,
+                tag: "New Arrival",
+                img: "images/img_7.jpg"
+            },
+            {
+                id: "terracotta-floral-diya",
+                name: "Terracotta Mitti Diya Candle",
+                desc: "Traditional earthenware diya filled with natural soy wax and a sculpted floral motif.",
+                price: 199,
+                mrp: 299,
+                tag: "Traditional",
+                img: "images/img_8.jpg"
+            },
+            {
+                id: "heart-rose-pair",
+                name: "Heart Rose Bloom Pair",
+                desc: "Twin sculpted heart-shaped rose candles in deep ruby and tender pink hues.",
+                price: 499,
+                mrp: 699,
+                tag: "Bestseller",
+                img: "images/img_9.jpg"
+            },
+            {
+                id: "pastel-teddy-quad",
+                name: "Pastel Teddy Bear Set (Pack of 4)",
+                desc: "Charming quartet of cuddly teddy candles in rose pink, golden honey, ruby, and sage.",
+                price: 649,
+                mrp: 899,
+                tag: "Pack of 4",
+                img: "images/img_10.jpg"
+            },
+            {
+                id: "blush-heart-rose",
+                name: "Blush Rose Petal Heart",
+                desc: "A statement heart candle sculpted like an opening rosebud in two-tone pink.",
+                price: 349,
+                mrp: 499,
+                tag: "Handcrafted",
+                img: "images/img_11.jpg"
+            },
+            {
+                id: "marigold-carved-pillar",
+                name: "Marigold Carved Floral Pillar",
+                desc: "Rich saffron orange pillar candle carved with cascading roses and festive drapes.",
+                price: 599,
+                mrp: 799,
+                tag: "Diwali Special",
+                img: "images/img_12.jpg"
+            },
+            {
+                id: "golden-glow-camellia",
+                name: "Golden Glow Camellia Candle",
+                desc: "Pristine white multi-layered bloom candle featuring subtle honey-gold central petals.",
+                price: 449,
+                mrp: 599,
+                tag: "Premium",
+                img: "images/img_13.jpg"
+            },
+            {
+                id: "sage-forest-peony",
+                name: "Sage Forest Peony Candle",
+                desc: "Hand-poured blooming succulent candle in a refreshing natural earthy sage shade.",
+                price: 379,
+                mrp: 499,
+                tag: "Eco-Friendly",
+                img: "images/img_14.jpg"
+            },
+            {
+                id: "crimson-swirl-bloom",
+                name: "Crimson Swirl Peony Bloom",
+                desc: "Intricate floral candle featuring vivid crimson edges on ivory wax petals.",
+                price: 419,
+                mrp: 569,
+                tag: "Bestseller",
+                img: "images/img_15.jpg"
+            },
+            {
+                id: "jade-ruby-roses-duo",
+                name: "Jade & Ruby Sculpted Roses (Pair)",
+                desc: "Two handcrafted blooming rose buds in complementary jade green and festive scarlet.",
+                price: 479,
+                mrp: 649,
+                tag: "Set of 2",
+                img: "images/img_16.jpg"
+            },
+            {
+                id: "bowtie-teddy-pink",
+                name: "Bow-Tie Teddy Bear Candle",
+                desc: "Adorable handcrafted textured teddy bear candle with a bow in sweet blush pink.",
+                price: 279,
+                mrp: 399,
+                tag: "Trending",
+                img: "images/img_17.jpg"
+            },
+            {
+                id: "blossom-bouquet-candle",
+                name: "Blossom Bouquet Pillar Candle",
+                desc: "A clustered bouquet of hand-sculpted pink roses nestled on emerald green foliage.",
+                price: 529,
+                mrp: 729,
+                tag: "Limited Edition",
+                img: "images/img_18.jpg"
+            },
+            {
+                id: "festive-glow-platter",
+                name: "Festive Glow Platter Hamper",
+                desc: "Curated gift set with a pink teddy bear candle and floral terracotta diya on a scalloped tray.",
+                price: 699,
+                mrp: 999,
+                tag: "Gifting",
+                img: "images/img_19.jpg"
+            },
+            {
+                id: "spherical-rose-pomander",
+                name: "Spherical Rose Pomander Candle",
+                desc: "Stunning 360-degree ball candle encrusted entirely with sculpted baby pink roses.",
+                price: 459,
+                mrp: 629,
+                tag: "Artisan Pick",
+                img: "images/img_20.jpg"
+            },
+            {
+                id: "sandstone-peony-candle",
+                name: "Warm Sandstone Peony Candle",
+                desc: "Muted earth-toned handcrafted peony candle with lifelike layered petal textures.",
+                price: 389,
+                mrp: 529,
+                tag: "Handcrafted",
+                img: "images/img_21.jpg"
+            },
+            {
+                id: "royal-saffron-pillar",
+                name: "Royal Saffron Floral Pillar",
+                desc: "Grand festive pillar candle adorned with three-dimensional rose garlands and scrolls.",
+                price: 629,
+                mrp: 849,
+                tag: "Festive Special",
+                img: "images/img_22.jpg"
+            },
+            {
+                id: "crystal-botanical-bear",
+                name: "Crystal Botanical Bear Jar",
+                desc: "Enchanting transparent gel wax candle infused with rose petals and a cute green bear.",
+                price: 369,
+                mrp: 499,
+                tag: "New Arrival",
+                img: "images/img_23.jpg"
+            },
+            {
+                id: "crimson-floating-diya",
+                name: "Crimson Floral Floating Diya",
+                desc: "Dual-toned floating candle with curling rose petals, designed for festive water bowls.",
+                price: 229,
+                mrp: 329,
+                tag: "Diwali Special",
+                img: "images/img_24.jpg"
+            },
+            {
+                id: "royal-crimson-peony",
+                name: "Royal Crimson Peony Candle",
+                desc: "Premium hand-poured soy wax peony candle with deep red rimmed ruffled petals.",
+                price: 439,
+                mrp: 599,
+                tag: "Premium",
+                img: "images/img_25.jpg"
+            },
+            {
+                id: "teddy-celebration-platter",
+                name: "Teddy Celebration Platter (Set of 4)",
+                desc: "Complete 4-color bear collection displayed on an elegant scalloped presentation tray.",
+                price: 749,
+                mrp: 1049,
+                tag: "Gifting",
+                img: "images/img_26.jpg"
+            },
+            {
+                id: "scarlet-swirl-diya",
+                name: "Scarlet Swirl Water Diya",
+                desc: "Floating festive candle shaped like an unfolding rose in bright crimson and cream.",
+                price: 239,
+                mrp: 349,
+                tag: "Traditional",
+                img: "images/img_27.jpg"
+            },
+            {
+                id: "festive-twin-roses",
+                name: "Festive Twin Roses (Ruby & Sage)",
+                desc: "Harmonious pair of blooming rose candles for Diwali table decor or festive pooja thalis.",
+                price: 489,
+                mrp: 659,
+                tag: "Set of 2",
+                img: "images/img_28.jpg"
+            },
+            {
+                id: "sweetheart-rose-duo",
+                name: "Sweetheart Rose Duo (Pink & Red)",
+                desc: "Two romantic heart-shaped rose candles in soft blush and deep crimson.",
+                price: 499,
+                mrp: 699,
+                tag: "Bestseller",
+                img: "images/img_29.jpg"
+            },
+            {
+                id: "emerald-succulent-rose",
+                name: "Emerald Succulent Rose Candle",
+                desc: "A vibrant emerald green sculpted succulent flower candle with natural cotton wick.",
+                price: 359,
+                mrp: 489,
+                tag: "Trending",
+                img: "images/img_30.jpg"
+            },
+            {
+                id: "marigold-swirl-quad",
+                name: "Marigold Swirl Candle Set (Pack of 4)",
+                desc: "Festive four-piece set of swirl rose candles in traditional marigold yellow and leaf green.",
+                price: 499,
+                mrp: 699,
+                tag: "Bestseller",
+                img: "images/img_31.jpg"
+            }
+        ];
+
+        /* ================================================================
+           WHATSAPP HELPERS
+           ================================================================ */
+        function openWhatsApp(message) {
+            const url = `https://wa.me/${9084374321}?text=${encodeURIComponent(message)}`;
+            window.open(url, "_blank");
+        }
+
+        function buyNow(product, qty) {
+            const msg =
+                `Hi Deep Roshni! I'd like to buy:
+
+• ${product.name} x${qty} — ₹${product.price * qty}
+
+Please confirm availability and payment options (COD / online).`;
+            openWhatsApp(msg);
+        }
+
+        /* ================================================================
+           CART STATE (in-memory — resets on page reload)
+           ================================================================ */
+        let cart = [];
+
+        function addToCart(product, qty) {
+            const existing = cart.find(i => i.id === product.id);
+            if (existing) existing.qty += qty;
+            else cart.push({ ...product, qty });
+            renderCart();
+            showToast(`${product.name} added to cart`);
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(i => i.id !== id);
+            renderCart();
+        }
+
+        function cartTotal() {
+            return cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+        }
+
+        function renderCart() {
+            const countEl = document.getElementById("cartCount");
+            const itemsEl = document.getElementById("cartItems");
+            const totalEl = document.getElementById("cartTotal");
+
+            countEl.textContent = cart.reduce((n, i) => n + i.qty, 0);
+            totalEl.textContent = `₹${cartTotal()}`;
+
+            if (cart.length === 0) {
+                itemsEl.innerHTML = `<div class="cart-empty"><img src="images/logo.png" alt="Deep Roshni" class="cart-empty-logo">Your cart is empty.<br>Add a few candles to get started ✨</div>`;
+                return;
+            }
+
+            itemsEl.innerHTML = cart.map(i => `
+    <div class="cart-item">
+      <img src="${i.img}" alt="${i.name}">
+      <div class="ci-info">
+        <h5>${i.name}</h5>
+        <span>Qty ${i.qty} · ₹${i.price} each</span>
+      </div>
+      <button class="ci-remove" onclick="removeFromCart('${i.id}')" aria-label="Remove">&times;</button>
+    </div>
+  `).join("");
+        }
+
+        function checkoutCart() {
+            if (cart.length === 0) {
+                showToast("Add something to your cart first");
+                return;
+            }
+            const lines = cart.map(i => `• ${i.name} x${i.qty} — ₹${i.price * i.qty}`).join("\n");
+            const msg =
+                `Hi Deep Roshni! I'd like to order:
+
+${lines}
+
+Total: ₹${cartTotal()}
+
+Please confirm availability and payment options (COD / online).`;
+            openWhatsApp(msg);
+        }
+
+        /* ================================================================
+           TOAST
+           ================================================================ */
+        let toastTimer;
+        function showToast(text) {
+            const toast = document.getElementById("toast");
+            toast.textContent = text;
+            toast.classList.add("show");
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => toast.classList.remove("show"), 2200);
+        }
+
+        /* ================================================================
+           RENDER PRODUCT GRID
+           ================================================================ */
+        function renderProducts() {
+            const grid = document.getElementById("productGrid");
+            grid.innerHTML = PRODUCTS.map(p => `
+    <div class="card reveal">
+      <div class="card-media">
+        <span class="tag">${p.tag}</span>
+        <img src="${p.img}" alt="${p.name}" loading="lazy">
+      </div>
+      <div class="card-body">
+        <h3>${p.name}</h3>
+        <p class="desc">${p.desc}</p>
+        <div class="price-row">
+          <span class="now">₹${p.price}</span>
+          <span class="was">₹${p.mrp}</span>
+        </div>
+        <div class="qty-row">
+          <div class="qty-stepper">
+            <button onclick="stepQty('${p.id}', -1)">−</button>
+            <span class="qty-val" id="qty-${p.id}">1</span>
+            <button onclick="stepQty('${p.id}', 1)">+</button>
+          </div>
+        </div>
+        <div class="card-actions">
+          <button class="btn btn-ghost" onclick="addToCartById('${p.id}')">Add to cart</button>
+          <button class="btn btn-primary" onclick="buyNowById('${p.id}')">Buy now</button>
+        </div>
+      </div>
+    </div>
+  `).join("");
+
+            attachTilt(grid.querySelectorAll(".card"));
+            observeReveals();
+        }
+
+        function stepQty(id, delta) {
+            const el = document.getElementById(`qty-${id}`);
+            let val = parseInt(el.textContent, 10) + delta;
+            if (val < 1) val = 1;
+            el.textContent = val;
+        }
+
+        function addToCartById(id) {
+            const product = PRODUCTS.find(p => p.id === id);
+            const qty = parseInt(document.getElementById(`qty-${id}`).textContent, 10);
+            addToCart(product, qty);
+        }
+
+        function buyNowById(id) {
+            const product = PRODUCTS.find(p => p.id === id);
+            const qty = parseInt(document.getElementById(`qty-${id}`).textContent, 10);
+            buyNow(product, qty);
+        }
+
+        /* ================================================================
+           BULK ORDER CALCULATOR
+           ================================================================ */
+        function initBulk() {
+            const select = document.getElementById("bulkProduct");
+            select.innerHTML = PRODUCTS.map(p => `<option value="${p.id}">${p.name} — ₹${p.price}/unit</option>`).join("");
+            select.addEventListener("change", updateBulkEstimate);
+            document.getElementById("bulkQty").addEventListener("input", updateBulkEstimate);
+            updateBulkEstimate();
+        }
+
+        function updateBulkEstimate() {
+            const product = PRODUCTS.find(p => p.id === document.getElementById("bulkProduct").value);
+            let qty = parseInt(document.getElementById("bulkQty").value, 10) || 0;
+            document.getElementById("bulkEstimate").textContent = `₹${(product.price * qty).toLocaleString("en-IN")}`;
+        }
+
+        function sendBulkEnquiry() {
+            const product = PRODUCTS.find(p => p.id === document.getElementById("bulkProduct").value);
+            const qty = parseInt(document.getElementById("bulkQty").value, 10) || 0;
+            const note = document.getElementById("bulkNote").value.trim();
+            const msg =
+                `Hi Deep Roshni! I'd like a bulk order quote:
+
+• Product: ${product.name}
+• Quantity: ${qty} units
+• Estimated total: ₹${(product.price * qty).toLocaleString("en-IN")}
+${note ? `\nNotes: ${note}` : ""}
+
+Please share the final price, delivery timeline and payment options.`;
+            openWhatsApp(msg);
+        }
+
+        /* ================================================================
+           3D SHOWCASE RING
+           ================================================================ */
+        function initShowcase() {
+            const ring = document.getElementById("showcaseRing");
+            // Pick a curated set of 8 distinct designs for the 3D rotating ring
+            const showcaseItems = [
+                PRODUCTS[1],  // Crimson & Cream Peony (img_2)
+                PRODUCTS[5],  // Rose-Embossed Heart Duo (img_6)
+                PRODUCTS[7],  // Terracotta Mitti Diya (img_8)
+                PRODUCTS[9],  // Pastel Teddy Bear Set (img_10)
+                PRODUCTS[11], // Marigold Carved Floral Pillar (img_12)
+                PRODUCTS[17], // Blossom Bouquet Pillar (img_18)
+                PRODUCTS[22], // Crystal Botanical Bear Jar (img_23)
+                PRODUCTS[30]  // Marigold Swirl Candle Set (img_31)
+            ];
+            const n = showcaseItems.length;
+            const radius = 280;
+            ring.innerHTML = showcaseItems.map((p, i) => {
+                const angle = (360 / n) * i;
+                return `<div class="ring-item" style="transform:rotateY(${angle}deg) translateZ(${radius}px);">
+              <img src="${p.img}" alt="${p.name}">
+            </div>`;
+            }).join("");
+        }
+
+        /* ================================================================
+           CARD TILT (mouse-driven 3D)
+           ================================================================ */
+        function attachTilt(cards) {
+            cards.forEach(card => {
+                card.addEventListener("mousemove", e => {
+                    const rect = card.getBoundingClientRect();
+                    const x = (e.clientX - rect.left) / rect.width - 0.5;
+                    const y = (e.clientY - rect.top) / rect.height - 0.5;
+                    card.style.transform = `rotateY(${x * 10}deg) rotateX(${-y * 10}deg) translateY(-4px)`;
+                });
+                card.addEventListener("mouseleave", () => {
+                    card.style.transform = "rotateY(0) rotateX(0) translateY(0)";
+                });
+            });
+        }
+
+        function initHeroTilt() {
+            const scene = document.querySelector(".candle-gallery-orbit");
+            const hero = document.querySelector(".hero");
+            if (!scene || !hero) return;
+
+            hero.addEventListener("mousemove", e => {
+                if (window.innerWidth <= 900) return;
+                const rect = hero.getBoundingClientRect();
+                const x = (e.clientX - rect.left) / rect.width - 0.5;
+                const y = (e.clientY - rect.top) / rect.height - 0.5;
+                scene.style.transform = `rotateY(${x * 7}deg) rotateX(${-y * 5}deg) translateY(${y * -4}px)`;
+            });
+            hero.addEventListener("mouseleave", () => {
+                scene.style.transform = "rotateY(0) rotateX(0) translateY(0)";
+            });
+
+            const toggle = document.getElementById("candleToggle");
+            const status = document.getElementById("candleStatus");
+            const message = document.getElementById("candleMessage");
+            const cards = document.querySelectorAll(".candle-card");
+            toggle.addEventListener("click", () => {
+                const on = toggle.classList.toggle("on");
+                toggle.setAttribute("aria-pressed", String(on));
+                cards.forEach(c => c.classList.toggle("off", !on));
+                status.textContent = on ? "Candles ON" : "Candles OFF";
+                message.textContent = on ? "✨ Five little scenes, one warm festive glow" : "🌙 Preview dimmed — tap the switch to bring the glow back";
+            });
+        }
+
+        /* ================================================================
+           PARTICLES (festive sparks rising)
+           ================================================================ */
+        function initSparks() {
+            const layer = document.getElementById("sparkLayer");
+            const count = window.innerWidth < 700 ? 16 : 28;
+            for (let i = 0; i < count; i++) {
+                const s = document.createElement("div");
+                s.className = "spark";
+                s.style.left = `${Math.random() * 100}%`;
+                s.style.setProperty("--drift", `${(Math.random() * 60 - 30).toFixed(0)}px`);
+                s.style.animationDuration = `${6 + Math.random() * 6}s`;
+                s.style.animationDelay = `${Math.random() * 8}s`;
+                layer.appendChild(s);
+            }
+        }
+
+        /* ================================================================
+           SCROLL REVEAL
+           ================================================================ */
+        function observeReveals() {
+            const els = document.querySelectorAll(".reveal:not(.in)");
+            const io = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("in");
+                        io.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15 });
+            els.forEach(el => io.observe(el));
+        }
+
+        /* ================================================================
+           NAV / CART / MOBILE MENU WIRING
+           ================================================================ */
+        function initUI() {
+            const hamburger = document.getElementById("hamburger");
+            const navLinks = document.getElementById("navLinks");
+            hamburger.addEventListener("click", () => navLinks.classList.toggle("open"));
+            navLinks.querySelectorAll("a").forEach(a => a.addEventListener("click", () => navLinks.classList.remove("open")));
+
+            const cartBtn = document.getElementById("cartBtn");
+            const closeCart = document.getElementById("closeCart");
+            const drawer = document.getElementById("cartDrawer");
+            const overlay = document.getElementById("overlay");
+
+            function openDrawer() { drawer.classList.add("open"); overlay.classList.add("show"); }
+            function closeDrawer() { drawer.classList.remove("open"); overlay.classList.remove("show"); }
+
+            cartBtn.addEventListener("click", openDrawer);
+            closeCart.addEventListener("click", closeDrawer);
+            overlay.addEventListener("click", closeDrawer);
+        }
+
+        /* ================================================================
+           INIT
+           ================================================================ */
+        window.addEventListener("DOMContentLoaded", () => {
+            renderProducts();
+            renderCart();
+            initBulk();
+            initShowcase();
+            initHeroTilt();
+            initSparks();
+            initUI();
+            observeReveals();
+        });
+    </script>
+</body>
+
+</html>

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deep Roshni — Handcrafted Diwali Candles</title>
+    <title>Amoura Crafts — Handcrafted Diwali Candles</title>
     <meta name="description"
         content="Handcrafted Diwali candles, diyas & festive gift boxes. Single pieces or bulk orders, cash on delivery, order directly on WhatsApp.">
 
@@ -12,7 +12,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
-    <link rel="icon" type="image/png" href="images/logo.png">
+    <link rel="icon" type="image/jpeg" href="images/logo.png">
     <link rel="apple-touch-icon" href="images/logo.png">
 
     <style>
@@ -206,19 +206,19 @@
         }
 
         .brand-logo {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 1.5px solid var(--gold);
-            box-shadow: 0 0 12px rgba(232, 135, 30, 0.4);
+            width: 46px;
+            height: 46px;
+            
+            object-fit: contain;
+            
+            filter: drop-shadow(0 0 8px rgba(232, 135, 30, 0.4));
             flex-shrink: 0;
-            transition: transform .3s ease, box-shadow .3s ease;
+            transition: transform .3s ease, filter .3s ease;
         }
 
         .brand:hover .brand-logo {
             transform: scale(1.08) rotate(4deg);
-            box-shadow: 0 0 16px rgba(244, 221, 142, 0.6);
+            filter: drop-shadow(0 0 12px rgba(244, 221, 142, 0.6));
         }
 
         .hero-brand-pill {
@@ -1022,7 +1022,7 @@
         }
 
         .card-media img {
-            width: 100%;
+            position: absolute; top: 0; left: 0; width: 100%;
             height: 100%;
             object-fit: cover;
             transform: scale(1.02) translateZ(0);
@@ -1178,7 +1178,7 @@
         }
 
         .ring-item img {
-            width: 100%;
+            position: absolute; top: 0; left: 0; width: 100%;
             height: 100%;
             object-fit: cover;
         }
@@ -1442,7 +1442,7 @@
         }
 
         .gallery img {
-            width: 100%;
+            position: absolute; top: 0; left: 0; width: 100%;
             height: 100%;
             object-fit: cover;
             transition: transform .5s var(--ease);
@@ -1706,7 +1706,7 @@
         }
 
         /* ============================================================
-   DEEP ROSHNI 2026 — PREMIUM CANDLE COMMERCE REDESIGN
+   AMOURA CRAFTS 2026 — PREMIUM CANDLE COMMERCE REDESIGN
    ============================================================ */
         :root {
             --ink: #070507;
@@ -2021,7 +2021,7 @@
         }
 
         .candle-card img {
-            width: 100%;
+            position: absolute; top: 0; left: 0; width: 100%;
             height: 100%;
             object-fit: cover;
             display: block;
@@ -2427,8 +2427,7 @@
      ============================================================ -->
     <nav class="site-nav">
         <div class="container nav-row">
-            <a href="#home" class="brand"><img src="images/logo.png" alt="Deep Roshni Logo" class="brand-logo">
-                Deep&nbsp;Roshni</a>
+            <a href="#home" class="brand"><img src="images/logo.png" alt="Amoura Crafts Logo" class="brand-logo"> Amoura Crafts</a>
             <ul class="nav-links" id="navLinks">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#shop">Shop</a></li>
@@ -2471,7 +2470,7 @@
             <div class="hero-grid">
                 <div class="hero-copy reveal in">
                     <div class="hero-brand-pill">
-                        <img src="images/logo.png" alt="Deep Roshni Logo" class="hero-brand-logo">
+                        <img src="images/logo.png" alt="Amoura Crafts Logo" class="hero-brand-logo">
                         <span class="eyebrow">HANDCRAFTED FOR DIWALI 2026</span>
                     </div>
                     <h1>Light your home with <em>warmth</em> this Diwali</h1>
@@ -2488,7 +2487,7 @@
                             Shop the collection
                         </a>
                         <button class="btn btn-wa"
-                            onclick="openWhatsApp('Hi Deep Roshni! I want to know more about your Diwali candles.')">
+                            onclick="openWhatsApp('Hi Amoura Crafts! I absolutely love your collection and would love to know more about your beautiful candles! ✨')">
                             <svg viewBox="0 0 32 32" fill="currentColor">
                                 <path
                                     d="M16.001 3C9.373 3 4 8.373 4 15c0 2.34.653 4.53 1.786 6.396L4 29l7.86-1.744A11.93 11.93 0 0016 27c6.627 0 12-5.373 12-12S22.628 3 16.001 3zm6.965 17.09c-.294.828-1.46 1.52-2.396 1.72-.638.135-1.47.243-4.27-.918-3.582-1.483-5.884-5.11-6.064-5.348-.176-.238-1.44-1.916-1.44-3.655 0-1.74.914-2.593 1.238-2.95.323-.357.705-.446.94-.446.235 0 .47.002.674.012.216.01.507-.082.793.605.294.706.997 2.436 1.084 2.614.088.178.147.387.03.625-.117.238-.176.386-.353.594-.176.208-.372.464-.53.623-.176.176-.36.367-.155.72.206.353.916 1.51 1.968 2.446 1.352 1.204 2.492 1.577 2.845 1.753.353.176.559.147.764-.088.206-.235.881-1.028 1.117-1.38.235-.354.47-.294.793-.177.323.118 2.052.968 2.404 1.144.353.176.588.264.675.412.088.147.088.85-.206 1.678z" />
@@ -2510,13 +2509,13 @@
                             aria-pressed="true"></button>
                     </div>
                     <div class="candle-gallery-wrap">
-                        <div class="candle-gallery-orbit" aria-label="Deep Roshni candle collection">
+                        <div class="candle-gallery-orbit" aria-label="Amoura Crafts candle collection">
                             <div class="candle-card"><img src="images/img_15.jpg" alt="Handcrafted rose candle"><span
                                     class="image-label">Handcrafted</span></div>
                             <div class="candle-card"><img src="images/img_6.jpg"
                                     alt="Heart shaped candles in green and pink"><span class="image-label">Heart
                                     candles</span></div>
-                            <div class="candle-card"><img src="images/img_30.jpg" alt="Green rose candle"><span
+                            <div class="candle-card"><img src="images/img_24.jpg" alt="Green rose candle"><span
                                     class="image-label">Colour story</span></div>
                             <div class="candle-card"><img src="images/img_12.jpg"
                                     alt="Teddy bear shaped festive candle"><span class="image-label">Festive
@@ -2652,8 +2651,8 @@
         <div class="container">
             <div class="section-head reveal">
                 <div class="about-brand-header">
-                    <img src="images/logo.png" alt="Deep Roshni Quality Seal" class="about-seal-logo">
-                    <span class="eyebrow">WHY DEEP ROSHNI</span>
+                    <img src="images/logo.png" alt="Amoura Crafts Quality Seal" class="about-seal-logo">
+                    <span class="eyebrow">WHY AMOURA CRAFTS</span>
                 </div>
                 <h2>Small-batch candles, made properly</h2>
             </div>
@@ -2744,7 +2743,7 @@
             <div class="footer-grid">
                 <div>
                     <a href="#home" class="brand" style="margin-bottom:14px;display:inline-flex;"><img
-                            src="images/logo.png" alt="Deep Roshni Logo" class="brand-logo"> Deep Roshni</a>
+                            src="images/logo.png" alt="Amoura Crafts Logo" class="brand-logo"> Amoura Crafts</a>
                     <p style="color:var(--cream-dim); font-size:.88rem; max-width:32ch; margin-top:10px;">Handcrafted
                         candles and diyas for Diwali — single pieces, gift boxes, and bulk orders, delivered across
                         India.</p>
@@ -2761,35 +2760,34 @@
                     <h5>Support</h5>
                     <ul>
                         <li><a href="#"
-                                onclick="openWhatsApp('Hi, I have a question about my order.'); return false;">Track an
+                                onclick="openWhatsApp('Hi Amoura Crafts! I have a quick question regarding my recent order. 💕'); return false;">Track an
                                 order</a></li>
                         <li><a href="#"
-                                onclick="openWhatsApp('Hi, I would like to know your return policy.'); return false;">Returns
+                                onclick="openWhatsApp('Hi Amoura Crafts! Could you please share some details about your return policy? Thank you! 🌸'); return false;">Returns
                                 &amp; refunds</a></li>
                         <li><a href="#"
-                                onclick="openWhatsApp('Hi, I want to place a corporate gifting order.'); return false;">Corporate
+                                onclick="openWhatsApp('Hi Amoura Crafts! We are interested in your stunning candles for corporate gifting. Would love to discuss this! ✨'); return false;">Corporate
                                 gifting</a></li>
                     </ul>
                 </div>
                 <div>
                     <h5>Reach us</h5>
                     <ul>
-                        <li><a href="#" onclick="openWhatsApp('Hi Deep Roshni!'); return false;">WhatsApp: +91 90000
-                                00000</a></li>
-                        <li><a href="mailto:hello@deeproshni.example">hello@deeproshni.example</a></li>
+                        <li><a href="#" onclick="openWhatsApp('Hi Amoura Crafts! I just visited your website and your candles are gorgeous! 🕯️✨'); return false;">WhatsApp: +91 87006 89036</a></li>
+                        <li><a href="mailto:hello@amouracrafts.com">hello@amouracrafts.com</a></li>
                         <li>Mon–Sat, 10am–7pm IST</li>
                     </ul>
                 </div>
             </div>
             <div class="foot-note">
-                <span>© 2026 Deep Roshni. All rights reserved.</span>
-                <span>Made for a warmer Diwali 🪔</span>
+                <span>© 2026 Amoura Crafts. All rights reserved.</span>
+                <span>Made by Anjali Verma 🪔</span>
             </div>
         </div>
     </footer>
 
     <!-- floating whatsapp -->
-    <button class="wa-float" onclick="openWhatsApp('Hi Deep Roshni! I want to place an order.')"
+    <button class="wa-float" onclick="openWhatsApp('Hi Amoura Crafts! I just explored your beautiful website and I would love to place an order! ✨')"
         aria-label="Chat on WhatsApp">
         <svg viewBox="0 0 32 32">
             <path
@@ -2833,7 +2831,7 @@
            Format: country code + number, NO "+", NO spaces, NO dashes.
            Example for India: "919000000000"
            ================================================================ */
-        const WHATSAPP_NUMBER = "+91 8700689036";
+        const WHATSAPP_NUMBER = "918700689036";
 
         /* ================================================================
            PRODUCT DATA — edit freely: name, price, image, description
@@ -3056,67 +3054,13 @@
                 img: "images/img_24.jpg"
             },
             {
-                id: "royal-crimson-peony",
-                name: "Royal Crimson Peony Candle",
-                desc: "Premium hand-poured soy wax peony candle with deep red rimmed ruffled petals.",
-                price: 439,
-                mrp: 599,
-                tag: "Premium",
-                img: "images/img_25.jpg"
-            },
-            {
-                id: "teddy-celebration-platter",
-                name: "Teddy Celebration Platter (Set of 4)",
-                desc: "Complete 4-color bear collection displayed on an elegant scalloped presentation tray.",
-                price: 749,
-                mrp: 1049,
-                tag: "Gifting",
-                img: "images/img_26.jpg"
-            },
-            {
-                id: "scarlet-swirl-diya",
-                name: "Scarlet Swirl Water Diya",
-                desc: "Floating festive candle shaped like an unfolding rose in bright crimson and cream.",
-                price: 239,
-                mrp: 349,
-                tag: "Traditional",
-                img: "images/img_27.jpg"
-            },
-            {
-                id: "festive-twin-roses",
-                name: "Festive Twin Roses (Ruby & Sage)",
-                desc: "Harmonious pair of blooming rose candles for Diwali table decor or festive pooja thalis.",
-                price: 489,
-                mrp: 659,
-                tag: "Set of 2",
-                img: "images/img_28.jpg"
-            },
-            {
-                id: "sweetheart-rose-duo",
-                name: "Sweetheart Rose Duo (Pink & Red)",
-                desc: "Two romantic heart-shaped rose candles in soft blush and deep crimson.",
-                price: 499,
-                mrp: 699,
-                tag: "Bestseller",
-                img: "images/img_29.jpg"
-            },
-            {
                 id: "emerald-succulent-rose",
                 name: "Emerald Succulent Rose Candle",
                 desc: "A vibrant emerald green sculpted succulent flower candle with natural cotton wick.",
                 price: 359,
                 mrp: 489,
                 tag: "Trending",
-                img: "images/img_30.jpg"
-            },
-            {
-                id: "marigold-swirl-quad",
-                name: "Marigold Swirl Candle Set (Pack of 4)",
-                desc: "Festive four-piece set of swirl rose candles in traditional marigold yellow and leaf green.",
-                price: 499,
-                mrp: 699,
-                tag: "Bestseller",
-                img: "images/img_31.jpg"
+                img: "images/img_24.jpg"
             }
         ];
 
@@ -3124,13 +3068,13 @@
            WHATSAPP HELPERS
            ================================================================ */
         function openWhatsApp(message) {
-            const url = `https://wa.me/${9084374321}?text=${encodeURIComponent(message)}`;
+            const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
             window.open(url, "_blank");
         }
 
         function buyNow(product, qty) {
             const msg =
-                `Hi Deep Roshni! I'd like to buy:
+                `Hi Amoura Crafts! I absolutely love your candles and I would like to order the following:
 
 • ${product.name} x${qty} — ₹${product.price * qty}
 
@@ -3169,7 +3113,7 @@ Please confirm availability and payment options (COD / online).`;
             totalEl.textContent = `₹${cartTotal()}`;
 
             if (cart.length === 0) {
-                itemsEl.innerHTML = `<div class="cart-empty"><img src="images/logo.png" alt="Deep Roshni" class="cart-empty-logo">Your cart is empty.<br>Add a few candles to get started ✨</div>`;
+                itemsEl.innerHTML = `<div class="cart-empty"><img src="images/logo.png" alt="Amoura Crafts" class="cart-empty-logo">Your cart is empty.<br>Add a few candles to get started ✨</div>`;
                 return;
             }
 
@@ -3192,7 +3136,7 @@ Please confirm availability and payment options (COD / online).`;
             }
             const lines = cart.map(i => `• ${i.name} x${i.qty} — ₹${i.price * i.qty}`).join("\n");
             const msg =
-                `Hi Deep Roshni! I'd like to order:
+                `Hi Amoura Crafts! I absolutely love your candles and I would like to order the following:
 
 ${lines}
 
@@ -3292,7 +3236,7 @@ Please confirm availability and payment options (COD / online).`;
             const qty = parseInt(document.getElementById("bulkQty").value, 10) || 0;
             const note = document.getElementById("bulkNote").value.trim();
             const msg =
-                `Hi Deep Roshni! I'd like a bulk order quote:
+                `Hi Amoura Crafts! I'd like a bulk order quote:
 
 • Product: ${product.name}
 • Quantity: ${qty} units
@@ -3317,7 +3261,7 @@ Please share the final price, delivery timeline and payment options.`;
                 PRODUCTS[11], // Marigold Carved Floral Pillar (img_12)
                 PRODUCTS[17], // Blossom Bouquet Pillar (img_18)
                 PRODUCTS[22], // Crystal Botanical Bear Jar (img_23)
-                PRODUCTS[30]  // Marigold Swirl Candle Set (img_31)
+                PRODUCTS[23]  // Replaced with last product
             ];
             const n = showcaseItems.length;
             const radius = 280;

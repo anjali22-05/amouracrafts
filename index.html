@@ -3090,11 +3090,13 @@
 
         function buyNow(product, qty) {
             const msg =
-                `Hi Amoura Crafts! I absolutely love your candles and I would like to order the following:
+                `Hi Amoura Crafts! I absolutely love your candles and I would like to order the following:\n\n• ${product.name} x${qty} — ₹${product.price * qty}\n\nPlease confirm availability and payment options (COD / online).`;
+            openWhatsApp(msg);
+        }
 
-• ${product.name} x${qty} — ₹${product.price * qty}
-
-Please confirm availability and payment options (COD / online).`;
+        function buyResinNow(product) {
+            const msg =
+                `Hi Amoura Crafts! I'm interested in ordering the following resin art piece:\n\n• ${product.name} — ₹${product.price}\n\nCould you please share customization options and confirm availability? 🎨`;
             openWhatsApp(msg);
         }
 
@@ -3243,7 +3245,7 @@ Please confirm availability and payment options (COD / online).`;
                 <span class="current">₹${p.price}</span>
                 <span class="mrp">₹${p.mrp}</span>
             </div>
-            <button class="btn btn-primary" onclick='buyNow(${JSON.stringify(p)}, 1)'>Buy</button>
+            <button class="btn btn-primary" onclick='buyResinNow(${JSON.stringify(p)})'>Buy now</button>
         </div>
       </div>
     </div>

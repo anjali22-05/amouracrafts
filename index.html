@@ -3094,9 +3094,15 @@
             openWhatsApp(msg);
         }
 
-        function buyResinNow(product) {
+        function buyResinNow(id) {
+            const product = RESIN_PRODUCTS.find(p => p.id === id);
+            if (!product) return;
             const msg =
-                `Hi Amoura Crafts! I'm interested in ordering the following resin art piece:\n\n• ${product.name} — ₹${product.price}\n\nCould you please share customization options and confirm availability? 🎨`;
+                `Hi Amoura Crafts! I'm interested in ordering the following resin art piece:
+
+• ${product.name} — ₹${product.price}
+
+Could you please share customization options and confirm availability? 🎨`;
             openWhatsApp(msg);
         }
 
@@ -3245,7 +3251,7 @@ Please confirm availability and payment options (COD / online).`;
                 <span class="current">₹${p.price}</span>
                 <span class="mrp">₹${p.mrp}</span>
             </div>
-            <button class="btn btn-primary" onclick='buyResinNow(${JSON.stringify(p)})'>Buy now</button>
+            <button class="btn btn-primary" onclick="buyResinNow('${p.id}')">Buy now</button>
         </div>
       </div>
     </div>
@@ -3314,20 +3320,26 @@ Please confirm availability and payment options (COD / online).`;
            ================================================================ */
         function initBulk() {
             const select = document.getElementById("bulkProduct");
-            select.innerHTML = PRODUCTS.map(p => `<option value="${p.id}">${p.name} — ₹${p.price}/unit</option>`).join("");
+            select.innerHTML =
+                `<option value="" disabled selected>— Please Select a Product —</option>` +
+                PRODUCTS.map(p => `<option value="${p.id}">${p.name} — ₹${p.price}/unit</option>`).join("");
             select.addEventListener("change", updateBulkEstimate);
             document.getElementById("bulkQty").addEventListener("input", updateBulkEstimate);
             updateBulkEstimate();
         }
 
         function updateBulkEstimate() {
-            const product = PRODUCTS.find(p => p.id === document.getElementById("bulkProduct").value);
-            let qty = parseInt(document.getElementById("bulkQty").value, 10) || 0;
-            document.getElementById("bulkEstimate").textContent = `₹${(product.price * qty).toLocaleString("en-IN")}`;
+            const val = document.getElementById("bulkProduct").value;
+            const product = PRODUCTS.find(p => p.id === val);
+            const qty = parseInt(document.getElementById("bulkQty").value, 10) || 0;
+            document.getElementById("bulkEstimate").textContent =
+                product ? `₹${(product.price * qty).toLocaleString("en-IN")}` : "₹0";
         }
 
         function sendBulkEnquiry() {
-            const product = PRODUCTS.find(p => p.id === document.getElementById("bulkProduct").value);
+            const val = document.getElementById("bulkProduct").value;
+            const product = PRODUCTS.find(p => p.id === val);
+            if (!product) { showToast("Please select a product first"); return; }
             const qty = parseInt(document.getElementById("bulkQty").value, 10) || 0;
             const note = document.getElementById("bulkNote").value.trim();
             const msg =

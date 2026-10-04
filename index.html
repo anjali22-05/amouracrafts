@@ -14,6 +14,7 @@
         rel="stylesheet">
     <link rel="icon" type="image/jpeg" href="images/logo.png">
     <link rel="apple-touch-icon" href="images/logo.png">
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.1.1/dist/jspdf.umd.min.js"></script>
 
     <style>
         /* ============================================================
@@ -208,9 +209,9 @@
         .brand-logo {
             width: 56px;
             height: 56px;
-            
+
             object-fit: contain;
-            
+
             filter: drop-shadow(0 0 8px rgba(232, 135, 30, 0.4));
             flex-shrink: 0;
             transition: transform .3s ease, filter .3s ease;
@@ -438,6 +439,312 @@
             }
         }
 
+        .diwali-offer-wrap {
+            position: relative;
+            background: linear-gradient(180deg, rgba(24, 10, 8, 0.75), rgba(24, 10, 8, 0.48) 32%, rgba(24, 10, 8, 0));
+            padding-top: 96px;
+            z-index: 1;
+        }
+
+        .diwali-offer {
+            position: relative;
+            display: grid;
+            grid-template-columns: 1.5fr 0.8fr;
+            gap: 24px;
+            align-items: center;
+            padding: clamp(1.2rem, 2vw, 2rem);
+            background: linear-gradient(135deg, rgba(232, 135, 30, 0.12), rgba(54, 13, 24, 0.92) 40%, rgba(24, 10, 8, 0.94));
+            border: 1px solid rgba(244, 221, 142, 0.28);
+            border-radius: 28px;
+            box-shadow: 0 20px 45px -25px rgba(232, 135, 30, 0.4), inset 0 0 25px rgba(244, 221, 142, 0.08);
+            overflow: hidden;
+        }
+
+        .diwali-offer::before,
+        .diwali-offer::after {
+            content: '';
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(244, 221, 142, 0.18), transparent 60%);
+            pointer-events: none;
+        }
+
+        .diwali-offer::before {
+            right: -50px;
+            top: -60px;
+        }
+
+        .diwali-offer::after {
+            left: -62px;
+            bottom: -68px;
+        }
+
+        .offer-sparkles {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .offer-sparkles span {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--gold-light), var(--marigold) 50%, transparent 70%);
+            box-shadow: 0 0 12px rgba(244, 221, 142, 0.4);
+            animation: twinkle 3s ease-in-out infinite;
+        }
+
+        .offer-sparkles span:nth-child(1) { top: 18%; left: 16%; animation-delay: .2s; }
+        .offer-sparkles span:nth-child(2) { top: 28%; right: 20%; animation-delay: .8s; }
+        .offer-sparkles span:nth-child(3) { bottom: 18%; left: 28%; animation-delay: 1.4s; }
+        .offer-sparkles span:nth-child(4) { bottom: 24%; right: 24%; animation-delay: 2.1s; }
+        .offer-sparkles span:nth-child(5) { top: 52%; left: 52%; animation-delay: 1.1s; }
+
+        @keyframes twinkle {
+            0%, 100% { transform: scale(0.8); opacity: 0.35; }
+            50% { transform: scale(1.5); opacity: 1; }
+        }
+
+        .offer-copy {
+            position: relative;
+            z-index: 1;
+            padding: 8px 4px 8px 10px;
+        }
+
+        .offer-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 999px;
+            background: rgba(244, 221, 142, 0.08);
+            border: 1px solid rgba(244, 221, 142, 0.24);
+            color: var(--gold-light);
+            font-size: .75rem;
+            font-weight: 700;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+        }
+
+        .offer-copy h2 {
+            margin-top: 18px;
+            font-size: clamp(2rem, 3vw, 3rem);
+            line-height: 1.12;
+            max-width: 14ch;
+            color: var(--cream);
+        }
+
+        .offer-sub {
+            margin-top: 14px;
+            color: var(--gold-light);
+            font-size: 1.05rem;
+            font-weight: 500;
+        }
+
+        .offer-line {
+            margin-top: 12px;
+            color: var(--cream-dim);
+            font-size: 1rem;
+            max-width: 52ch;
+        }
+
+        .offer-meta {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 22px;
+        }
+
+        .offer-date {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            border-radius: 999px;
+            background: rgba(24, 10, 8, 0.38);
+            border: 1px solid rgba(244, 221, 142, 0.2);
+            color: var(--cream);
+            font-weight: 600;
+            letter-spacing: .02em;
+        }
+
+        .offer-btn {
+            white-space: nowrap;
+        }
+
+        .offer-highlight-wrap {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            width: min(100%, 285px);
+        }
+
+        .offer-highlight {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-height: 250px;
+            width: 100%;
+            padding: 18px 18px 20px;
+            border: 1px solid rgba(244, 221, 142, 0.26);
+            border-radius: 26px;
+            background:
+                linear-gradient(180deg, rgba(244, 221, 142, 0.14), rgba(24, 10, 8, 0.2)),
+                rgba(24, 10, 8, 0.52);
+            box-shadow: inset 0 0 18px rgba(232, 135, 30, 0.12), 0 22px 45px -28px rgba(232, 135, 30, 0.45);
+            text-align: center;
+        }
+
+        .offer-gift-image {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 18px;
+            border: 1px solid rgba(244, 221, 142, 0.22);
+            box-shadow: 0 20px 30px -20px rgba(232, 135, 30, 0.75), 0 0 18px rgba(244, 221, 142, 0.12);
+            background: rgba(24, 10, 8, 0.5);
+            margin: 2px 0 0;
+        }
+
+        .offer-highlight .small {
+            font-size: .78rem;
+            font-weight: 700;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            color: var(--gold-light);
+        }
+
+        .offer-highlight strong {
+            display: block;
+            font-family: var(--font-display);
+            font-size: clamp(1.5rem, 2.2vw, 2.4rem);
+            line-height: 1.15;
+            color: var(--cream);
+            text-shadow: 0 0 16px rgba(212, 175, 55, 0.32);
+            margin-top: 2px;
+        }
+
+        .mini-tag {
+            position: static;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(232, 135, 30, 0.12);
+            border: 1px solid rgba(244, 221, 142, 0.22);
+            color: var(--cream-dim);
+            font-size: .72rem;
+            letter-spacing: .02em;
+            text-align: center;
+            max-width: 100%;
+            line-height: 1.4;
+        }
+
+        @media (max-width:900px) {
+            .diwali-offer {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .offer-copy {
+                padding: 8px 4px;
+            }
+
+            .offer-copy h2 {
+                max-width: 100%;
+            }
+
+            .offer-line {
+                margin-inline: auto;
+            }
+
+            .offer-meta {
+                justify-content: center;
+            }
+
+            .offer-highlight-wrap {
+                padding-bottom: 18px;
+                width: min(100%, 300px);
+                margin: 0 auto;
+            }
+
+            .mini-tag {
+                margin-top: 0;
+            }
+        }
+
+        @media (max-width:560px) {
+            .diwali-offer-wrap {
+                padding-top: 78px;
+            }
+
+            .diwali-offer {
+                padding: 20px 16px 18px;
+                border-radius: 22px;
+            }
+
+            .offer-tag {
+                font-size: .65rem;
+                letter-spacing: .08em;
+            }
+
+            .offer-copy h2 {
+                font-size: clamp(1.7rem, 7vw, 2.3rem);
+            }
+
+            .offer-sub,
+            .offer-line {
+                font-size: .92rem;
+            }
+
+            .offer-meta {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+
+            .offer-date,
+            .offer-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .offer-highlight-wrap {
+                width: min(100%, 240px);
+            }
+
+            .offer-highlight {
+                min-height: 180px;
+                width: 100%;
+                max-width: 220px;
+            }
+
+            .offer-gift-image {
+                width: 120px;
+                height: 120px;
+            }
+
+            .offer-highlight strong {
+                font-size: clamp(1.25rem, 6vw, 1.8rem);
+            }
+
+            .mini-tag {
+                font-size: .66rem;
+                padding: 8px 10px;
+            }
+        }
+
         /* ============================================================
    HERO — interactive 3D candle display
    ============================================================ */
@@ -451,7 +758,7 @@
             background:
                 radial-gradient(circle at 72% 48%, rgba(232, 135, 30, .16), transparent 26%),
                 linear-gradient(180deg, rgba(24, 10, 8, .32), rgba(24, 10, 8, .95) 82%, var(--ink)),
-                url('https://images.unsplash.com/photo-1608865413608-6cfd1fc622b3?auto=format&fit=crop&w=1600&q=80') center 35%/cover no-repeat;
+                url('images/img_19.jpg') center 35%/cover no-repeat;
         }
 
         .hero-inner {
@@ -1022,7 +1329,10 @@
         }
 
         .card-media img {
-            position: absolute; top: 0; left: 0; width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
             height: 100%;
             object-fit: cover;
             transform: scale(1.02) translateZ(0);
@@ -1178,7 +1488,10 @@
         }
 
         .ring-item img {
-            position: absolute; top: 0; left: 0; width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
             height: 100%;
             object-fit: cover;
         }
@@ -1442,7 +1755,10 @@
         }
 
         .gallery img {
-            position: absolute; top: 0; left: 0; width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
             height: 100%;
             object-fit: cover;
             transition: transform .5s var(--ease);
@@ -2023,7 +2339,10 @@
         }
 
         .candle-card img {
-            position: absolute; top: 0; left: 0; width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
             height: 100%;
             object-fit: cover;
             display: block;
@@ -2420,6 +2739,415 @@
             }
         }
     </style>
+    <style>
+        /* ================================================================
+   PAYMENT SCANNER / QR MODAL STYLES
+   ================================================================ */
+        .payment-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 12, 10, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            padding: 20px;
+        }
+
+        .payment-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .payment-modal-content {
+            background: #1a1412;
+            border: 1px solid rgba(235, 215, 190, 0.2);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 420px;
+            padding: 28px 24px;
+            position: relative;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 30px rgba(212, 175, 55, 0.15);
+            transform: scale(0.92) translateY(20px);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            text-align: center;
+            color: #f5efe6;
+        }
+
+        .payment-modal-overlay.active .payment-modal-content {
+            transform: scale(1) translateY(0);
+        }
+
+        .payment-modal-close {
+            position: absolute;
+            top: 16px;
+            right: 18px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #f5efe6;
+            font-size: 24px;
+            line-height: 1;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .payment-modal-close:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: rotate(90deg);
+        }
+
+        .payment-modal-header h3 {
+            font-size: 1.4rem;
+            margin: 6px 0 8px;
+            color: #f5efe6;
+        }
+
+        .payment-modal-header p {
+            font-size: 0.88rem;
+            color: rgba(245, 239, 230, 0.75);
+            line-height: 1.4;
+            margin-bottom: 20px;
+        }
+
+        .payment-qr-frame {
+            background: #ffffff;
+            padding: 16px;
+            border-radius: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.1), 0 8px 24px rgba(0, 0, 0, 0.3);
+            margin: 0 auto 20px;
+            max-width: 280px;
+            width: 100%;
+        }
+
+        .payment-qr-img {
+            width: 100%;
+            height: auto;
+            max-height: 260px;
+            object-fit: contain;
+            border-radius: 8px;
+            display: block;
+        }
+
+        .pay-badge {
+            display: inline-block;
+            font-size: 0.8rem;
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: rgba(212, 175, 55, 0.15);
+            color: #e6c662;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .pay-stat-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .pay-stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.2);
+        }
+
+        .field select,
+        .field input,
+        .field textarea {
+            width: 100%;
+            border-radius: 12px;
+            border: 1px solid rgba(244, 221, 142, 0.2);
+            background: rgba(22, 13, 12, 0.95);
+            color: var(--cream);
+            padding: 12px 14px;
+            font: inherit;
+            outline: none;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+        }
+
+        .field select option {
+            background: #2a1714;
+            color: #f7ead0;
+        }
+
+        .field select:focus,
+        .field input:focus,
+        .field textarea:focus {
+            border-color: rgba(244, 221, 142, 0.5);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.12);
+        }
+
+        .checkout-modal-content,
+        .invoice-modal-content {
+            background: #1a1412;
+            border: 1px solid rgba(235, 215, 190, 0.2);
+            border-radius: 22px;
+            width: min(820px, 92vw);
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            padding: 28px 24px 24px;
+            box-shadow: 0 25px 60px -18px rgba(0, 0, 0, 0.9), 0 0 30px rgba(212, 175, 55, 0.12);
+        }
+
+        .checkout-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px 18px;
+            margin-top: 18px;
+        }
+
+        .checkout-field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            text-align: left;
+        }
+
+        .checkout-field.full {
+            grid-column: 1 / -1;
+        }
+
+        .checkout-field label {
+            font-size: .8rem;
+            color: var(--gold-light);
+            font-weight: 600;
+            letter-spacing: .05em;
+            text-transform: uppercase;
+        }
+
+        .checkout-summary {
+            margin-top: 18px;
+            padding: 18px 16px;
+            border: 1px solid rgba(244, 221, 142, 0.18);
+            border-radius: 16px;
+            background: rgba(24, 10, 8, 0.4);
+        }
+
+        .checkout-summary h4 {
+            font-size: 1.05rem;
+            margin-bottom: 12px;
+            color: var(--cream);
+        }
+
+        .checkout-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .checkout-item {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            color: var(--cream-dim);
+            font-size: .9rem;
+        }
+
+        .checkout-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(244, 221, 142, 0.16);
+            color: var(--cream);
+            font-size: 1.05rem;
+            font-weight: 700;
+        }
+
+        .checkout-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .checkout-actions .btn {
+            flex: 1;
+            justify-content: center;
+        }
+
+        .payment-detail-row,
+        .invoice-meta-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px 16px;
+            margin-top: 14px;
+            border-radius: 14px;
+            background: rgba(24, 10, 8, 0.38);
+            border: 1px solid rgba(244, 221, 142, 0.16);
+        }
+
+        .payment-detail-row span,
+        .invoice-meta-row span {
+            color: var(--cream-dim);
+            font-size: .82rem;
+        }
+
+        .payment-detail-row strong,
+        .invoice-meta-row strong {
+            color: var(--cream);
+        }
+
+        .copy-upi-btn {
+            background: rgba(244, 221, 142, 0.08);
+            color: var(--gold-light);
+            border: 1px solid rgba(244, 221, 142, 0.2);
+            border-radius: 999px;
+            padding: 8px 12px;
+            font-size: .78rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .payment-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .payment-actions .btn {
+            flex: 1;
+            justify-content: center;
+        }
+
+        .invoice-body {
+            margin-top: 18px;
+            padding: 18px 16px;
+            background: rgba(24, 10, 8, 0.35);
+            border: 1px solid rgba(244, 221, 142, 0.18);
+            border-radius: 18px;
+            text-align: left;
+        }
+
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            padding-bottom: 10px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid rgba(244, 221, 142, 0.16);
+        }
+
+        .invoice-header h3 {
+            font-size: 1.8rem;
+            color: var(--cream);
+        }
+
+        .invoice-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            margin-top: 10px;
+        }
+
+        .invoice-section {
+            border: 1px solid rgba(244, 221, 142, 0.12);
+            border-radius: 14px;
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .invoice-section h5 {
+            font-size: .78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            color: var(--gold-light);
+            margin-bottom: 10px;
+        }
+
+        .invoice-section p,
+        .invoice-section li {
+            color: var(--cream-dim);
+            line-height: 1.6;
+            font-size: .88rem;
+        }
+
+        .invoice-items {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .invoice-items th,
+        .invoice-items td {
+            padding: 9px 8px;
+            border-bottom: 1px solid rgba(244, 221, 142, 0.12);
+            text-align: left;
+            vertical-align: top;
+            color: var(--cream-dim);
+            font-size: .84rem;
+        }
+
+        .invoice-items th {
+            color: var(--gold-light);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+        }
+
+        .invoice-total {
+            margin-top: 12px;
+            display: flex;
+            justify-content: flex-end;
+            color: var(--cream);
+            font-weight: 700;
+        }
+
+        .invoice-download-btn {
+            width: 100%;
+            margin-top: 18px;
+            justify-content: center;
+        }
+
+        @media (max-width: 640px) {
+            .checkout-grid,
+            .invoice-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .checkout-actions,
+            .payment-actions {
+                flex-direction: column;
+            }
+
+            .payment-detail-row,
+            .invoice-meta-row {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+        /* RESPONSIVE FIXES */
+        html, body { overflow-x: hidden; width: 100%; }
+        .container { max-width: 100%; padding-left: 15px; padding-right: 15px; box-sizing: border-box; }
+        .checkout-modal-content, .invoice-modal-content, .modal-content, .payment-modal-content { max-width: 95vw; box-sizing: border-box; }
+        .checkout-grid, .invoice-grid { display: grid; gap: 12px; }
+        @media (max-width: 600px) {
+            .checkout-grid { grid-template-columns: 1fr; }
+            .checkout-field { grid-column: 1 / -1; }
+            .invoice-items th, .invoice-items td { font-size: 0.8rem; padding: 6px 4px; }
+            .hero-grid { grid-template-columns: 1fr; gap: 24px; text-align: center; }
+            .hero-copy h1 { font-size: clamp(2.2rem, 8vw, 3rem); }
+        }
+        img { max-width: 100%; height: auto; }
+        .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%; display: block; }
+    </style>
 </head>
 
 <body>
@@ -2429,7 +3157,8 @@
      ============================================================ -->
     <nav class="site-nav">
         <div class="container nav-row">
-            <a href="#home" class="brand"><img src="images/logo.png" alt="Amoura Crafts Logo" class="brand-logo"> Amoura Crafts</a>
+            <a href="#home" class="brand"><img src="images/logo.png" alt="Amoura Crafts Logo" class="brand-logo"> Amoura
+                Crafts</a>
             <ul class="nav-links" id="navLinks">
                 <li><a href="#home">Home</a></li>
                 <li><a href="#shop">Candles</a></li>
@@ -2462,9 +3191,44 @@
         </div>
     </nav>
 
+    <div class="diwali-offer-wrap">
+        <div class="container">
+            <div class="diwali-offer" aria-label="Diwali Special Offer banner">
+                <div class="offer-sparkles" aria-hidden="true">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <div class="offer-copy">
+                    <span class="offer-tag">🪔 DIWALI SPECIAL OFFER</span>
+                    <h2>Order Anything. Get a Teddy Candle FREE!</h2>
+                    <p class="offer-sub">Celebrate Diwali with a little extra joy ✨</p>
+                    <p class="offer-line">Get 1 FREE Teddy Candle with every order placed before 2 November.</p>
+                    <div class="offer-meta">
+                        <span class="offer-date">⏳ Offer ends 2 November</span>
+                        <a href="#shop" class="btn btn-primary offer-btn">Order Now &amp; Get Your Gift 🎁</a>
+                    </div>
+                </div>
+                <div class="offer-highlight-wrap">
+                    <div class="offer-highlight" aria-label="Free teddy candle gift highlight">
+                        <span class="small">FREE</span>
+                        <img src="images/taddy.jpeg" alt="Teddy Candle gift image" class="offer-gift-image">
+                        <strong>TEDDY<br>CANDLE</strong>
+                    </div>
+                    <div class="mini-tag">Limited-time Diwali Special — Don't miss your gift!</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- ============================================================
      HERO
      ============================================================ -->
+    <div class="delivery-banner" style="background: linear-gradient(90deg, var(--maroon-900), var(--maroon-800)); border-bottom: 1px solid var(--gold); color: var(--cream); text-align: center; padding: 10px 12px; font-weight: 600; font-size: 0.95rem; letter-spacing: 0.05em; margin-top: 72px;">
+        ✨ FREE DELIVERY ON ORDERS ABOVE ₹1000 ✨
+    </div>
     <header class="hero" id="home">
         <div class="hero-3d" id="heroParallax" aria-hidden="true"></div>
 
@@ -2502,7 +3266,9 @@
                     <div class="hero-stats">
                         <div class="stat"><b>4.9★</b><span>2,300+ happy homes</span></div>
                         <div class="stat"><b>100%</b><span>Natural soy &amp; wax blends</span></div>
-                        <div class="stat"><b>COD</b><span>&amp; online payment</span></div>
+                        <div class="stat pay-stat-card" id="onlinePaymentCard" style="cursor:pointer;"
+                            onclick="openPaymentModal()" title="Click to view Online Payment QR Scanner"><b>Online
+                                Payment</b><span>Scan QR code</span></div>
                     </div>
                 </div>
 
@@ -2583,13 +3349,14 @@
     <!-- ============================================================
      BULK ORDERS
      ============================================================ -->
-    
+
     <section class="section" id="resin">
         <div class="container">
             <div class="section-head reveal">
                 <span class="eyebrow">RESIN ART</span>
                 <h2>Custom Handcrafted Resin Creations</h2>
-                <p>Explore our beautiful collection of custom resin art, including wall clocks, decorative plaques, and personalized tags. Reach out on WhatsApp to customize your piece!</p>
+                <p>Explore our beautiful collection of custom resin art, including wall clocks, decorative plaques, and
+                    personalized tags. Reach out on WhatsApp to customize your piece!</p>
             </div>
             <div class="product-grid" id="resinGrid"></div>
         </div>
@@ -2696,8 +3463,8 @@
                             <circle cx="18" cy="18" r="3" />
                             <path d="M18 16.5v3M16.5 18h3" />
                         </svg></div>
-                    <h4>COD &amp; online pay</h4>
-                    <p>Pay cash on delivery, or settle instantly by UPI once we confirm on WhatsApp.</p>
+                    <h4 style="cursor:pointer;" onclick="openPaymentModal()">Online Payment</h4>
+                    <p>Settle instantly via UPI or QR code scan after confirming your order on WhatsApp.</p>
                 </div>
                 <div class="feature reveal">
                     <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
@@ -2735,18 +3502,11 @@
                 <h2>Every diya, lit by hand</h2>
             </div>
             <div class="gallery reveal">
-                <figure><img
-                        src="https://images.unsplash.com/photo-1606285461069-80ba562575dd?auto=format&fit=crop&w=500&q=80"
-                        alt="Red candles arranged on a wooden table"></figure>
-                <figure><img
-                        src="https://images.unsplash.com/photo-1635192592106-77a5aacbe1a3?auto=format&fit=crop&w=500&q=80"
-                        alt="A circular arrangement of lit candles on the floor"></figure>
-                <figure><img
-                        src="https://images.unsplash.com/photo-1577083753695-e010191bacb5?auto=format&fit=crop&w=500&q=80"
-                        alt="Lit clay oil lamps on a decorative tray with flower petals"></figure>
-                <figure><img
-                        src="https://images.unsplash.com/photo-1679396147007-bb5c1af5ba22?auto=format&fit=crop&w=500&q=80"
-                        alt="A row of lit candles sitting on a table"></figure>
+                <figure><img src="images/img_2.jpg" alt="Red candles arranged on a wooden table"></figure>
+                <figure><img src="images/img_8.jpg" alt="A circular arrangement of lit candles on the floor"></figure>
+                <figure><img src="images/img_19.jpg" alt="Lit clay oil lamps on a decorative tray with flower petals">
+                </figure>
+                <figure><img src="images/resin_1.jpg" alt="A row of lit candles sitting on a table"></figure>
             </div>
         </div>
     </section>
@@ -2776,7 +3536,8 @@
                     <h5>Support</h5>
                     <ul>
                         <li><a href="#"
-                                onclick="openWhatsApp('Hi Amoura Crafts! I have a quick question regarding my recent order. 💕'); return false;">Track an
+                                onclick="openWhatsApp('Hi Amoura Crafts! I have a quick question regarding my recent order. 💕'); return false;">Track
+                                an
                                 order</a></li>
                         <li><a href="#"
                                 onclick="openWhatsApp('Hi Amoura Crafts! Could you please share some details about your return policy? Thank you! 🌸'); return false;">Returns
@@ -2789,7 +3550,9 @@
                 <div>
                     <h5>Reach us</h5>
                     <ul>
-                        <li><a href="#" onclick="openWhatsApp('Hi Amoura Crafts! I just visited your website and your candles are gorgeous! 🕯️✨'); return false;">WhatsApp: +91 87006 89036</a></li>
+                        <li><a href="#"
+                                onclick="openWhatsApp('Hi Amoura Crafts! I just visited your website and your candles are gorgeous! 🕯️✨'); return false;">WhatsApp:
+                                +91 87006 89036</a></li>
                         <li><a href="mailto:craftsamoura@gmail.com">craftsamoura@gmail.com</a></li>
                         <li>Mon–Sat, 10am–7pm IST</li>
                     </ul>
@@ -2797,13 +3560,14 @@
             </div>
             <div class="foot-note">
                 <span>© 2026 Amoura Crafts. All rights reserved.</span>
-                <span>Made by Anjali Verma 🪔</span>
+                <span>Made by Harsh Verma 🥰</span>
             </div>
         </div>
     </footer>
 
     <!-- floating whatsapp -->
-    <button class="wa-float" onclick="openWhatsApp('Hi Amoura Crafts! I just explored your beautiful website and I would love to place an order! ✨')"
+    <button class="wa-float"
+        onclick="openWhatsApp('Hi Amoura Crafts! I just explored your beautiful website and I would love to place an order! ✨')"
         aria-label="Chat on WhatsApp">
         <svg viewBox="0 0 32 32">
             <path
@@ -2829,12 +3593,12 @@
                 <span style="color:var(--cream-dim); font-size:.86rem;">Total</span>
                 <b id="cartTotal">₹0</b>
             </div>
-            <button class="btn btn-wa" onclick="checkoutCart()">
+            <button class="btn btn-wa" onclick="openCartCheckout()">
                 <svg viewBox="0 0 32 32" fill="currentColor">
                     <path
                         d="M16.001 3C9.373 3 4 8.373 4 15c0 2.34.653 4.53 1.786 6.396L4 29l7.86-1.744A11.93 11.93 0 0016 27c6.627 0 12-5.373 12-12S22.628 3 16.001 3zm6.965 17.09c-.294.828-1.46 1.52-2.396 1.72-.638.135-1.47.243-4.27-.918-3.582-1.483-5.884-5.11-6.064-5.348-.176-.238-1.44-1.916-1.44-3.655 0-1.74.914-2.593 1.238-2.95.323-.357.705-.446.94-.446.235 0 .47.002.674.012.216.01.507-.082.793.605.294.706.997 2.436 1.084 2.614.088.178.147.387.03.625-.117.238-.176.386-.353.594-.176.208-.372.464-.53.623-.176.176-.36.367-.155.72.206.353.916 1.51 1.968 2.446 1.352 1.204 2.492 1.577 2.845 1.753.353.176.559.147.764-.088.206-.235.881-1.028 1.117-1.38.235-.354.47-.294.793-.177.323.118 2.052.968 2.404 1.144.353.176.588.264.675.412.088.147.088.85-.206 1.678z" />
                 </svg>
-                Checkout on WhatsApp
+                Checkout &amp; Pay
             </button>
         </div>
     </aside>
@@ -2847,11 +3611,21 @@
            Format: country code + number, NO "+", NO spaces, NO dashes.
            Example for India: "919000000000"
            ================================================================ */
-        const WHATSAPP_NUMBER = "918700689036";
+        const SITE_CONFIG = {
+            customerWhatsAppNumber: "918700689036",
+            adminWhatsAppNumber: "918700689036",
+            qrImage: "images/qr.im.jpeg",
+            upiId: "saxena.dun09@okhdfcbank",
+            orderStorageKey: "amouraCraftsOrders"
+        };
 
-        /* ================================================================
-           PRODUCT DATA — edit freely: name, price, image, description
-           ================================================================ */
+        const WHATSAPP_NUMBER = SITE_CONFIG.customerWhatsAppNumber;
+        const PAYMENT_CONFIG = {
+            qrImage: SITE_CONFIG.qrImage,
+            upiId: SITE_CONFIG.upiId,
+            adminWhatsAppNumber: SITE_CONFIG.adminWhatsAppNumber
+        };
+
         const PRODUCTS = [
             {
                 id: "vintage-ivory-bloom",
@@ -3080,52 +3854,578 @@
             }
         ];
 
-        /* ================================================================
-           WHATSAPP HELPERS
-           ================================================================ */
-        function openWhatsApp(message) {
-            const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+        let cart = [];
+        let currentOrder = null;
+        let currentCheckoutDraft = null;
+        let isOrderSubmitting = false;
+
+        function formatINR(amount) {
+            return new Intl.NumberFormat("en-IN", {
+                style: "currency",
+                currency: "INR",
+                maximumFractionDigits: 0
+            }).format(Number(amount || 0));
+        }
+
+        function normalizeWhatsAppNumber(value) {
+            if (!value) return "";
+            const digits = String(value).replace(/\D/g, "");
+            if (!digits) return "";
+            if (digits.startsWith("91") && digits.length === 12) return digits;
+            if (digits.length === 10) return `91${digits}`;
+            return digits;
+        }
+
+        function getStoredOrders() {
+            try {
+                const raw = localStorage.getItem(SITE_CONFIG.orderStorageKey);
+                return raw ? JSON.parse(raw) : [];
+            } catch (error) {
+                console.error("Unable to read stored orders:", error);
+                return [];
+            }
+        }
+
+        function saveStoredOrders(orders) {
+            localStorage.setItem(SITE_CONFIG.orderStorageKey, JSON.stringify(orders));
+        }
+
+        function createInvoiceNumber() {
+            return `INV-${Date.now().toString().slice(-8)}`;
+        }
+
+        function createOrderId() {
+            return `AM-${Date.now().toString().slice(-8)}`;
+        }
+
+        function getOrderSubtotal(items) {
+            return items.reduce((sum, item) => sum + Number(item.price || 0) * Number(item.qty || 1), 0);
+        }
+
+        function openWhatsApp(message, phoneNumber = WHATSAPP_NUMBER) {
+            const normalized = normalizeWhatsAppNumber(phoneNumber);
+            if (!normalized) {
+                showToast("WhatsApp number is not configured correctly.");
+                return;
+            }
+            const url = `https://wa.me/${normalized}?text=${encodeURIComponent(message)}`;
             window.open(url, "_blank");
         }
 
+        function buildCustomerOrderFromDraft(customer, items, mode) {
+            const subtotal = getOrderSubtotal(items);
+            const shipping = subtotal > 1000 ? 0 : 100;
+            const order = {
+                orderId: createOrderId(),
+                invoiceNumber: createInvoiceNumber(),
+                orderDate: new Date().toISOString(),
+                customerName: customer.fullName,
+                customerPhone: normalizeWhatsAppNumber(customer.mobile),
+                customerEmail: customer.email,
+                address: customer.address,
+                city: customer.city,
+                state: customer.state,
+                pincode: customer.pincode,
+                notes: customer.note || "",
+                preferredColor: customer.customColor || "",
+                transactionId: "",
+                items: items.map(item => ({
+                    productName: item.name,
+                    productImage: item.img || "",
+                    quantity: Number(item.qty || 1),
+                    unitPrice: Number(item.price || 0),
+                    itemTotal: Number(item.price || 0) * Number(item.qty || 1)
+                })),
+                subtotal,
+                shipping: shipping,
+                discount: 0,
+                finalTotal: subtotal + shipping,
+                paymentMethod: "UPI",
+                upiId: PAYMENT_CONFIG.upiId,
+                paymentStatus: "Payment Confirmation Pending",
+                orderStatus: "Payment Confirmation Pending",
+                customerDetails: {
+                    fullName: customer.fullName,
+                    mobile: customer.mobile,
+                    email: customer.email,
+                    address: customer.address,
+                    city: customer.city,
+                    state: customer.state,
+                    pincode: customer.pincode,
+                    note: customer.note || ""
+                },
+                mode,
+                createdAt: new Date().toISOString()
+            };
+
+            const existing = getStoredOrders();
+            existing.push(order);
+            saveStoredOrders(existing);
+            return order;
+        }
+
+        function buildOrderWhatsAppMessage(order) {
+            const itemList = order.items.map((item, index) => `${index + 1}. ${item.productName} × ${item.quantity} — ₹${item.unitPrice * item.quantity}`).join("\n");
+            return [
+                "AMOURA CRAFTS — ORDER CONFIRMATION",
+                "",
+                `Order ID: ${order.orderId}`,
+                `Invoice No: ${order.invoiceNumber}`,
+                `Order Date: ${new Date(order.orderDate).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" })}`,
+                "",
+                "Customer:",
+                order.customerName,
+                "",
+                "Items:",
+                itemList,
+                "",
+                `Total Amount: ₹${order.finalTotal}`,
+                "Payment Method: UPI",
+                `Payment Status: ${order.paymentStatus}`,
+                "",
+                `Delivery Address: ${order.address}, ${order.city}, ${order.state} - ${order.pincode}`,
+                "",
+                `Preferred Color: ${order.preferredColor || "Default"}`,
+                "",
+                "Thank you for ordering from Amoura Crafts."
+            ].join("\n");
+        }
+
+        function buildAdminWhatsAppMessage(order) {
+            const items = order.items.map((item, index) => {
+                const qty = item.quantity || item.qty || 1;
+                const unitPrice = Number(item.unitPrice ?? item.price ?? 0);
+                const total = Number(item.itemTotal ?? item.subtotal ?? unitPrice * qty);
+                return `${index + 1}. ${item.productName || item.name}\n   Quantity: ${qty}\n   Unit Price: ₹${unitPrice}\n   Item Total: ₹${total}`;
+            }).join("\n\n");
+
+            const customerPhone = order.customerPhone || normalizeWhatsAppNumber(order.customerDetails?.mobile || "");
+            const transactionId = order.transactionId || "N/A";
+            return [
+                "🔔 NEW ORDER — AMOURA CRAFTS",
+                "",
+                "━━━━━━━━━━━━━━━━━━",
+                "",
+                "ORDER DETAILS",
+                `Order ID: ${order.orderId}`,
+                `Invoice No: ${order.invoiceNumber}`,
+                `Order Date: ${new Date(order.orderDate).toLocaleString("en-IN", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" })}`,
+                "",
+                "━━━━━━━━━━━━━━━━━━",
+                "",
+                "CUSTOMER DETAILS",
+                `Name: ${order.customerName || order.customerDetails?.fullName || "N/A"}`,
+                `Mobile: ${customerPhone || order.customerDetails?.mobile || "N/A"}`,
+                `Email: ${order.customerEmail || order.customerDetails?.email || "N/A"}`,
+                `Preferred Color: ${order.preferredColor || order.customerDetails?.customColor || "Default"}`,
+                "",
+                "Delivery Address:",
+                `${order.address || order.customerDetails?.address || "N/A"}`,
+                `${order.city || order.customerDetails?.city || "N/A"}`,
+                `${order.state || order.customerDetails?.state || "N/A"}`,
+                `${order.pincode || order.customerDetails?.pincode || "N/A"}`,
+                "",
+                "━━━━━━━━━━━━━━━━━━",
+                "",
+                "ORDER ITEMS",
+                items,
+                "",
+                "━━━━━━━━━━━━━━━━━━",
+                "",
+                "PAYMENT",
+                `Payment Method: ${order.paymentMethod}`,
+                `Amount: ₹${order.finalTotal}`,
+                `Payment Status: ${order.paymentStatus}`,
+                `Transaction ID: ${transactionId}`,
+                "",
+                "━━━━━━━━━━━━━━━━━━",
+                "",
+                "ORDER TOTAL",
+                `Subtotal: ₹${order.subtotal}`,
+                `Shipping: ₹${order.shipping || 0}`,
+                `Discount: ₹${order.discount || 0}`,
+                "",
+                `TOTAL: ₹${order.finalTotal}`,
+                "",
+                "━━━━━━━━━━━━━━━━━━",
+                "",
+                `Customer Notes:\n${order.notes || order.customerDetails?.note || "N/A"}`
+            ].join("\n");
+        }
+
+        function sendCustomerAndAdminWhatsApp(order) {
+            const adminText = buildAdminWhatsAppMessage(order);
+            const adminPhone = SITE_CONFIG.adminWhatsAppNumber || SITE_CONFIG.customerWhatsAppNumber;
+            openWhatsApp(adminText, adminPhone);
+        }
+
+        function generateInvoicePdf(order) {
+            const pdfLib = window.jspdf && window.jspdf.jsPDF;
+            if (!pdfLib) {
+                throw new Error("jsPDF library unavailable.");
+            }
+
+            const doc = new pdfLib({ unit: "pt", format: "a4" });
+            let y = 56;
+            const margin = 42;
+
+            doc.setFontSize(22);
+            doc.setTextColor(34, 28, 22);
+            doc.text("AMOURA CRAFTS", margin, y);
+            y += 26;
+
+            doc.setFontSize(12);
+            doc.setTextColor(55, 55, 55);
+            doc.text(`Invoice Number: ${order.invoiceNumber}`, margin, y);
+            y += 18;
+            doc.text(`Order ID: ${order.orderId}`, margin, y);
+            y += 18;
+            doc.text(`Order Date: ${new Date(order.orderDate).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" })}`, margin, y);
+            y += 30;
+
+            doc.setFontSize(14);
+            doc.text("CUSTOMER DETAILS", margin, y);
+            y += 18;
+            doc.setFontSize(10);
+            doc.text(`Full Name: ${order.customerName || order.customerDetails.fullName}`, margin, y);
+            y += 16;
+            doc.text(`Mobile Number: ${order.customerPhone || order.customerDetails.mobile}`, margin, y);
+            y += 16;
+            doc.text(`Email Address: ${order.customerEmail || order.customerDetails.email}`, margin, y);
+            y += 16;
+            doc.text(`Street Address: ${order.address || order.customerDetails.address}`, margin, y);
+            y += 16;
+            doc.text(`City: ${order.city || order.customerDetails.city}`, margin, y);
+            y += 16;
+            doc.text(`State: ${order.state || order.customerDetails.state}`, margin, y);
+            y += 16;
+            doc.text(`Pincode: ${order.pincode || order.customerDetails.pincode}`, margin, y);
+            y += 16;
+            doc.text(`Preferred Color: ${order.preferredColor || "Default"}`, margin, y);
+            y += 26;
+
+            doc.setFontSize(14);
+            doc.text("ORDER DETAILS", margin, y);
+            y += 16;
+            doc.setFontSize(10);
+            doc.text("Product", margin, y);
+            doc.text("Qty", 260, y);
+            doc.text("Unit Price", 325, y);
+            doc.text("Item Total", 440, y);
+            y += 14;
+
+            order.items.forEach((item) => {
+                doc.text(item.productName, margin, y);
+                doc.text(String(item.quantity), 260, y);
+                doc.text(formatINR(item.unitPrice), 325, y);
+                doc.text(formatINR(item.itemTotal), 440, y);
+                y += 18;
+            });
+
+            y += 12;
+            doc.text(`Subtotal: ${formatINR(order.subtotal)}`, margin, y);
+            y += 16;
+            doc.text(`Shipping: ${formatINR(order.shipping || 0)}`, margin, y);
+            y += 16;
+            doc.text(`Discount: ${formatINR(order.discount || 0)}`, margin, y);
+            y += 18;
+            doc.setFontSize(12);
+            doc.setTextColor(0, 0, 0);
+            doc.text(`FINAL TOTAL: ${formatINR(order.finalTotal)}`, margin, y);
+            y += 24;
+
+            doc.setFontSize(11);
+            doc.text(`Payment Method: ${order.paymentMethod}`, margin, y);
+            y += 16;
+            doc.text(`UPI ID: ${order.upiId}`, margin, y);
+            y += 16;
+            doc.text(`Payment Status: ${order.paymentStatus}`, margin, y);
+            y += 16;
+            doc.text(`Order Status: ${order.orderStatus}`, margin, y);
+            y += 28;
+
+            doc.setFontSize(11);
+            doc.text("Thank you for ordering from Amoura Crafts.", margin, y);
+
+            const blob = doc.output("blob");
+            const pdfUrl = URL.createObjectURL(blob);
+            return {
+                blob,
+                url: pdfUrl,
+                filename: `Amoura-Crafts-Invoice-${order.invoiceNumber}.pdf`
+            };
+        }
+
+        function saveOrderAndCreateInvoice(order) {
+            const orders = getStoredOrders();
+            const saved = orders.some(existing => existing.orderId === order.orderId);
+            if (!saved) {
+                orders.push(order);
+                saveStoredOrders(orders);
+            }
+            return order;
+        }
+
+        function triggerInvoiceDownload() {
+            if (!currentOrder) return;
+            try {
+                const pdfData = generateInvoicePdf(currentOrder);
+                const link = document.createElement("a");
+                link.href = pdfData.url;
+                link.download = pdfData.filename;
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                setTimeout(() => URL.revokeObjectURL(pdfData.url), 1000);
+            } catch (error) {
+                console.error("Invoice PDF generation failed:", error);
+                showToast("Invoice PDF generation failed. Please try again.");
+            }
+        }
+
+        function openInvoiceModal() {
+            if (!currentOrder) return;
+            renderInvoice(currentOrder);
+            const modal = document.getElementById("invoiceModal");
+            if (modal) {
+                modal.classList.add("active");
+                modal.setAttribute("aria-hidden", "false");
+                document.body.style.overflow = "hidden";
+            }
+        }
+
+        function closeInvoiceModal() {
+            const modal = document.getElementById("invoiceModal");
+            if (modal) {
+                modal.classList.remove("active");
+                modal.setAttribute("aria-hidden", "true");
+                if (!document.getElementById("paymentModal").classList.contains("active")) {
+                    document.body.style.overflow = "";
+                }
+            }
+        }
+
+        function downloadInvoicePdf() {
+            if (!currentOrder) return;
+            triggerInvoiceDownload();
+        }
+
+        function handlePaymentConfirmation() {
+            if (!currentOrder || isOrderSubmitting) return;
+            isOrderSubmitting = true;
+            const payBtn = document.querySelector("#paymentModal .btn-primary");
+            if (payBtn) payBtn.disabled = true;
+
+            try {
+                currentOrder.paymentStatus = "Payment Confirmation Pending";
+                currentOrder.orderStatus = "Payment Confirmation Pending";
+                currentOrder.transactionId = currentOrder.transactionId || "N/A";
+                saveOrderAndCreateInvoice(currentOrder);
+                renderInvoice(currentOrder);
+                closePaymentModal();
+                openInvoiceModal();
+                sendCustomerAndAdminWhatsApp(currentOrder);
+                showToast("Payment status is pending confirmation. Invoice ready.");
+            } catch (error) {
+                console.error("Order confirmation failed:", error);
+                showToast("Order could not be confirmed. Please try again.");
+            } finally {
+                isOrderSubmitting = false;
+                if (payBtn) payBtn.disabled = false;
+            }
+        }
+
+        function openPaymentModal(amount = 0) {
+            const modal = document.getElementById("paymentModal");
+            const upiIdEl = document.getElementById("paymentUpiId");
+            const amountEl = document.getElementById("paymentAmount");
+            const qrImg = document.getElementById("paymentQrImg");
+
+            if (qrImg) qrImg.src = PAYMENT_CONFIG.qrImage;
+            if (upiIdEl) upiIdEl.textContent = PAYMENT_CONFIG.upiId;
+            if (amountEl) amountEl.textContent = formatINR(amount);
+
+            if (modal) {
+                modal.classList.add("active");
+                modal.setAttribute("aria-hidden", "false");
+                document.body.style.overflow = "hidden";
+            }
+        }
+
+        function closePaymentModal() {
+            const modal = document.getElementById("paymentModal");
+            const checkoutModal = document.getElementById("checkoutModal");
+            const invoiceModal = document.getElementById("invoiceModal");
+            if (modal) {
+                modal.classList.remove("active");
+                modal.setAttribute("aria-hidden", "true");
+                if (checkoutModal && checkoutModal.classList.contains("active")) return;
+                if (invoiceModal && invoiceModal.classList.contains("active")) return;
+                document.body.style.overflow = "";
+            }
+        }
+
+        function copyUpiId() {
+            const upiId = PAYMENT_CONFIG.upiId;
+            if (!navigator.clipboard) {
+                showToast("Copy failed in this browser.");
+                return;
+            }
+            navigator.clipboard.writeText(upiId)
+                .then(() => showToast("UPI ID copied."))
+                .catch(() => showToast("Unable to copy UPI ID."));
+        }
+
+        function openCartCheckout() {
+            if (cart.length === 0) {
+                showToast("Add something to your cart first");
+                return;
+            }
+            openCheckoutModal({ mode: "cart" });
+        }
+
+        function openSingleOrder(productId, qty = 1) {
+            const product = PRODUCTS.find(p => p.id === productId);
+            if (!product) return;
+            openCheckoutModal({ mode: "single", product, qty });
+        }
+
         function buyNow(product, qty) {
-            const msg =
-                `Hi Amoura Crafts! I absolutely love your candles and I would like to order the following:\n\n• ${product.name} x${qty} — ₹${product.price * qty}\n\nPlease confirm availability and payment options (COD / online).`;
-            openWhatsApp(msg);
+            if (!product) return;
+            openSingleOrder(product.id, qty);
+        }
+
+        function buyNowById(id) {
+            const product = PRODUCTS.find(p => p.id === id);
+            const qty = parseInt(document.getElementById(`qty-${id}`).textContent, 10) || 1;
+            buyNow(product, qty);
         }
 
         function buyResinNow(id) {
             const product = RESIN_PRODUCTS.find(p => p.id === id);
             if (!product) return;
-            const msg =
-                `Hi Amoura Crafts! I'm interested in ordering the following resin art piece:
-
-• ${product.name} — ₹${product.price}
-
-Could you please share customization options and confirm availability? 🎨`;
-            openWhatsApp(msg);
+            openSingleOrderResin(product);
         }
 
-        /* ================================================================
-           CART STATE (in-memory — resets on page reload)
-           ================================================================ */
-        let cart = [];
-
-        function addToCart(product, qty) {
-            const existing = cart.find(i => i.id === product.id);
-            if (existing) existing.qty += qty;
-            else cart.push({ ...product, qty });
-            renderCart();
-            showToast(`${product.name} added to cart`);
+        function openSingleOrderResin(product) {
+            openCheckoutModal({ mode: "single", product, qty: 1 });
         }
 
-        function removeFromCart(id) {
-            cart = cart.filter(i => i.id !== id);
-            renderCart();
+        function openCheckoutModal({ mode, product = null, qty = 1 }) {
+            const form = document.getElementById("checkoutForm");
+            const modal = document.getElementById("checkoutModal");
+            const title = document.getElementById("checkoutTitle");
+            const itemsWrap = document.getElementById("checkoutItemsWrap");
+            const totalEl = document.getElementById("checkoutTotalValue");
+
+            let items = [];
+            if (mode === "single") {
+                items = [{
+                    id: product.id,
+                    name: product.name,
+                    price: Number(product.price || 0),
+                    qty: Number(qty || 1),
+                    img: product.img
+                }];
+                title.textContent = "Complete Your Order";
+            } else {
+                items = cart.map(item => ({
+                    id: item.id,
+                    name: item.name,
+                    price: Number(item.price || 0),
+                    qty: Number(item.qty || 1),
+                    img: item.img
+                }));
+                title.textContent = "Checkout & Pay";
+            }
+
+            currentCheckoutDraft = items;
+            itemsWrap.innerHTML = items.map(item => `
+                <div class="checkout-item">
+                    <span>${item.name} x${item.qty}</span>
+                    <span>${formatINR(item.price * item.qty)}</span>
+                </div>
+            `).join("");
+
+            const subtotal = getOrderSubtotal(items);
+            const shippingCharge = subtotal > 1000 ? 0 : 100;
+            totalEl.innerHTML = `${formatINR(subtotal + shippingCharge)} <span style="font-size:0.8em; color:var(--gold-light); display:block; margin-top:4px;">${shippingCharge === 0 ? "Includes Free Delivery ✨" : "(Includes ₹100 Delivery)"}</span>`;
+
+            form.reset();
+            form.dataset.mode = mode;
+            if (modal) {
+                modal.classList.add("active");
+                modal.setAttribute("aria-hidden", "false");
+                document.body.style.overflow = "hidden";
+            }
         }
 
-        function cartTotal() {
-            return cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+        function closeCheckoutModal() {
+            const modal = document.getElementById("checkoutModal");
+            const paymentModal = document.getElementById("paymentModal");
+            const invoiceModal = document.getElementById("invoiceModal");
+            if (modal) {
+                modal.classList.remove("active");
+                modal.setAttribute("aria-hidden", "true");
+                if (paymentModal && paymentModal.classList.contains("active")) return;
+                if (invoiceModal && invoiceModal.classList.contains("active")) return;
+                document.body.style.overflow = "";
+            }
+        }
+
+        function submitCheckoutForm(event) {
+            event.preventDefault();
+
+            if (isOrderSubmitting) return;
+
+            const form = event.currentTarget;
+            const mode = form.dataset.mode || "single";
+            const customer = {
+                fullName: form.fullName.value.trim(),
+                mobile: form.mobile.value.trim(),
+                email: form.email.value.trim(),
+                address: form.address.value.trim(),
+                city: form.city.value.trim(),
+                state: form.state.value.trim(),
+                pincode: form.pincode.value.trim(),
+                note: form.note.value.trim(),
+                customColor: (form.customColor ? form.customColor.value.trim() : "")
+            };
+
+            if (!customer.fullName || !customer.mobile || !customer.email || !customer.address || !customer.city || !customer.state || !customer.pincode) {
+                showToast("Please fill all required order details.");
+                return;
+            }
+
+            const normalizedPhone = normalizeWhatsAppNumber(customer.mobile);
+            if (!normalizedPhone) {
+                showToast("Please enter a valid mobile number.");
+                return;
+            }
+
+            const items = currentCheckoutDraft || [];
+            if (!items.length) {
+                showToast("No items found in this order.");
+                return;
+            }
+
+            isOrderSubmitting = true;
+            const submitBtn = form.querySelector('button[type="submit"]');
+            if (submitBtn) submitBtn.disabled = true;
+
+            try {
+                const order = buildCustomerOrderFromDraft(customer, items, mode);
+                currentOrder = order;
+                closeCheckoutModal();
+                openPaymentModal(order.finalTotal);
+                showToast("Order details saved. Please complete payment.");
+            } catch (error) {
+                console.error("Checkout submit failed:", error);
+                showToast("Order could not be prepared. Please try again.");
+            } finally {
+                isOrderSubmitting = false;
+                if (submitBtn) submitBtn.disabled = false;
+            }
         }
 
         function renderCart() {
@@ -3146,28 +4446,111 @@ Could you please share customization options and confirm availability? 🎨`;
       <img src="${i.img}" alt="${i.name}">
       <div class="ci-info">
         <h5>${i.name}</h5>
-        <span>Qty ${i.qty} · ₹${i.price} each</span>
+        <div class="qty-stepper" style="margin-top:8px; width: 120px;">
+          <button onclick="updateCartQty('${i.id}', -1)" aria-label="Decrease quantity">−</button>
+          <span class="qty-val">${i.qty}</span>
+          <button onclick="updateCartQty('${i.id}', 1)" aria-label="Increase quantity">+</button>
+        </div>
+        <span style="display:block; margin-top:8px;">₹${i.price} each · Total ₹${i.price * i.qty}</span>
       </div>
-      <button class="ci-remove" onclick="removeFromCart('${i.id}')" aria-label="Remove">&times;</button>
+      <button class="ci-remove" onclick="removeFromCart('${i.id}')" aria-label="Remove item">&times;</button>
     </div>
   `).join("");
         }
 
-        function checkoutCart() {
-            if (cart.length === 0) {
-                showToast("Add something to your cart first");
+        function addToCart(product, qty) {
+            const existing = cart.find(i => i.id === product.id);
+            if (existing) existing.qty += qty;
+            else cart.push({ ...product, qty });
+            renderCart();
+            showToast(`${product.name} added to cart`);
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(i => i.id !== id);
+            renderCart();
+        }
+
+        function updateCartQty(id, delta) {
+            const item = cart.find(i => i.id === id);
+            if (!item) return;
+            item.qty += delta;
+            if (item.qty <= 0) {
+                removeFromCart(id);
                 return;
             }
-            const lines = cart.map(i => `• ${i.name} x${i.qty} — ₹${i.price * i.qty}`).join("\n");
-            const msg =
-                `Hi Amoura Crafts! I absolutely love your candles and I would like to order the following:
+            renderCart();
+        }
 
-${lines}
+        function cartTotal() {
+            return cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+        }
 
-Total: ₹${cartTotal()}
+        function submitOrderAndOpenPayment(order) {
+            currentOrder = order;
+            closeCheckoutModal();
+            openPaymentModal(order.finalTotal);
+        }
 
-Please confirm availability and payment options (COD / online).`;
-            openWhatsApp(msg);
+        function renderInvoice(order) {
+            const container = document.getElementById("invoiceBody");
+            if (!container || !order) return;
+
+            const itemRows = order.items.map((item) => `
+                <tr>
+                  <td>${item.productName || item.name}</td>
+                  <td>${item.quantity || item.qty}</td>
+                  <td>${formatINR(item.unitPrice || item.price || 0)}</td>
+                  <td>${formatINR(item.itemTotal || item.subtotal || 0)}</td>
+                </tr>
+            `).join("");
+
+            const customer = order.customerDetails || {};
+            container.innerHTML = `
+                <div class="invoice-header">
+                    <div>
+                        <span class="eyebrow" style="color:var(--gold-light);">AMOURA CRAFTS</span>
+                        <h3>Invoice</h3>
+                    </div>
+                    <div style="text-align:right;">
+                        <p style="color:var(--cream-dim);">Invoice No: <strong style="color:var(--cream);">${order.invoiceNumber}</strong></p>
+                        <p style="color:var(--cream-dim);">Date: ${new Date(order.orderDate).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" })}</p>
+                    </div>
+                </div>
+                <div class="invoice-grid">
+                    <div class="invoice-section">
+                        <h5>Customer</h5>
+                        <p><strong>${order.customerName || customer.fullName}</strong></p>
+                        <p>${order.customerPhone || customer.mobile}</p>
+                        <p>${order.customerEmail || customer.email}</p>
+                        <p>${order.address || customer.address}</p>
+                        <p>${order.city || customer.city}, ${order.state || customer.state} - ${order.pincode || customer.pincode}</p>
+                    </div>
+                    <div class="invoice-section">
+                        <h5>Payment</h5>
+                        <p>Method: ${order.paymentMethod}</p>
+                        <p>UPI ID: ${order.upiId}</p>
+                        <p>Status: ${order.paymentStatus}</p>
+                        <p>Order Status: ${order.orderStatus}</p>
+                    </div>
+                </div>
+                <table class="invoice-items">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Qty</th>
+                            <th>Unit Price</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${itemRows}
+                    </tbody>
+                </table>
+                <div class="invoice-total">
+                    <span>Final Total: ${formatINR(order.finalTotal)}</span>
+                </div>
+            `;
         }
 
         /* ================================================================
@@ -3185,7 +4568,7 @@ Please confirm availability and payment options (COD / online).`;
         /* ================================================================
            RENDER PRODUCT GRID
            ================================================================ */
-        
+
         const RESIN_PRODUCTS = [
             {
                 id: "resin-1",
@@ -3236,7 +4619,7 @@ Please confirm availability and payment options (COD / online).`;
 
         function renderResin() {
             const grid = document.getElementById("resinGrid");
-            if(!grid) return;
+            if (!grid) return;
             grid.innerHTML = RESIN_PRODUCTS.map(p => `
     <div class="card reveal">
       <div class="card-media">
@@ -3257,7 +4640,7 @@ Please confirm availability and payment options (COD / online).`;
     </div>
             `).join("");
         }
-        
+
         // Ensure renderResin is called when page loads.
         // I will hook it into the window DOMContentLoaded or just call it directly since scripts are at the end.
         renderResin();
@@ -3493,6 +4876,173 @@ Please share the final price, delivery timeline and payment options.`;
             initSparks();
             initUI();
             observeReveals();
+        });
+    </script>
+
+    <div id="checkoutModal" class="payment-modal-overlay" aria-hidden="true"
+        onclick="if(event.target===this) closeCheckoutModal()">
+        <div class="checkout-modal-content" role="dialog" aria-labelledby="checkoutTitle">
+            <button class="payment-modal-close" onclick="closeCheckoutModal()" aria-label="Close checkout dialog">&times;</button>
+            <div class="payment-modal-header">
+                <span class="eyebrow" style="color:var(--gold, #d4af37);">ORDER DETAILS</span>
+                <h3 id="checkoutTitle">Complete Your Order</h3>
+            </div>
+
+            <form id="checkoutForm" onsubmit="submitCheckoutForm(event)">
+                <div class="checkout-grid">
+                    <div class="checkout-field">
+                        <label for="fullName">Full Name</label>
+                        <input id="fullName" name="fullName" type="text" placeholder="e.g. Shreya Sharma" required>
+                    </div>
+                    <div class="checkout-field">
+                        <label for="mobile">Mobile Number</label>
+                        <input id="mobile" name="mobile" type="tel" placeholder="e.g. +91 98765 43210" required>
+                    </div>
+                    <div class="checkout-field full">
+                        <label for="email">Email Address</label>
+                        <input id="email" name="email" type="email" placeholder="you@example.com" required>
+                    </div>
+                    <div class="checkout-field full">
+                        <label for="customColor">Preferred Color (Optional)</label>
+                        <input id="customColor" name="customColor" type="text" list="colorOptions" placeholder="e.g. Sky Blue, Custom Pink, Default">
+                        <datalist id="colorOptions">
+                            <option value="Sky Blue">
+                            <option value="Dark Red">
+                            <option value="Lavender">
+                            <option value="Custom Pink">
+                            <option value="White">
+                            <option value="Gold">
+                        </datalist>
+                    </div>
+                    <div class="checkout-field full">
+                        <label for="address">Street Address</label>
+                        <textarea id="address" name="address" placeholder="House / Flat / Street" required></textarea>
+                    </div>
+                    <div class="checkout-field">
+                        <label for="city">City</label>
+                        <input id="city" name="city" type="text" placeholder="Delhi" required>
+                    </div>
+                    <div class="checkout-field">
+                        <label for="state">State</label>
+                        <input id="state" name="state" type="text" placeholder="Delhi" required>
+                    </div>
+                    <div class="checkout-field">
+                        <label for="pincode">Pincode</label>
+                        <input id="pincode" name="pincode" type="text" placeholder="110001" required>
+                    </div>
+                    <div class="checkout-field">
+                        <label for="note">Notes (optional)</label>
+                        <input id="note" name="note" type="text" placeholder="Gift message / delivery time">
+                    </div>
+                </div>
+
+                <div class="checkout-summary">
+                    <h4>Order summary</h4>
+                    <div id="checkoutItemsWrap" class="checkout-items"></div>
+                    <div class="checkout-total">
+                        <span>Total</span>
+                        <span id="checkoutTotalValue">₹0</span>
+                    </div>
+                </div>
+
+                <div class="checkout-actions">
+                    <button type="button" class="btn btn-primary" onclick="closeCheckoutModal()">Cancel</button>
+                    <button type="submit" class="btn btn-wa">Pay Now</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="paymentModal" class="payment-modal-overlay" aria-hidden="true"
+        onclick="if(event.target===this)closePaymentModal()">
+        <div class="payment-modal-content" role="dialog" aria-labelledby="paymentModalTitle">
+            <button class="payment-modal-close" onclick="closePaymentModal()" aria-label="Close Payment Modal">&times;</button>
+            <div class="payment-modal-header">
+                <span class="eyebrow" style="color:var(--gold, #d4af37);">ONLINE PAYMENT</span>
+                <h3 id="paymentModalTitle">Scan &amp; Pay via QR</h3>
+                <p>Scan the code below using any UPI app (Google Pay, PhonePe, Paytm) to complete your payment.</p>
+            </div>
+            <div class="payment-qr-frame">
+                <img src="images/qr.im.jpeg" alt="Amoura Crafts Payment QR Code" class="payment-qr-img" id="paymentQrImg">
+            </div>
+
+            <div class="payment-detail-row">
+                <span>UPI ID</span>
+                <strong id="paymentUpiId">saxena.dun09@okhdfcbank</strong>
+                <button type="button" class="copy-upi-btn" onclick="copyUpiId()">Copy</button>
+            </div>
+
+            <div class="payment-detail-row">
+                <span>Amount to Pay</span>
+                <strong id="paymentAmount">₹0</strong>
+            </div>
+
+            <div class="payment-actions">
+                <button class="btn btn-primary" onclick="handlePaymentConfirmation()">I've Completed Payment</button>
+                <button class="btn btn-ghost" onclick="closePaymentModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="invoiceModal" class="payment-modal-overlay" aria-hidden="true"
+        onclick="if(event.target===this)closeInvoiceModal()">
+        <div class="invoice-modal-content" role="dialog" aria-labelledby="invoiceModalTitle">
+            <button class="payment-modal-close" onclick="closeInvoiceModal()" aria-label="Close invoice modal">&times;</button>
+            <div class="payment-modal-header">
+                <span class="eyebrow" style="color:var(--gold, #d4af37);">ORDER CONFIRMED</span>
+                <h3 id="invoiceModalTitle">Invoice</h3>
+            </div>
+            <div id="invoiceBody" class="invoice-body"></div>
+            <button type="button" class="btn btn-primary invoice-download-btn" onclick="downloadInvoicePdf()">Download Invoice PDF</button>
+        </div>
+    </div>
+
+    <script>
+        function closeCheckoutModal() {
+            const checkoutModal = document.getElementById("checkoutModal");
+            const paymentModal = document.getElementById("paymentModal");
+            const invoiceModal = document.getElementById("invoiceModal");
+            if (checkoutModal) {
+                checkoutModal.classList.remove("active");
+                checkoutModal.setAttribute("aria-hidden", "true");
+            }
+            if (paymentModal && paymentModal.classList.contains("active")) return;
+            if (invoiceModal && invoiceModal.classList.contains("active")) return;
+            document.body.style.overflow = "";
+        }
+
+        function closeInvoiceModal() {
+            const invoiceModal = document.getElementById("invoiceModal");
+            const paymentModal = document.getElementById("paymentModal");
+            const checkoutModal = document.getElementById("checkoutModal");
+            if (invoiceModal) {
+                invoiceModal.classList.remove("active");
+                invoiceModal.setAttribute("aria-hidden", "true");
+            }
+            if (paymentModal && paymentModal.classList.contains("active")) return;
+            if (checkoutModal && checkoutModal.classList.contains("active")) return;
+            document.body.style.overflow = "";
+        }
+
+        function closePaymentModal() {
+            const paymentModal = document.getElementById("paymentModal");
+            const checkoutModal = document.getElementById("checkoutModal");
+            const invoiceModal = document.getElementById("invoiceModal");
+            if (paymentModal) {
+                paymentModal.classList.remove("active");
+                paymentModal.setAttribute("aria-hidden", "true");
+            }
+            if (checkoutModal && checkoutModal.classList.contains("active")) return;
+            if (invoiceModal && invoiceModal.classList.contains("active")) return;
+            document.body.style.overflow = "";
+        }
+
+        document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape") {
+                closeCheckoutModal();
+                closeInvoiceModal();
+                closePaymentModal();
+            }
         });
     </script>
 </body>

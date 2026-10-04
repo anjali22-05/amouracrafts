@@ -5044,7 +5044,33 @@ Please share the final price, delivery timeline and payment options.`;
                 closePaymentModal();
             }
         });
-    </script>
+    
+        /* ================================================================
+           ONLINE PAYMENT MODAL
+           ================================================================ */
+        function openPaymentModal() {
+            const modal = document.getElementById("paymentModal");
+            if (modal) {
+                modal.classList.add("active");
+                modal.setAttribute("aria-hidden", "false");
+                document.body.style.overflow = "hidden";
+            }
+        }
+
+        function closePaymentModal() {
+            const modal = document.getElementById("paymentModal");
+            if (modal) {
+                modal.classList.remove("active");
+                modal.setAttribute("aria-hidden", "true");
+                document.body.style.overflow = "";
+            }
+        }
+
+        document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape") closePaymentModal();
+        });
+
+</script>
 </body>
 
 </html>

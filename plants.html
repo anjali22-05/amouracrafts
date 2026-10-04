@@ -451,7 +451,7 @@
             background:
                 radial-gradient(circle at 72% 48%, rgba(232, 135, 30, .16), transparent 26%),
                 linear-gradient(180deg, rgba(24, 10, 8, .32), rgba(24, 10, 8, .95) 82%, var(--ink)),
-                url('https://images.unsplash.com/photo-1608865413608-6cfd1fc622b3?auto=format&fit=crop&w=1600&q=80') center 35%/cover no-repeat;
+                url('images/plant_2.jpg') center 35%/cover no-repeat;
         }
 
         .hero-inner {
@@ -2420,6 +2420,132 @@
             }
         }
     </style>
+<style>
+
+/* ================================================================
+   PAYMENT SCANNER / QR MODAL STYLES
+   ================================================================ */
+.payment-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(15, 12, 10, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    padding: 20px;
+}
+
+.payment-modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.payment-modal-content {
+    background: #1a1412;
+    border: 1px solid rgba(235, 215, 190, 0.2);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 420px;
+    padding: 28px 24px;
+    position: relative;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 30px rgba(212, 175, 55, 0.15);
+    transform: scale(0.92) translateY(20px);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    text-align: center;
+    color: #f5efe6;
+}
+
+.payment-modal-overlay.active .payment-modal-content {
+    transform: scale(1) translateY(0);
+}
+
+.payment-modal-close {
+    position: absolute;
+    top: 16px;
+    right: 18px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #f5efe6;
+    font-size: 24px;
+    line-height: 1;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.payment-modal-close:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: rotate(90deg);
+}
+
+.payment-modal-header h3 {
+    font-size: 1.4rem;
+    margin: 6px 0 8px;
+    color: #f5efe6;
+}
+
+.payment-modal-header p {
+    font-size: 0.88rem;
+    color: rgba(245, 239, 230, 0.75);
+    line-height: 1.4;
+    margin-bottom: 20px;
+}
+
+.payment-qr-frame {
+    background: #ffffff;
+    padding: 16px;
+    border-radius: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.1), 0 8px 24px rgba(0,0,0,0.3);
+    margin: 0 auto 20px;
+    max-width: 280px;
+    width: 100%;
+}
+
+.payment-qr-img {
+    width: 100%;
+    height: auto;
+    max-height: 260px;
+    object-fit: contain;
+    border-radius: 8px;
+    display: block;
+}
+
+.pay-badge {
+    display: inline-block;
+    font-size: 0.8rem;
+    padding: 6px 14px;
+    border-radius: 20px;
+    background: rgba(212, 175, 55, 0.15);
+    color: #e6c662;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.pay-stat-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.pay-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(212, 175, 55, 0.2);
+}
+
+</style>
 </head>
 
 <body>
@@ -2501,7 +2627,7 @@
                     <div class="hero-stats">
                         <div class="stat"><b>4.9★</b><span>2,300+ happy homes</span></div>
                         <div class="stat"><b>100%</b><span>Natural soy &amp; wax blends</span></div>
-                        <div class="stat"><b>COD</b><span>&amp; online payment</span></div>
+                        <div class="stat pay-stat-card" id="onlinePaymentCard" style="cursor:pointer;" onclick="openPaymentModal()" title="Click to view Online Payment QR Scanner"><b>Online Payment</b><span>Scan QR code</span></div>
                     </div>
                 </div>
 
@@ -2671,8 +2797,8 @@
                             <circle cx="18" cy="18" r="3" />
                             <path d="M18 16.5v3M16.5 18h3" />
                         </svg></div>
-                    <h4>COD &amp; online pay</h4>
-                    <p>Pay cash on delivery, or settle instantly by UPI once we confirm on WhatsApp.</p>
+                    <h4 style="cursor:pointer;" onclick="openPaymentModal()">Online Payment</h4>
+                    <p>Settle instantly via UPI or QR code scan after confirming your order on WhatsApp.</p>
                 </div>
                 <div class="feature reveal">
                     <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
@@ -2711,16 +2837,16 @@
             </div>
             <div class="gallery reveal">
                 <figure><img
-                        src="https://images.unsplash.com/photo-1606285461069-80ba562575dd?auto=format&fit=crop&w=500&q=80"
+                        src="images/plant_1.jpg"
                         alt="Red candles arranged on a wooden table"></figure>
                 <figure><img
-                        src="https://images.unsplash.com/photo-1635192592106-77a5aacbe1a3?auto=format&fit=crop&w=500&q=80"
+                        src="images/plant_2.jpg"
                         alt="A circular arrangement of lit candles on the floor"></figure>
                 <figure><img
-                        src="https://images.unsplash.com/photo-1577083753695-e010191bacb5?auto=format&fit=crop&w=500&q=80"
+                        src="images/plant_3.jpg"
                         alt="Lit clay oil lamps on a decorative tray with flower petals"></figure>
                 <figure><img
-                        src="https://images.unsplash.com/photo-1679396147007-bb5c1af5ba22?auto=format&fit=crop&w=500&q=80"
+                        src="images/plant_4.jpg"
                         alt="A row of lit candles sitting on a table"></figure>
             </div>
         </div>
@@ -2882,7 +3008,7 @@
 
 • ${product.name} x${qty} — ₹${product.price * qty}
 
-Please confirm availability and payment options (COD / online).`;
+Please confirm availability and Online Payment details.`;
             openWhatsApp(msg);
         }
 
@@ -2946,7 +3072,7 @@ ${lines}
 
 Total: ₹${cartTotal()}
 
-Please confirm availability and payment options (COD / online).`;
+Please confirm availability and Online Payment details.`;
             openWhatsApp(msg);
         }
 
@@ -3216,6 +3342,54 @@ Please share the final price, delivery timeline and payment options.`;
             observeReveals();
         });
     </script>
+
+    <!-- Payment Scanner / QR Modal -->
+    <div id="paymentModal" class="payment-modal-overlay" aria-hidden="true" onclick="if(event.target===this)closePaymentModal()">
+        <div class="payment-modal-content" role="dialog" aria-labelledby="paymentModalTitle">
+            <button class="payment-modal-close" onclick="closePaymentModal()" aria-label="Close Payment Modal">&times;</button>
+            <div class="payment-modal-header">
+                <span class="eyebrow" style="color:var(--gold, #d4af37);">ONLINE PAYMENT</span>
+                <h3 id="paymentModalTitle">Scan &amp; Pay via QR</h3>
+                <p>Scan the code below using any UPI app (Google Pay, PhonePe, Paytm) to complete your payment.</p>
+            </div>
+            <div class="payment-qr-frame">
+                <img src="images/qr.im.jpeg" alt="Amoura Crafts Payment QR Code" class="payment-qr-img" id="paymentQrImg">
+            </div>
+            <div class="payment-modal-footer">
+                <span class="pay-badge">✨ Instant Payment Confirmation</span>
+                <button class="btn btn-primary" onclick="closePaymentModal()" style="margin-top:14px; width:100%;">Done / Close</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+
+        /* ================================================================
+           ONLINE PAYMENT MODAL
+           ================================================================ */
+        function openPaymentModal() {
+            const modal = document.getElementById("paymentModal");
+            if (modal) {
+                modal.classList.add("active");
+                modal.setAttribute("aria-hidden", "false");
+                document.body.style.overflow = "hidden";
+            }
+        }
+
+        function closePaymentModal() {
+            const modal = document.getElementById("paymentModal");
+            if (modal) {
+                modal.classList.remove("active");
+                modal.setAttribute("aria-hidden", "true");
+                document.body.style.overflow = "";
+            }
+        }
+
+        document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape") closePaymentModal();
+        });
+
+</script>
 </body>
 
 </html>

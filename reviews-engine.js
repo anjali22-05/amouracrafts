@@ -474,3 +474,4 @@
     ReviewManager.init();
 
 })(window);
+

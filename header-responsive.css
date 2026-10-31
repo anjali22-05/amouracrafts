@@ -291,8 +291,13 @@ html, body {
 
 /* Page top padding to account for fixed header */
 .header-spacer,
-.delivery-banner,
-.diwali-offer-wrap {
+.diwali-offer-wrap,
+.site-nav + .delivery-banner,
+body > .delivery-banner:first-of-type {
     margin-top: var(--header-height) !important;
+}
+
+.diwali-offer-wrap + .delivery-banner {
+    margin-top: 0 !important;
 }
 

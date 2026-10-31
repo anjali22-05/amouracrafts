@@ -4,7 +4,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Amoura Crafts — Handcrafted Diwali Candles</title>
+    <title>Amoura Crafts — Handcrafted Soy Candles, Resin Art & Botanical Decor</title>
+    <meta name="description"
+        content="Discover handcrafted organic soy candles, custom resin art plaques & clocks, and botanical decor by Amoura Crafts. Free delivery above ₹1000, secure UPI and WhatsApp ordering.">
+    <link rel="canonical" href="https://amouracrafts.com/">
+    
+    <!-- Open Graph & Social Meta -->
+    <meta property="og:site_name" content="Amoura Crafts">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Amoura Crafts — Handcrafted Soy Candles & Resin Art">
+    <meta property="og:description" content="Artisan organic soy candles, festive panchdeep diyas, custom resin trays and botanical decor. Delivered across India.">
+    <meta property="og:image" content="images/thumbs/img_19.webp">
+    <meta property="og:url" content="https://amouracrafts.com/">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <!-- Preload Hero LCP Image -->
+    <link rel="preload" as="image" href="images/thumbs/img_19.webp" fetchpriority="high">
+
+    <!-- Structured Data (Schema.org) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://amouracrafts.com/#organization",
+          "name": "Amoura Crafts",
+          "url": "https://amouracrafts.com/",
+          "logo": "https://amouracrafts.com/images/logo.png",
+          "description": "Handcrafted organic soy candles, luxury resin art, and botanical decor."
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://amouracrafts.com/#website",
+          "url": "https://amouracrafts.com/",
+          "name": "Amoura Crafts",
+          "publisher": { "@id": "https://amouracrafts.com/#organization" }
+        },
+        {
+          "@type": "Store",
+          "@id": "https://amouracrafts.com/#store",
+          "name": "Amoura Crafts Online Store",
+          "url": "https://amouracrafts.com/",
+          "image": "https://amouracrafts.com/images/thumbs/img_19.webp",
+          "priceRange": "₹199 - ₹2499",
+          "paymentAccepted": "Cash on Delivery, UPI, Online Payment",
+          "currenciesAccepted": "INR"
+        }
+      ]
+    }
+    </script>
     <meta name="description"
         content="Handcrafted Diwali candles, diyas & festive gift boxes. Single pieces or bulk orders, cash on delivery, order directly on WhatsApp.">
 
@@ -3148,6 +3197,253 @@
         img { max-width: 100%; height: auto; }
         .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; width: 100%; display: block; }
     </style>
+
+    <!-- Compact & Professional Design Overrides -->
+    <style>
+        :root {
+            --section-pad: 56px 0;
+        }
+
+        .section {
+            padding: var(--section-pad) !important;
+        }
+
+        .section-head {
+            max-width: 620px;
+            margin-bottom: 28px !important;
+        }
+
+        .section-head h2 {
+            font-size: clamp(1.68rem, 2.7vw, 2.25rem) !important;
+            line-height: 1.18;
+        }
+
+        .section-head p {
+            margin-top: 8px !important;
+            font-size: 0.9rem !important;
+            color: var(--cream-dim);
+        }
+
+        .delivery-banner {
+            padding: 7px 12px !important;
+            font-size: 0.84rem !important;
+            margin-top: 60px !important;
+            letter-spacing: 0.04em;
+        }
+
+        .site-nav {
+            height: 60px !important;
+        }
+
+        .hero {
+            min-height: 82vh !important;
+            padding-top: 40px !important;
+            padding-bottom: 30px !important;
+        }
+
+        .hero-copy h1 {
+            font-size: clamp(2.2rem, 4.4vw, 3.6rem) !important;
+            line-height: 1.1;
+        }
+
+        .product-grid {
+            gap: 18px !important;
+        }
+
+        .card {
+            border-radius: 18px !important;
+            transition: transform .2s ease, border-color .2s ease, box-shadow .25s ease !important;
+        }
+
+        .card-media {
+            aspect-ratio: 1 / 1 !important;
+            background: #180a08;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-media::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, rgba(255,255,255,0.02) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.02) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.8s infinite;
+            z-index: 1;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .card-media img {
+            position: relative;
+            z-index: 2;
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+        }
+
+        .card-body {
+            padding: 16px !important;
+        }
+
+        .card-body h3 {
+            font-size: 1.1rem !important;
+            margin-bottom: 4px !important;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-body .desc {
+            font-size: 0.82rem !important;
+            line-height: 1.45;
+            color: var(--cream-dim);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            height: 2.9em;
+            margin-bottom: 8px;
+        }
+
+        .price-row {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .price-row .now {
+            font-size: 1.18rem !important;
+            font-weight: 700;
+        }
+
+        .price-row .was {
+            font-size: 0.84rem !important;
+        }
+
+        .btn {
+            border-radius: 10px !important;
+            padding: 9px 18px !important;
+            font-size: 0.88rem !important;
+        }
+
+        .card-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .card-actions .btn {
+            padding: 7px 10px !important;
+            font-size: 0.82rem !important;
+        }
+
+        /* Reviews Preview Section on Homepage */
+        .home-reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+            gap: 18px;
+            margin-top: 24px;
+        }
+
+        .home-review-card {
+            background: rgba(33, 8, 16, 0.72);
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            transition: transform .2s ease, border-color .2s ease;
+        }
+
+        .home-review-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--gold);
+        }
+
+        .home-rev-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .home-rev-name {
+            font-weight: 600;
+            font-size: 0.88rem;
+            color: var(--cream);
+        }
+
+        .home-rev-stars {
+            color: var(--gold);
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        .home-rev-product {
+            font-size: 0.74rem;
+            color: var(--gold-light);
+            margin-bottom: 8px;
+            display: inline-block;
+        }
+
+        .home-rev-comment {
+            font-size: 0.84rem;
+            color: var(--cream-dim);
+            line-height: 1.5;
+            flex: 1;
+        }
+
+        footer {
+            padding: 40px 0 20px !important;
+        }
+
+        @media (max-width: 768px) {
+            .section {
+                padding: 38px 0 !important;
+            }
+            .hero {
+                min-height: auto !important;
+                padding-top: 24px !important;
+            }
+            .product-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 12px !important;
+            }
+            .card-body {
+                padding: 12px !important;
+            }
+            .card-body h3 {
+                font-size: 0.92rem !important;
+            }
+            .card-body .desc {
+                display: none;
+            }
+            .card-actions {
+                grid-template-columns: 1fr;
+                gap: 5px;
+            }
+            .home-reviews-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .product-grid {
+                grid-template-columns: 1fr 1fr !important;
+                gap: 8px !important;
+            }
+            .tag {
+                font-size: 0.58rem !important;
+                padding: 3px 6px !important;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -3167,6 +3463,7 @@
                 <li><a href="#bulk">Bulk Orders</a></li>
                 <li><a href="plants.html">Tree & Plants</a></li>
                 <li><a href="about.html">About Us</a></li>
+                <li><a href="reviews.html">Reviews</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
             <div class="nav-actions">
@@ -3495,6 +3792,32 @@
     <!-- ============================================================
      GALLERY
      ============================================================ -->
+    
+    <!-- ============================================================
+     CUSTOMER REVIEWS & TRUST SECTION
+     ============================================================ -->
+    <section class="section" id="reviews" style="background: linear-gradient(180deg, var(--maroon-950), var(--ink)); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);">
+        <div class="container">
+            <div class="section-head reveal" style="display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:16px;">
+                <div>
+                    <span class="eyebrow">CUSTOMER EXPERIENCES & RATINGS</span>
+                    <h2>Loved by Candle Lovers Across India</h2>
+                    <p style="color:var(--cream-dim); max-width:560px; margin-top:6px;">
+                        Rated <strong style="color:var(--gold-light);">4.9 ★ out of 5</strong> based on genuine feedback. Every order is handcrafted with pure organic wax and heartfelt care.
+                    </p>
+                </div>
+                <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                    <a href="reviews.html#submitReviewForm" class="btn btn-primary btn-sm">Share Experience ✨</a>
+                    <a href="reviews.html" class="btn btn-ghost btn-sm">View All Reviews →</a>
+                </div>
+            </div>
+
+            <div class="home-reviews-grid" id="homeReviewsPreview">
+                <!-- Dynamically loaded preview reviews -->
+            </div>
+        </div>
+    </section>
+
     <section class="section glow-field">
         <div class="container">
             <div class="section-head reveal">
@@ -3535,6 +3858,8 @@
                 <div>
                     <h5>Support</h5>
                     <ul>
+                        <li><a href="reviews.html">Customer Reviews</a></li>
+                        <li><a href="reviews.html#submitReviewForm">Write a Review</a></li>
                         <li><a href="#"
                                 onclick="openWhatsApp('Hi Amoura Crafts! I have a quick question regarding my recent order. 💕'); return false;">Track
                                 an
@@ -4680,41 +5005,62 @@
             }
         ];
 
+        function getThumbPaths(imgSrc) {
+            if (!imgSrc) return { webp: '', fallback: '', orig: '' };
+            const filename = imgSrc.replace(/^images\//, '');
+            const baseName = filename.replace(/\.[^/.]+$/, '');
+            return {
+                webp: `images/thumbs/${baseName}.webp`,
+                fallback: `images/thumbs/${baseName}.jpg`,
+                orig: imgSrc
+            };
+        }
+
         function renderResin() {
             const grid = document.getElementById("resinGrid");
             if (!grid) return;
-            grid.innerHTML = RESIN_PRODUCTS.map(p => `
+            grid.innerHTML = RESIN_PRODUCTS.map(p => {
+                const t = getThumbPaths(p.img);
+                return `
     <div class="card reveal">
       <div class="card-media">
         <span class="tag">${p.tag}</span>
-        <img src="${p.img}" alt="${p.name}" loading="lazy">
+        <picture>
+          <source srcset="${t.webp}" type="image/webp">
+          <img src="${t.fallback}" alt="${p.name}" loading="lazy" width="400" height="400" onerror="this.onerror=null;this.src='${p.img}';">
+        </picture>
       </div>
       <div class="card-body">
         <h3>${p.name}</h3>
-        <p>${p.desc}</p>
+        <p class="desc">${p.desc}</p>
         <div class="price-row">
-            <div class="price">
-                <span class="current">₹${p.price}</span>
-                <span class="mrp">₹${p.mrp}</span>
-            </div>
-            <button class="btn btn-primary" onclick="buyResinNow('${p.id}')">Buy now</button>
+            <span class="now">₹${p.price}</span>
+            <span class="was">₹${p.mrp}</span>
+        </div>
+        <div class="card-actions">
+            <button class="btn btn-primary" style="grid-column: 1 / -1;" onclick="buyResinNow('${p.id}')">Buy now</button>
         </div>
       </div>
     </div>
-            `).join("");
+            `;
+            }).join("");
         }
 
         // Ensure renderResin is called when page loads.
-        // I will hook it into the window DOMContentLoaded or just call it directly since scripts are at the end.
         renderResin();
 
         function renderProducts() {
             const grid = document.getElementById("productGrid");
-            grid.innerHTML = PRODUCTS.map(p => `
+            grid.innerHTML = PRODUCTS.map(p => {
+                const t = getThumbPaths(p.img);
+                return `
     <div class="card reveal">
       <div class="card-media">
         <span class="tag">${p.tag}</span>
-        <img src="${p.img}" alt="${p.name}" loading="lazy">
+        <picture>
+          <source srcset="${t.webp}" type="image/webp">
+          <img src="${t.fallback}" alt="${p.name}" loading="lazy" width="400" height="400" onerror="this.onerror=null;this.src='${p.img}';">
+        </picture>
       </div>
       <div class="card-body">
         <h3>${p.name}</h3>
@@ -4725,9 +5071,9 @@
         </div>
         <div class="qty-row">
           <div class="qty-stepper">
-            <button onclick="stepQty('${p.id}', -1)">−</button>
+            <button onclick="stepQty('${p.id}', -1)" aria-label="Decrease quantity">−</button>
             <span class="qty-val" id="qty-${p.id}">1</span>
-            <button onclick="stepQty('${p.id}', 1)">+</button>
+            <button onclick="stepQty('${p.id}', 1)" aria-label="Increase quantity">+</button>
           </div>
         </div>
         <div class="card-actions">
@@ -4736,7 +5082,8 @@
         </div>
       </div>
     </div>
-  `).join("");
+  `;
+            }).join("");
 
             attachTilt(grid.querySelectorAll(".card"));
             observeReveals();
@@ -4932,6 +5279,33 @@ Please share the final price, delivery timeline and payment options.`;
            ================================================================ */
         window.addEventListener("DOMContentLoaded", () => {
             renderProducts();
+
+        // Render Top 3 Reviews on Homepage Preview
+        async function loadHomeReviews() {
+            const container = document.getElementById("homeReviewsPreview");
+            if (!container || !window.AmouraReviews) return;
+
+            const reviews = await AmouraReviews.getReviews({ sortBy: 'highest' });
+            const topReviews = reviews.slice(0, 4);
+
+            container.innerHTML = topReviews.map(r => `
+                <div class="home-review-card">
+                    <div class="home-rev-header">
+                        <span class="home-rev-name">${r.name}</span>
+                        <span class="home-rev-stars">${'★'.repeat(r.rating)}</span>
+                    </div>
+                    <span class="home-rev-product">🕯️ ${r.productName}</span>
+                    <p class="home-rev-comment">"${r.comment}"</p>
+                </div>
+            `).join("");
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadHomeReviews);
+        } else {
+            loadHomeReviews();
+        }
+
             renderCart();
             initBulk();
             initShowcase();
@@ -5134,6 +5508,7 @@ Please share the final price, delivery timeline and payment options.`;
         });
 
 </script>
+<script src="reviews-engine.js"></script>
 </body>
 
 </html>

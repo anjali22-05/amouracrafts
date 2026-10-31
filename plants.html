@@ -3237,24 +3237,29 @@ Please share the final price, delivery timeline and payment options.`;
            ================================================================ */
         function initShowcase() {
             const ring = document.getElementById("showcaseRing");
-            // Pick a curated set of 8 distinct designs for the 3D rotating ring
+            if (!ring) return;
+            // 8 distinct creations from the user's 3D folder (images/3d/)
             const showcaseItems = [
-                PRODUCTS[1],  // Crimson & Cream Peony (img_2)
-                PRODUCTS[5],  // Rose-Embossed Heart Duo (img_6)
-                PRODUCTS[7],  // Terracotta Mitti Diya (img_8)
-                PRODUCTS[9],  // Pastel Teddy Bear Set (img_10)
-                PRODUCTS[11], // Marigold Carved Floral Pillar (img_12)
-                PRODUCTS[17], // Blossom Bouquet Pillar (img_18)
-                PRODUCTS[22], // Crystal Botanical Bear Jar (img_23)
-                PRODUCTS[23]  // Replaced with last product
+                { webp: "images/3d/gallery_3d_1.webp", fallback: "images/3d/gallery_3d_1.jpg", alt: "Amoura Crafts 3D Creation 1" },
+                { webp: "images/3d/gallery_3d_2.webp", fallback: "images/3d/gallery_3d_2.jpg", alt: "Amoura Crafts 3D Creation 2" },
+                { webp: "images/3d/gallery_3d_3.webp", fallback: "images/3d/gallery_3d_3.jpg", alt: "Amoura Crafts 3D Creation 3" },
+                { webp: "images/3d/gallery_3d_4.webp", fallback: "images/3d/gallery_3d_4.jpg", alt: "Amoura Crafts 3D Creation 4" },
+                { webp: "images/3d/gallery_3d_5.webp", fallback: "images/3d/gallery_3d_5.jpg", alt: "Amoura Crafts 3D Creation 5" },
+                { webp: "images/3d/gallery_3d_6.webp", fallback: "images/3d/gallery_3d_6.jpg", alt: "Amoura Crafts 3D Creation 6" },
+                { webp: "images/3d/gallery_3d_7.webp", fallback: "images/3d/gallery_3d_7.jpg", alt: "Amoura Crafts 3D Creation 7" },
+                { webp: "images/3d/gallery_3d_8.webp", fallback: "images/3d/gallery_3d_8.jpg", alt: "Amoura Crafts 3D Creation 8" }
             ];
             const n = showcaseItems.length;
-            const radius = 280;
-            ring.innerHTML = showcaseItems.map((p, i) => {
+            const isMobile = window.innerWidth < 640;
+            const radius = isMobile ? 155 : 210;
+            ring.innerHTML = showcaseItems.map((item, i) => {
                 const angle = (360 / n) * i;
-                return `< div class="ring-item" style = "transform:rotateY(${angle}deg) translateZ(${radius}px);" >
-            <img src="${p.img}" alt="${p.name}">
-            </div>`;
+                return `<div class="ring-item" style="transform:rotateY(${angle}deg) translateZ(${radius}px);">
+                    <picture>
+                        <source srcset="${item.webp}" type="image/webp">
+                        <img src="${item.fallback}" alt="${item.alt}" loading="lazy" width="160" height="210">
+                    </picture>
+                </div>`;
             }).join("");
         }
 

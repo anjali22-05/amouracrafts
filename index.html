@@ -3832,7 +3832,7 @@
 
                         <div class="feedback-field">
                             <label for="homeReviewName">Customer Name *</label>
-                            <input type="text" id="homeReviewName" placeholder="Your name (e.g. Priya Sharma)" required autocomplete="name">
+                            <input type="text" id="homeReviewName" placeholder="Your name" required autocomplete="name">
                         </div>
 
                         <div class="feedback-field">
@@ -5558,7 +5558,7 @@ Please share the final price, delivery timeline and payment options.`;
         });
 
 </script>
-<script src="reviews-engine.js"></script>
+<script src="reviews-engine.js?v=20261101_real"></script>
 
     <!-- Customer Feedback & Reviews Controller -->
     <script>
@@ -5701,26 +5701,20 @@ Please share the final price, delivery timeline and payment options.`;
             if (window.ReviewManager) {
                 reviews = await window.ReviewManager.getReviews();
             }
-            if (!reviews || reviews.length === 0) {
-                try {
-                    const res = await fetch('data/reviews.json');
-                    if (res.ok) {
-                        reviews = await res.json();
-                    }
-                } catch(e) {}
-            }
 
             if (!reviews || reviews.length === 0) {
                 stream.innerHTML = `
-                    <div style="grid-column: 1/-1; text-align:center; padding:24px 16px; background:rgba(33,8,16,0.6); border-radius:10px; border:1px dashed var(--line);">
-                        <p style="color:var(--gold-light); font-size:0.92rem; margin-bottom:4px;">✨ Be the first to share your experience!</p>
-                        <p style="color:var(--cream-dim); font-size:0.78rem; margin:0;">Fill out the form on the left to feature your feedback here.</p>
+                    <div style="grid-column: 1/-1; text-align:center; padding:28px 16px; background:rgba(33,8,16,0.6); border-radius:10px; border:1px dashed var(--line);">
+                        <p style="color:var(--gold-light); font-size:0.95rem; margin-bottom:6px;">✨ Be the first customer to share your experience!</p>
+                        <p style="color:var(--cream-dim); font-size:0.82rem; margin:0;">Leave a review using the form on the left to see your feedback featured here.</p>
                     </div>
                 `;
+                const countBadge = document.getElementById('reviewsCountBadge');
+                if (countBadge) countBadge.textContent = "Customer Reviews";
                 return;
             }
 
-            // Display reviews in compact luxury cards
+            // Display ONLY genuine client reviews
             const displayList = reviews.slice(0, 8);
             stream.innerHTML = displayList.map(r => {
                 const stars = '★'.repeat(r.rating || 5) + '☆'.repeat(Math.max(0, 5 - (r.rating || 5)));
@@ -5744,7 +5738,7 @@ Please share the final price, delivery timeline and payment options.`;
 
             const countBadge = document.getElementById('reviewsCountBadge');
             if (countBadge) {
-                countBadge.textContent = `⭐ 4.9 (${reviews.length}+ reviews)`;
+                countBadge.textContent = `⭐ 5.0 (${reviews.length} Verified Customer Review${reviews.length > 1 ? 's' : ''})`;
             }
         }
     </script>

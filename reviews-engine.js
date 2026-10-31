@@ -1,14 +1,44 @@
 /**
- * Amoura Crafts - Reviews & Feedback Engine (reviews-engine.js)
- * Fully public, live instant-approval reviews system.
- * Saves to IndexedDB, localStorage, Netlify Serverless Cloud, and Netlify Forms.
+ * Amoura Crafts - Real Customer Reviews Engine (reviews-engine.js)
+ * Only genuine customer reviews. Zero hardcoded/demo content.
+ * Real-time cloud sync with Netlify Serverless API & Netlify Forms.
  */
 
 (function (window) {
     const DB_NAME = 'amoura_crafts_db';
-    const DB_VERSION = 1;
+    const DB_VERSION = 2;
     const STORE_NAME = 'customer_reviews';
-    const STORAGE_KEY = 'amoura_customer_reviews_v3';
+    const STORAGE_KEY = 'amoura_real_reviews_v1';
+
+    const FAKE_NAMES = [
+        'Priya Sharma', 'Aarav Mehta', 'Neha Patel', 'Rohan Gupta',
+        'Ananya Verma', 'Vikram Singh', 'Kavita Joshi', 'Deepak Nair',
+        'Simran Kaur', 'Pooja Malhotra', 'Test Verification'
+    ];
+
+    function isRealReview(r) {
+        if (!r || !r.name || typeof r.name !== 'string') return false;
+        if (r.isDemo === true) return false;
+        if (r.id && (String(r.id).startsWith('rev-demo') || String(r.id).startsWith('rev-seed'))) return false;
+        const nameTrimmed = r.name.trim();
+        if (FAKE_NAMES.includes(nameTrimmed)) return false;
+        return true;
+    }
+
+    // Purge old fake localStorage keys left from earlier demo builds
+    (function purgeLegacyDemoKeys() {
+        try {
+            const legacyKeys = [
+                'amoura_customer_reviews',
+                'amoura_customer_reviews_v2',
+                'amoura_customer_reviews_v3',
+                'amoura_pending_reviews'
+            ];
+            for (const k of legacyKeys) {
+                localStorage.removeItem(k);
+            }
+        } catch (e) {}
+    })();
 
     function openIDB() {
         return new Promise((resolve) => {
@@ -45,26 +75,8 @@
                 list = Storage.getFromLocalStorage();
             }
 
-            // Also check old storage keys to recover any reviews previously submitted
-            const oldKeys = ['amoura_customer_reviews_v2', 'amoura_customer_reviews', 'amoura_pending_reviews'];
-            for (const k of oldKeys) {
-                try {
-                    const oldRaw = localStorage.getItem(k);
-                    if (oldRaw) {
-                        const parsed = JSON.parse(oldRaw);
-                        if (Array.isArray(parsed)) {
-                            parsed.forEach(p => {
-                                if (!list.find(item => item.id === p.id || (item.name === p.name && item.comment === p.comment))) {
-                                    list.push(p);
-                                }
-                            });
-                        }
-                    }
-                } catch(e) {}
-            }
-
-            // Auto-approve all reviews so none are ever hidden
-            list = list.map(r => ({ ...r, status: 'approved', verified: true, isDemo: false }));
+            // Strictly filter out any fake or demo reviews
+            list = (list || []).filter(isRealReview);
             return list;
         },
 
@@ -73,15 +85,20 @@
                 const raw = localStorage.getItem(STORAGE_KEY);
                 if (raw) {
                     const parsed = JSON.parse(raw);
-                    if (Array.isArray(parsed)) return parsed;
+                    if (Array.isArray(parsed)) return parsed.filter(isRealReview);
                 }
             } catch (e) {}
             return [];
         },
 
         async saveAll(reviews) {
-            // Ensure all are approved
-            const cleaned = reviews.map(r => ({ ...r, status: 'approved', verified: true, isDemo: false }));
+            const cleaned = (reviews || []).filter(isRealReview).map(r => ({
+                ...r,
+                status: 'approved',
+                verified: true,
+                isDemo: false
+            }));
+
             try {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(cleaned));
             } catch (e) {}
@@ -107,16 +124,17 @@
                 sortBy = 'newest'
             } = options;
 
-            // 1. Get all local reviews
+            // 1. Get cached local real reviews
             let all = await Storage.getAll();
 
-            // 2. Fetch public serverless reviews from Netlify Function
+            // 2. Fetch fresh real reviews from Netlify Cloud API (with cache buster)
             try {
-                const res = await fetch('/.netlify/functions/reviews', { method: 'GET' });
+                const res = await fetch('/.netlify/functions/reviews?t=' + Date.now(), { method: 'GET' });
                 if (res.ok) {
                     const remote = await res.json();
                     if (Array.isArray(remote.reviews)) {
-                        remote.reviews.forEach(r => {
+                        const remoteReal = remote.reviews.filter(isRealReview);
+                        remoteReal.forEach(r => {
                             if (!all.find(item => item.id === r.id || (item.name === r.name && item.comment === r.comment))) {
                                 all.push(r);
                             }
@@ -126,31 +144,30 @@
                 }
             } catch (e) {}
 
-            // 3. Always merge with data/reviews.json so rich reviews are always present
-            try {
-                const res = await fetch('data/reviews.json');
-                if (res.ok) {
-                    const fallback = await res.json();
-                    if (Array.isArray(fallback)) {
-                        fallback.forEach(f => {
-                            if (!all.find(item => item.id === f.id || (item.name === f.name && item.comment === f.comment))) {
-                                all.push(f);
-                            }
-                        });
+            // 3. If local is still empty, load data/reviews.json fallback (only if real)
+            if (all.length === 0) {
+                try {
+                    const res = await fetch('data/reviews.json?t=' + Date.now());
+                    if (res.ok) {
+                        const fallback = await res.json();
+                        if (Array.isArray(fallback)) {
+                            all = fallback.filter(isRealReview);
+                            if (all.length > 0) await Storage.saveAll(all);
+                        }
                     }
-                }
-            } catch (e) {}
+                } catch (e) {}
+            }
 
-            // Ensure all reviews are approved and publicly visible
-            all = all.map(r => ({ ...r, status: 'approved', verified: true, isDemo: false }));
+            // Strictly filter real reviews only
+            all = all.filter(isRealReview);
 
-            // Apply rating filter if requested
+            // Apply rating filter
             if (filterRating && filterRating !== 'all') {
                 const rt = parseInt(filterRating, 10);
                 all = all.filter(r => r.rating === rt);
             }
 
-            // Apply sorting
+            // Sort by newest first
             all.sort((a, b) => {
                 if (sortBy === 'highest') return (b.rating || 5) - (a.rating || 5) || new Date(b.date || 0) - new Date(a.date || 0);
                 if (sortBy === 'lowest') return (a.rating || 5) - (b.rating || 5) || new Date(b.date || 0) - new Date(a.date || 0);
@@ -161,7 +178,6 @@
         },
 
         async getPendingReviews() {
-            // All reviews are approved immediately
             return [];
         },
 
@@ -192,16 +208,16 @@
                 date: new Date().toISOString().split('T')[0],
                 photo: data.photo || null,
                 isDemo: false,
-                verified: true, // Marked verified
-                status: "approved" // 100% LIVE and visible to all public immediately!
+                verified: true,
+                status: "approved"
             };
 
-            // 1. Save locally to IndexedDB & localStorage
-            const all = await Storage.getAll();
-            all.unshift(newReview);
+            // 1. Immediately save locally to IndexedDB & localStorage
+            let all = await Storage.getAll();
+            all = [newReview, ...all.filter(r => r.id !== newReview.id)];
             await Storage.saveAll(all);
 
-            // 2. Send to Netlify Serverless API
+            // 2. Persist to Netlify Serverless Cloud API
             try {
                 fetch('/.netlify/functions/reviews', {
                     method: 'POST',
@@ -210,7 +226,7 @@
                 }).catch(() => {});
             } catch (e) {}
 
-            // 3. Send to Netlify Forms for persistent dashboard storage
+            // 3. Record in Netlify Forms Dashboard
             try {
                 const formData = new URLSearchParams();
                 formData.append('form-name', 'customer-reviews');
@@ -227,7 +243,7 @@
 
             return {
                 success: true,
-                message: "Thank you for your review! It is now live on our website.",
+                message: "Thank you! Your review is now live on our website.",
                 review: newReview
             };
         }

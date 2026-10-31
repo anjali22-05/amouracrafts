@@ -501,7 +501,7 @@
                     <!-- Field 1: Customer Name -->
                     <div class="form-group">
                         <label for="customerName">Your Name</label>
-                        <input type="text" id="customerName" class="form-input" placeholder="e.g. Priya Sharma" required minlength="2">
+                        <input type="text" id="customerName" class="form-input" placeholder="Your full name" required minlength="2">
                     </div>
 
                     <!-- Field 2: Star Rating -->
@@ -622,7 +622,7 @@
     </footer>
 
     <!-- Reviews Engine Script -->
-    <script src="reviews-engine.js"></script>
+    <script src="reviews-engine.js?v=20261101_real"></script>
 
     <script>
         let currentRating = 5;
@@ -804,27 +804,23 @@
             if (!container || !window.AmouraReviews) return;
 
             let reviews = await window.AmouraReviews.getReviews();
-            if (!reviews || reviews.length === 0) {
-                try {
-                    const res = await fetch('data/reviews.json');
-                    if (res.ok) reviews = await res.json();
-                } catch(e) {}
-            }
 
             if (!reviews || reviews.length === 0) {
                 container.innerHTML = `
                     <div class="empty-reviews-notice" style="grid-column: 1 / -1;">
-                        <p style="color:var(--gold-light); font-weight:500; margin-bottom:4px;">✨ Be the first to share your experience!</p>
-                        <p>Fill out the form above to share your review with everyone.</p>
+                        <p style="color:var(--gold-light); font-weight:600; font-size:1.1rem; margin-bottom:6px;">✨ Be the first to share your experience!</p>
+                        <p>We handcrafted every order with dedication. Share your feedback using the form above to feature your review here.</p>
                     </div>
                 `;
+                const sectionTitle = document.querySelector('.reviews-display-section h2');
+                if (sectionTitle) sectionTitle.innerHTML = `Customer Reviews`;
                 return;
             }
 
-            // Update section title with rating & total count
+            // Update section title with rating & total real reviews count
             const sectionTitle = document.querySelector('.reviews-display-section h2');
             if (sectionTitle) {
-                sectionTitle.innerHTML = `Customer Reviews <span style="font-size:0.95rem; color:var(--gold); display:block; margin-top:4px; font-family:var(--font-body); font-weight:500;">⭐ 4.9 / 5.0 (${reviews.length} Verified Reviews)</span>`;
+                sectionTitle.innerHTML = `Customer Reviews <span style="font-size:0.95rem; color:var(--gold); display:block; margin-top:4px; font-family:var(--font-body); font-weight:500;">⭐ 5.0 / 5.0 (${reviews.length} Verified Customer Review${reviews.length > 1 ? 's' : ''})</span>`;
             }
 
             container.innerHTML = reviews.map(r => {

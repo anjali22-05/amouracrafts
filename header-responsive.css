@@ -4,7 +4,7 @@
  */
 
 :root {
-    --header-height: 64px;
+    --header-height: 58px;
 }
 
 /* Prevent any horizontal overflow */
@@ -22,7 +22,7 @@ html, body {
     height: var(--header-height) !important;
     min-height: var(--header-height) !important;
     max-height: var(--header-height) !important;
-    background: rgba(22, 8, 12, 0.95) !important;
+    background: rgba(22, 8, 12, 0.96) !important;
     backdrop-filter: blur(16px) saturate(140%) !important;
     -webkit-backdrop-filter: blur(16px) saturate(140%) !important;
     border-bottom: 1px solid rgba(244, 221, 142, 0.18) !important;
@@ -35,7 +35,8 @@ html, body {
 }
 
 .site-nav .container {
-    width: min(1200px, 94%);
+    width: min(1360px, 94%);
+    max-width: 1360px;
     margin-inline: auto;
     height: 100%;
 }
@@ -46,9 +47,9 @@ html, body {
     justify-content: space-between !important;
     width: 100% !important;
     height: 100% !important;
-    padding: 0 !important;
+    padding: 0 clamp(16px, 2.5vw, 28px) !important;
     margin: 0 !important;
-    gap: 16px !important;
+    gap: 14px !important;
     box-sizing: border-box !important;
 }
 
@@ -58,7 +59,7 @@ html, body {
     align-items: center !important;
     gap: 10px !important;
     font-family: var(--font-display, 'Marcellus', serif) !important;
-    font-size: 1.25rem !important;
+    font-size: 1.22rem !important;
     color: var(--cream, #f7ead0) !important;
     text-decoration: none !important;
     white-space: nowrap !important;
@@ -68,17 +69,16 @@ html, body {
 }
 
 .brand-logo {
-    width: 36px !important;
-    height: 36px !important;
-    min-width: 36px !important;
-    min-height: 36px !important;
-    max-width: 36px !important;
-    max-height: 36px !important;
-    border-radius: 50% !important;
-    object-fit: cover !important;
+    height: 38px !important;
+    width: auto !important;
+    max-width: 58px !important;
+    border-radius: 0 !important;
+    border: none !important;
+    object-fit: contain !important;
     flex-shrink: 0 !important;
-    border: 1px solid var(--gold, #d4af37) !important;
     display: inline-block !important;
+    filter: drop-shadow(0 0 6px rgba(232, 135, 30, 0.35)) !important;
+    transition: transform 0.25s ease !important;
 }
 
 /* Desktop Navigation Links (strictly one horizontal row) */
@@ -138,13 +138,15 @@ html, body {
 .nav-actions {
     display: flex !important;
     align-items: center !important;
-    gap: 10px !important;
+    gap: 8px !important;
     flex-shrink: 0 !important;
+    margin-right: 8px !important;
+    position: relative !important;
 }
 
 .site-nav .icon-btn {
-    width: 38px !important;
-    height: 38px !important;
+    width: 36px !important;
+    height: 36px !important;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -154,6 +156,7 @@ html, body {
     color: var(--cream, #f7ead0) !important;
     cursor: pointer !important;
     position: relative !important;
+    overflow: visible !important;
     transition: all 0.2s ease !important;
 }
 
@@ -164,14 +167,14 @@ html, body {
 }
 
 .site-nav .icon-btn svg {
-    width: 18px !important;
-    height: 18px !important;
+    width: 17px !important;
+    height: 17px !important;
 }
 
 .site-nav .cart-count {
     position: absolute !important;
-    top: -3px !important;
-    right: -3px !important;
+    top: -4px !important;
+    right: -4px !important;
     background: var(--marigold, #e8871e) !important;
     color: #180a08 !important;
     font-size: 0.65rem !important;
@@ -182,7 +185,9 @@ html, body {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    border: 1px solid #180a08 !important;
+    border: 1.5px solid #180a08 !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4) !important;
+    z-index: 5 !important;
 }
 
 /* Hamburger button */
@@ -290,3 +295,4 @@ html, body {
 .diwali-offer-wrap {
     margin-top: var(--header-height) !important;
 }
+

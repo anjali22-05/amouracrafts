@@ -1,0 +1,735 @@
+/**
+ * Amoura Crafts - Global Compact & High-Density Stylesheet (global-compact.css)
+ * 
+ * Enforces:
+ * 1. Fixed Header & Logo alignment + cart badge right-margin clearance.
+ * 2. 6 cards per row on desktop (responsive down to 2 on mobile).
+ * 3. Compact card dimensions, typography, and button heights.
+ * 4. Compact section vertical spacing and typography across all pages.
+ * 5. Single-page feedback form & review cards styling.
+ */
+
+:root {
+    --header-height: 58px;
+    --card-radius: 10px;
+    --font-display: 'Marcellus', serif;
+    --font-body: 'Poppins', sans-serif;
+    --gold: #d4af37;
+    --gold-light: #f4dd8e;
+    --marigold: #e8871e;
+    --cream: #f7ead0;
+    --cream-dim: #e7d6b3;
+    --maroon-950: #210810;
+    --ink: #180a08;
+    --line: rgba(244, 221, 142, 0.16);
+}
+
+/* ============================================================
+   1. UNIVERSAL COMPACT RESET & CONTAINER GUTTERS
+   ============================================================ */
+html {
+    scroll-behavior: smooth;
+    font-size: 15px; /* compact base font */
+}
+
+body {
+    overflow-x: hidden;
+    line-height: 1.45 !important;
+}
+
+.container {
+    width: min(1360px, 94%) !important;
+    max-width: 1360px !important;
+    margin-inline: auto !important;
+    padding-inline: clamp(12px, 2vw, 24px) !important;
+    box-sizing: border-box !important;
+}
+
+/* ============================================================
+   2. HEADER & LOGO & CART RIGHT EDGE FIX
+   ============================================================ */
+.site-nav {
+    height: var(--header-height) !important;
+    min-height: var(--header-height) !important;
+    max-height: var(--header-height) !important;
+    background: rgba(22, 8, 12, 0.96) !important;
+    backdrop-filter: blur(14px) !important;
+    -webkit-backdrop-filter: blur(14px) !important;
+    border-bottom: 1px solid var(--line) !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    z-index: 1000 !important;
+}
+
+.site-nav .container,
+.site-nav .nav-row {
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 14px !important;
+    padding: 0 clamp(16px, 2.5vw, 28px) !important;
+    box-sizing: border-box !important;
+}
+
+/* Logo & Brand on single horizontal line with no weird circular clipping */
+.brand {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    font-family: var(--font-display) !important;
+    font-size: 1.22rem !important;
+    font-weight: 500 !important;
+    color: var(--cream) !important;
+    text-decoration: none !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    line-height: 1 !important;
+    letter-spacing: 0.02em !important;
+}
+
+.brand-logo {
+    height: 38px !important;
+    width: auto !important;
+    max-width: 58px !important;
+    border-radius: 0 !important;
+    border: none !important;
+    object-fit: contain !important;
+    display: block !important;
+    flex-shrink: 0 !important;
+    filter: drop-shadow(0 0 6px rgba(232, 135, 30, 0.35)) !important;
+    transition: transform 0.25s ease !important;
+}
+
+.brand:hover .brand-logo {
+    transform: scale(1.06) !important;
+}
+
+/* Nav links - compact and clean */
+.nav-links {
+    gap: clamp(8px, 1.2vw, 18px) !important;
+}
+
+.nav-links a {
+    font-size: 0.82rem !important;
+    font-weight: 500 !important;
+    padding: 4px 2px !important;
+}
+
+/* Cart Button & Right Actions - SAFE MARGIN from window/scrollbar edge */
+.nav-actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    flex-shrink: 0 !important;
+    margin-right: 8px !important; /* guarantees breathing room from scrollbar */
+    position: relative !important;
+}
+
+.site-nav .icon-btn {
+    width: 36px !important;
+    height: 36px !important;
+    background: rgba(244, 221, 142, 0.08) !important;
+    border: 1px solid var(--line) !important;
+    border-radius: 50% !important;
+    position: relative !important;
+    overflow: visible !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+}
+
+.site-nav .icon-btn svg {
+    width: 17px !important;
+    height: 17px !important;
+}
+
+/* Cart Badge - never clipped, clearly readable */
+.site-nav .cart-count {
+    position: absolute !important;
+    top: -4px !important;
+    right: -4px !important;
+    background: var(--marigold) !important;
+    color: #180a08 !important;
+    font-size: 0.65rem !important;
+    font-weight: 700 !important;
+    width: 18px !important;
+    height: 18px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: 1.5px solid #180a08 !important;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.4) !important;
+    z-index: 5 !important;
+}
+
+/* Top spacer for fixed header */
+.header-spacer,
+.delivery-banner,
+.diwali-offer-wrap {
+    margin-top: var(--header-height) !important;
+}
+
+/* ============================================================
+   3. 6 CARDS PER ROW GRID (HIGH DENSITY CATALOG)
+   ============================================================ */
+.product-grid {
+    display: grid !important;
+    grid-template-columns: repeat(6, 1fr) !important;
+    gap: 12px !important;
+    margin-top: 12px !important;
+}
+
+/* Responsive grid scaling */
+@media (max-width: 1399px) {
+    .product-grid {
+        grid-template-columns: repeat(6, 1fr) !important;
+        gap: 10px !important;
+    }
+}
+
+@media (max-width: 1149px) {
+    .product-grid {
+        grid-template-columns: repeat(5, 1fr) !important;
+        gap: 10px !important;
+    }
+}
+
+@media (max-width: 959px) {
+    .product-grid {
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 10px !important;
+    }
+}
+
+@media (max-width: 719px) {
+    .product-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 8px !important;
+    }
+}
+
+@media (max-width: 479px) {
+    .product-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+    }
+}
+
+/* ============================================================
+   4. COMPACT PRODUCT CARDS & TYPOGRAPHY
+   ============================================================ */
+.card {
+    position: relative !important;
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.012)) !important;
+    border: 1px solid rgba(244, 221, 142, 0.14) !important;
+    border-radius: var(--card-radius) !important;
+    overflow: hidden !important;
+    box-shadow: 0 6px 20px -8px rgba(0, 0, 0, 0.6) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.25s ease !important;
+    transform-style: flat !important;
+}
+
+.card:hover {
+    transform: translateY(-3px) !important;
+    border-color: rgba(244, 221, 142, 0.35) !important;
+    box-shadow: 0 10px 28px -6px rgba(232, 135, 30, 0.25) !important;
+}
+
+/* Card media - 1:1 square aspect ratio */
+.card-media {
+    position: relative !important;
+    aspect-ratio: 1 / 1 !important;
+    overflow: hidden !important;
+    background: #14070a !important;
+    border-radius: 9px 9px 0 0 !important;
+}
+
+.card-media img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    transition: transform 0.3s ease !important;
+}
+
+.card:hover .card-media img {
+    transform: scale(1.05) !important;
+}
+
+/* Badge / Tag */
+.card-media .tag {
+    position: absolute !important;
+    top: 6px !important;
+    left: 6px !important;
+    font-size: 0.62rem !important;
+    font-weight: 600 !important;
+    padding: 2px 6px !important;
+    border-radius: 4px !important;
+    letter-spacing: 0.03em !important;
+    text-transform: uppercase !important;
+    background: rgba(25, 7, 12, 0.9) !important;
+    border: 1px solid rgba(244, 221, 142, 0.3) !important;
+    color: var(--gold-light) !important;
+    backdrop-filter: blur(4px) !important;
+    z-index: 2 !important;
+}
+
+/* Card Body */
+.card-body {
+    padding: 8px 10px 10px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 !important;
+    gap: 2px !important;
+    transform: none !important;
+}
+
+.card-body h3 {
+    font-family: var(--font-body) !important;
+    font-size: 0.82rem !important;
+    font-weight: 600 !important;
+    line-height: 1.25 !important;
+    margin: 0 0 2px 0 !important;
+    color: var(--cream) !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+.card-body .desc {
+    font-size: 0.7rem !important;
+    line-height: 1.25 !important;
+    color: var(--cream-dim) !important;
+    opacity: 0.85 !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 1 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    margin: 0 0 4px 0 !important;
+}
+
+.card-body .price-row {
+    display: flex !important;
+    align-items: baseline !important;
+    gap: 6px !important;
+    margin: 2px 0 4px 0 !important;
+}
+
+.card-body .price-row .now {
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+    color: var(--gold-light) !important;
+}
+
+.card-body .price-row .was {
+    font-size: 0.72rem !important;
+    color: var(--cream-dim) !important;
+    opacity: 0.6 !important;
+    text-decoration: line-through !important;
+}
+
+/* Stepper */
+.qty-row {
+    margin: 2px 0 6px 0 !important;
+}
+
+.qty-stepper {
+    display: inline-flex !important;
+    align-items: center !important;
+    background: rgba(244, 221, 142, 0.06) !important;
+    border: 1px solid rgba(244, 221, 142, 0.2) !important;
+    border-radius: 5px !important;
+    height: 24px !important;
+}
+
+.qty-stepper button {
+    width: 22px !important;
+    height: 22px !important;
+    padding: 0 !important;
+    font-size: 0.8rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: transparent !important;
+    border: none !important;
+    color: var(--cream) !important;
+    cursor: pointer !important;
+}
+
+.qty-stepper .qty-val {
+    min-width: 20px !important;
+    text-align: center !important;
+    font-size: 0.72rem !important;
+    font-weight: 600 !important;
+    color: var(--cream) !important;
+}
+
+/* Card Actions */
+.card-actions {
+    display: flex !important;
+    gap: 4px !important;
+    margin-top: auto !important;
+}
+
+.card-actions .btn {
+    padding: 5px 6px !important;
+    font-size: 0.68rem !important;
+    font-weight: 600 !important;
+    border-radius: 5px !important;
+    flex: 1 !important;
+    text-align: center !important;
+    justify-content: center !important;
+    white-space: nowrap !important;
+    height: 28px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    box-sizing: border-box !important;
+}
+
+/* ============================================================
+   5. COMPACT SECTIONS & REDUCED SPACING ACROSS ALL PAGES
+   ============================================================ */
+.section {
+    padding: 30px 0 !important;
+}
+
+.section-head {
+    margin-bottom: 14px !important;
+}
+
+.section-head h2,
+h2 {
+    font-family: var(--font-display) !important;
+    font-size: clamp(1.3rem, 2.2vw, 1.75rem) !important;
+    line-height: 1.25 !important;
+    margin: 0 0 4px 0 !important;
+    color: var(--cream) !important;
+}
+
+.section-head p,
+p.lede {
+    font-size: 0.82rem !important;
+    line-height: 1.4 !important;
+    color: var(--cream-dim) !important;
+    margin-top: 4px !important;
+}
+
+.eyebrow {
+    font-size: 0.66rem !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.12em !important;
+    color: var(--gold) !important;
+    margin-bottom: 2px !important;
+    display: inline-block !important;
+}
+
+/* Hero Section compact */
+.hero {
+    padding: 34px 0 24px 0 !important;
+    min-height: auto !important;
+}
+
+.hero h1 {
+    font-size: clamp(1.8rem, 3.4vw, 2.6rem) !important;
+    line-height: 1.15 !important;
+    margin-bottom: 10px !important;
+}
+
+.hero p.lede {
+    font-size: 0.88rem !important;
+    line-height: 1.45 !important;
+    margin-bottom: 14px !important;
+}
+
+.hero-cta {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+    margin-bottom: 16px !important;
+}
+
+.hero-cta .btn {
+    padding: 8px 18px !important;
+    font-size: 0.82rem !important;
+    height: 38px !important;
+}
+
+.hero-stats {
+    gap: 12px !important;
+    margin-top: 12px !important;
+}
+
+.hero-stats .stat {
+    padding: 6px 12px !important;
+}
+
+.hero-stats .stat b {
+    font-size: 1.1rem !important;
+}
+
+.hero-stats .stat span {
+    font-size: 0.72rem !important;
+}
+
+.hero-brand-pill {
+    padding: 3px 12px 3px 5px !important;
+    margin-bottom: 10px !important;
+}
+
+/* Delivery & Offer Banners */
+.delivery-banner,
+.diwali-offer-wrap {
+    height: 32px !important;
+    min-height: 32px !important;
+    line-height: 32px !important;
+    font-size: 0.78rem !important;
+}
+
+/* Footer compact */
+.site-footer {
+    padding: 28px 0 16px 0 !important;
+}
+
+.footer-grid {
+    gap: 20px !important;
+}
+
+.footer-bottom {
+    margin-top: 20px !important;
+    padding-top: 14px !important;
+    font-size: 0.75rem !important;
+}
+
+/* ============================================================
+   6. SINGLE-PAGE FEEDBACK & REVIEWS SYSTEM
+   ============================================================ */
+.home-feedback-layout {
+    display: grid;
+    grid-template-columns: minmax(300px, 380px) 1fr;
+    gap: 20px;
+    align-items: start;
+    margin-top: 16px;
+}
+
+@media (max-width: 900px) {
+    .home-feedback-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+.feedback-form-card {
+    background: linear-gradient(165deg, rgba(38, 12, 19, 0.95), rgba(24, 7, 12, 0.98));
+    border: 1px solid rgba(244, 221, 142, 0.22);
+    border-radius: 12px;
+    padding: 18px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+}
+
+.feedback-form-card h3 {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    color: var(--cream);
+    margin: 0 0 4px 0;
+}
+
+.feedback-form-card p.form-subtitle {
+    font-size: 0.78rem;
+    color: var(--cream-dim);
+    margin: 0 0 14px 0;
+    line-height: 1.35;
+}
+
+.feedback-field {
+    margin-bottom: 12px;
+}
+
+.feedback-field label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--cream-dim);
+    margin-bottom: 4px;
+}
+
+.feedback-field input[type="text"],
+.feedback-field textarea {
+    width: 100%;
+    background: rgba(10, 3, 5, 0.6);
+    border: 1px solid rgba(244, 221, 142, 0.2);
+    border-radius: 6px;
+    padding: 8px 10px;
+    color: var(--cream);
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.feedback-field input[type="text"]:focus,
+.feedback-field textarea:focus {
+    outline: none;
+    border-color: var(--gold);
+    box-shadow: 0 0 8px rgba(232, 135, 30, 0.3);
+}
+
+/* Star Rating Control */
+.star-rating-control {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 4px 0 2px 0;
+}
+
+.star-rating-control button {
+    background: none;
+    border: none;
+    font-size: 1.45rem;
+    color: rgba(244, 221, 142, 0.25);
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.star-rating-control button.active,
+.star-rating-control button:hover,
+.star-rating-control button.hover {
+    color: var(--gold);
+    transform: scale(1.15);
+}
+
+.star-rating-value-label {
+    font-size: 0.75rem;
+    color: var(--gold-light);
+    font-weight: 600;
+    margin-left: 6px;
+}
+
+/* Photo upload minimal */
+.feedback-photo-input {
+    font-size: 0.72rem;
+    color: var(--cream-dim);
+}
+
+.feedback-photo-input::file-selector-button {
+    background: rgba(244, 221, 142, 0.1);
+    border: 1px solid rgba(244, 221, 142, 0.25);
+    border-radius: 4px;
+    color: var(--gold-light);
+    padding: 4px 8px;
+    font-size: 0.72rem;
+    cursor: pointer;
+    margin-right: 8px;
+}
+
+.feedback-submit-btn {
+    width: 100%;
+    height: 36px;
+    background: linear-gradient(135deg, var(--gold), var(--marigold)) !important;
+    color: #180a08 !important;
+    border: none !important;
+    border-radius: 6px !important;
+    font-weight: 600 !important;
+    font-size: 0.82rem !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.feedback-submit-btn:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 14px rgba(232, 135, 30, 0.45) !important;
+}
+
+.review-success-msg {
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: rgba(30, 60, 30, 0.4);
+    border: 1px solid rgba(100, 200, 100, 0.35);
+    border-radius: 6px;
+    color: #bbf7d0;
+    font-size: 0.78rem;
+    line-height: 1.4;
+    text-align: center;
+}
+
+/* Reviews List Display */
+.home-reviews-stream {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 12px;
+}
+
+.review-item-card {
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015));
+    border: 1px solid rgba(244, 221, 142, 0.14);
+    border-radius: 8px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.review-item-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.review-item-stars {
+    color: var(--gold);
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+}
+
+.review-item-date {
+    font-size: 0.68rem;
+    color: var(--cream-dim);
+    opacity: 0.6;
+}
+
+.review-item-text {
+    font-size: 0.78rem;
+    color: var(--cream);
+    line-height: 1.4;
+    margin: 2px 0 4px 0;
+}
+
+.review-item-author {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: auto;
+    font-size: 0.74rem;
+    font-weight: 600;
+    color: var(--gold-light);
+}
+
+.review-verified-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 0.62rem;
+    font-weight: 500;
+    color: #4ade80;
+    background: rgba(74, 222, 128, 0.1);
+    padding: 1px 5px;
+    border-radius: 3px;
+    border: 1px solid rgba(74, 222, 128, 0.25);
+}
+
+.review-thumb-img {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid var(--line);
+    margin-top: 4px;
+}

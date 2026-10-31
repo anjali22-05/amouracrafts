@@ -1,0 +1,9 @@
+{
+  "name": "amouracrafts",
+  "version": "1.0.0",
+  "description": "Amoura Crafts - Luxury Handmade Soy Candles & Resin Art",
+  "private": true,
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  }
+}

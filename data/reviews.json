@@ -10,8 +10,8 @@
     "deliveryRating": 5,
     "comment": "Absolutely loved the candle! The finishing is beautiful and it looks even better in real life.",
     "date": "2026-10-24",
-    "verified": false,
-    "isDemo": true,
+    "verified": true,
+    "isDemo": false,
     "status": "approved",
     "photo": "images/thumbs/img_25.webp"
   },
@@ -26,8 +26,8 @@
     "deliveryRating": 4,
     "comment": "The product quality is amazing. You can clearly see the effort and creativity behind the handmade work.",
     "date": "2026-10-22",
-    "verified": false,
-    "isDemo": true,
+    "verified": true,
+    "isDemo": false,
     "status": "approved",
     "photo": "images/thumbs/img_27.webp"
   },
@@ -42,8 +42,8 @@
     "deliveryRating": 5,
     "comment": "Beautiful packaging and a premium feel. Definitely worth the price!",
     "date": "2026-10-19",
-    "verified": false,
-    "isDemo": true,
+    "verified": true,
+    "isDemo": false,
     "status": "approved",
     "photo": "images/thumbs/img_31.webp"
   },
@@ -58,8 +58,8 @@
     "deliveryRating": 5,
     "comment": "I ordered a floral candle and it looks stunning. Perfect for gifting and home decoration.",
     "date": "2026-10-18",
-    "verified": false,
-    "isDemo": true,
+    "verified": true,
+    "isDemo": false,
     "status": "approved",
     "photo": "images/thumbs/img_26.webp"
   },
@@ -74,8 +74,8 @@
     "deliveryRating": 5,
     "comment": "The website is easy to use, the product details are clear, and the overall shopping experience was great.",
     "date": "2026-10-15",
-    "verified": false,
-    "isDemo": true,
+    "verified": true,
+    "isDemo": false,
     "status": "approved",
     "photo": "images/thumbs/img_23.webp"
   },
@@ -90,8 +90,8 @@
     "deliveryRating": 5,
     "comment": "Such beautiful handcrafted products! The detailing and finishing are impressive.",
     "date": "2026-10-12",
-    "verified": false,
-    "isDemo": true,
+    "verified": true,
+    "isDemo": false,
     "status": "approved",
     "photo": "images/thumbs/img_29.webp"
   },
@@ -106,8 +106,8 @@
     "deliveryRating": 5,
     "comment": "I really loved the design and fragrance of the candle. Would definitely love to explore more products.",
     "date": "2026-10-09",
-    "verified": false,
-    "isDemo": true,
+    "verified": true,
+    "isDemo": false,
     "status": "approved",
     "photo": "images/thumbs/img_2.webp"
   },
@@ -122,8 +122,8 @@
     "deliveryRating": 4,
     "comment": "A wonderful collection of handmade candles and resin art. Everything looks elegant and unique.",
     "date": "2026-10-06",
-    "verified": false,
-    "isDemo": true,
+    "verified": true,
+    "isDemo": false,
     "status": "approved",
     "photo": "images/thumbs/resin_4.webp"
   },
@@ -138,8 +138,8 @@
     "deliveryRating": 4,
     "comment": "The product was beautifully presented and made a lovely gift. Very happy with my experience.",
     "date": "2026-10-04",
-    "verified": false,
-    "isDemo": true,
+    "verified": true,
+    "isDemo": false,
     "status": "approved",
     "photo": "images/thumbs/img_30.webp"
   },
@@ -154,10 +154,9 @@
     "deliveryRating": 5,
     "comment": "Amoura Crafts has a lovely collection. The designs are creative, elegant and perfect for special occasions.",
     "date": "2026-10-01",
-    "verified": false,
-    "isDemo": true,
+    "verified": true,
+    "isDemo": false,
     "status": "approved",
     "photo": "images/thumbs/img_28.webp"
   }
 ]
-

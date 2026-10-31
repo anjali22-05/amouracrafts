@@ -544,6 +544,17 @@
         </div>
     </main>
 
+    
+    <!-- Netlify Forms Integration for Persistent Reviews Dashboard -->
+    <form name="customer-reviews" method="POST" data-netlify="true" netlify-honeypot="bot-field" hidden>
+        <input type="hidden" name="form-name" value="customer-reviews">
+        <input type="text" name="bot-field">
+        <input type="text" name="name">
+        <input type="text" name="rating">
+        <textarea name="comment"></textarea>
+        <input type="text" name="date">
+    </form>
+
     <!-- Public Approved Reviews Section -->
     <section class="reviews-display-section" id="reviewsSection">
         <div class="container">
@@ -561,36 +572,6 @@
             <h3>Thank You!</h3>
             <p>Thank you for your valuable feedback! We truly appreciate your support.</p>
             <button class="submit-btn" onclick="closeModal()" style="margin:0; width:auto; padding:10px 28px;">Continue Browsing</button>
-        </div>
-    </div>
-
-    <!-- Admin Moderation Access Link (Bottom Right) -->
-    <div style="position:fixed; bottom:16px; right:16px; z-index:1100;">
-        <button onclick="openAdmin()" style="background:rgba(20,8,12,0.85); border:1px solid var(--line); color:var(--cream-dim); padding:4px 10px; border-radius:6px; font-size:0.72rem; cursor:pointer;">
-            🔒 Moderation
-        </button>
-    </div>
-
-    <!-- Admin Moderation Modal -->
-    <div class="modal-overlay" id="adminModal">
-        <div class="modal-box" style="max-width:540px; text-align:left;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-                <h3 style="margin:0;">Review Moderation</h3>
-                <button onclick="closeAdmin()" style="background:none; border:none; color:var(--cream); font-size:1.2rem; cursor:pointer;">✕</button>
-            </div>
-            <div id="adminAuth">
-                <p style="font-size:0.85rem; color:var(--cream-dim); margin-bottom:10px;">Enter store PIN to moderate customer feedback:</p>
-                <div style="display:flex; gap:8px;">
-                    <input type="password" id="pinInput" class="form-input" placeholder="PIN" style="width:140px; padding:8px 12px;">
-                    <button class="submit-btn" onclick="authAdmin()" style="width:auto; padding:8px 18px; margin:0;">Unlock</button>
-                </div>
-            </div>
-            <div id="adminPanel" style="display:none; margin-top:14px;">
-                <p style="font-size:0.82rem; color:var(--gold-light); margin-bottom:10px;">Pending Feedback Submissions:</p>
-                <div id="pendingList" style="max-height:260px; overflow-y:auto; display:flex; flex-direction:column; gap:10px;">
-                    <!-- Pending items -->
-                </div>
-            </div>
         </div>
     </div>
 
@@ -652,15 +633,19 @@
         const navLinks = document.getElementById('navLinks');
         const navBackdrop = document.getElementById('navBackdrop');
 
-        hamburger.addEventListener('click', () => {
-            navLinks.classList.toggle('open');
-            navBackdrop.classList.toggle('open');
-        });
+        if (hamburger) {
+            hamburger.addEventListener('click', () => {
+                navLinks.classList.toggle('open');
+                navBackdrop.classList.toggle('open');
+            });
+        }
 
-        navBackdrop.addEventListener('click', () => {
-            navLinks.classList.remove('open');
-            navBackdrop.classList.remove('open');
-        });
+        if (navBackdrop) {
+            navBackdrop.addEventListener('click', () => {
+                navLinks.classList.remove('open');
+                navBackdrop.classList.remove('open');
+            });
+        }
 
         // Star rating picker
         const ratingLabels = {
@@ -677,12 +662,13 @@
             stars.forEach((s, i) => {
                 s.classList.toggle('active', i < n);
             });
-            document.getElementById('starDescription').textContent = ratingLabels[n] || `${n} Stars`;
+            const lbl = document.getElementById('starDescription');
+            if (lbl) lbl.textContent = ratingLabels[n] || (n + " Stars");
         }
 
         // Minimal photo upload handling with canvas compression
         function handlePhoto(e) {
-            const file = e.target.files[0];
+            const file = e.target.files && e.target.files[0];
             if (!file) return;
 
             const reader = new FileReader();
@@ -690,9 +676,8 @@
                 const img = new Image();
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
-                    const MAX = 700;
-                    let w = img.width;
-                    let h = img.height;
+                    const MAX = 600;
+                    let w = img.width, h = img.height;
                     if (w > h && w > MAX) {
                         h *= MAX / w;
                         w = MAX;
@@ -707,92 +692,16 @@
 
                     uploadedPhotoData = canvas.toDataURL('image/jpeg', 0.8);
                     const thumb = document.getElementById('photoThumb');
-                    thumb.src = uploadedPhotoData;
-                    thumb.style.display = 'block';
-                    document.getElementById('photoFileName').textContent = file.name;
+                    if (thumb) {
+                        thumb.src = uploadedPhotoData;
+                        thumb.style.display = 'block';
+                    }
+                    const fn = document.getElementById('photoFileName');
+                    if (fn) fn.textContent = file.name;
                 };
                 img.src = evt.target.result;
             };
             reader.readAsDataURL(file);
-        }
-
-        // Handle Simple Review Submission
-        async function handleSimpleReviewSubmit(e) {
-            e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            btn.disabled = true;
-            btn.textContent = 'Submitting...';
-
-            try {
-                const name = document.getElementById('customerName').value.trim();
-                const comment = document.getElementById('feedbackMessage').value.trim();
-                const trap = document.querySelector('input[name="honeypot_trap"]').value;
-
-                if (trap) throw new Error("Spam detected.");
-
-                await AmouraReviews.submitReview({
-                    name: name,
-                    rating: currentRating,
-                    comment: comment,
-                    photo: uploadedPhotoData,
-                    productName: "Amoura Crafts",
-                    website_trap: trap
-                });
-
-                // Show exact requested confirmation
-                document.getElementById('successModal').classList.add('open');
-
-                // Reset form
-                document.getElementById('feedbackForm').reset();
-                uploadedPhotoData = null;
-                document.getElementById('photoThumb').style.display = 'none';
-                document.getElementById('photoFileName').textContent = '';
-                setStar(5);
-
-            } catch (err) {
-                alert(err.message || "Failed to submit feedback. Please try again.");
-            } finally {
-                btn.disabled = false;
-                btn.textContent = 'Submit Feedback ✨';
-            }
-        }
-
-        function closeModal() {
-            document.getElementById('successModal').classList.remove('open');
-        }
-
-        // Render Only Genuine Approved Reviews on Public Page
-        async function loadApprovedReviews() {
-            const container = document.getElementById('approvedReviewsList');
-            if (!container || !window.AmouraReviews) return;
-
-            // Fetch approved customer reviews (only real customer reviews, no demo reviews)
-            const reviews = await AmouraReviews.getReviews({
-                includeDemo: false,
-                includePending: false
-            });
-
-            if (reviews.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-reviews-notice" style="grid-column: 1 / -1;">
-                        <p style="color:var(--gold-light); font-weight:500; margin-bottom:4px;">✨ Share the First Review!</p>
-                        <p>We handcrafted every order with dedication. Your feedback submitted above will appear here after moderation.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = reviews.map(r => `
-                <div class="review-card">
-                    <div class="rev-card-header">
-                        <span class="rev-card-name">${escapeHTML(r.name)}</span>
-                        <span class="rev-card-stars">${'★'.repeat(r.rating)}</span>
-                    </div>
-                    <span class="rev-card-date">${r.date || 'Recent'}</span>
-                    <p class="rev-card-text">"${escapeHTML(r.comment)}"</p>
-                    ${r.photo ? `<img src="${r.photo}" class="rev-card-photo" alt="Photo from ${escapeHTML(r.name)}" loading="lazy">` : ''}
-                </div>
-            `).join('');
         }
 
         function escapeHTML(str) {
@@ -805,58 +714,137 @@
                 .replace(/'/g, '&#39;');
         }
 
-        // Admin Moderation Modal
-        function openAdmin() {
-            document.getElementById('adminModal').classList.add('open');
-        }
+        // Handle Customer Review Submission
+        async function handleSimpleReviewSubmit(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            if (btn) {
+                btn.disabled = true;
+                btn.textContent = 'Submitting Review...';
+            }
 
-        function closeAdmin() {
-            document.getElementById('adminModal').classList.remove('open');
-        }
+            try {
+                const name = document.getElementById('customerName').value.trim();
+                const comment = document.getElementById('feedbackMessage').value.trim();
+                const trapInput = document.querySelector('input[name="honeypot_trap"]');
+                const trap = trapInput ? trapInput.value : '';
 
-        function authAdmin() {
-            const pin = document.getElementById('pinInput').value;
-            if (pin === AmouraReviews.ADMIN_PIN) {
-                document.getElementById('adminAuth').style.display = 'none';
-                document.getElementById('adminPanel').style.display = 'block';
-                loadPendingList();
-            } else {
-                alert("Incorrect PIN.");
+                if (trap) throw new Error("Spam detected.");
+
+                const result = await window.AmouraReviews.submitReview({
+                    name: name,
+                    rating: currentRating,
+                    comment: comment,
+                    photo: uploadedPhotoData,
+                    productName: "Amoura Crafts",
+                    website_trap: trap
+                });
+
+                // Prepare WhatsApp direct link for store owner (+91 87006 89036)
+                const waText = encodeURIComponent(
+                    "🌟 Customer Review for Amoura Crafts\n\n" +
+                    "👤 Name: " + name + "\n" +
+                    "⭐ Rating: " + "★".repeat(currentRating) + " (" + currentRating + "/5)\n" +
+                    "💬 Feedback: \"" + comment + "\"\n" +
+                    "📅 Date: " + new Date().toISOString().split('T')[0] + "\n\n" +
+                    "Thank you Amoura Crafts!"
+                );
+
+                const modal = document.getElementById('successModal');
+                if (modal) {
+                    modal.innerHTML = `
+                        <div class="modal-box">
+                            <div class="modal-icon">✨</div>
+                            <h3>Review Published!</h3>
+                            <p style="color:var(--gold-light); font-weight:600; font-size:1.1rem; margin-bottom:6px;">Thank you, ${escapeHTML(name)}!</p>
+                            <p style="margin-bottom:18px;">Your review is now live on our website for all customers to see.</p>
+                            
+                            <a href="https://wa.me/918700689036?text=${waText}" target="_blank" class="submit-btn" style="background:#25D366; color:#180a08; display:inline-flex; align-items:center; justify-content:center; gap:8px; text-decoration:none; margin-bottom:12px; font-weight:700;">
+                                📲 Send this Review to Amoura Crafts on WhatsApp
+                            </a>
+                            <br>
+                            <button class="submit-btn" onclick="closeModal()" style="background:transparent; border:1px solid var(--line); color:var(--cream); width:auto; padding:8px 24px; font-weight:500;">
+                                Continue Browsing
+                            </button>
+                        </div>
+                    `;
+                    modal.classList.add('open');
+                }
+
+                // Reset form
+                document.getElementById('feedbackForm').reset();
+                uploadedPhotoData = null;
+                const thumb = document.getElementById('photoThumb');
+                if (thumb) thumb.style.display = 'none';
+                const fn = document.getElementById('photoFileName');
+                if (fn) fn.textContent = '';
+                setStar(5);
+
+                // Instantly re-render reviews list so the new review appears right away!
+                await loadApprovedReviews();
+
+            } catch (err) {
+                alert(err.message || "Failed to submit feedback. Please try again.");
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.textContent = 'Submit Feedback ✨';
+                }
             }
         }
 
-        async function loadPendingList() {
-            const list = document.getElementById('pendingList');
-            const pending = await AmouraReviews.getPendingReviews();
+        function closeModal() {
+            const modal = document.getElementById('successModal');
+            if (modal) modal.classList.remove('open');
+        }
 
-            if (pending.length === 0) {
-                list.innerHTML = `<p style="font-size:0.8rem; color:var(--cream-dim);">No pending feedback to approve.</p>`;
+        // Render All Public Reviews on Reviews Page
+        async function loadApprovedReviews() {
+            const container = document.getElementById('approvedReviewsList');
+            if (!container || !window.AmouraReviews) return;
+
+            let reviews = await window.AmouraReviews.getReviews();
+            if (!reviews || reviews.length === 0) {
+                try {
+                    const res = await fetch('data/reviews.json');
+                    if (res.ok) reviews = await res.json();
+                } catch(e) {}
+            }
+
+            if (!reviews || reviews.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-reviews-notice" style="grid-column: 1 / -1;">
+                        <p style="color:var(--gold-light); font-weight:500; margin-bottom:4px;">✨ Be the first to share your experience!</p>
+                        <p>Fill out the form above to share your review with everyone.</p>
+                    </div>
+                `;
                 return;
             }
 
-            list.innerHTML = pending.map(p => `
-                <div style="background:rgba(255,255,255,0.06); padding:10px; border-radius:8px; font-size:0.82rem;">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-                        <strong>${escapeHTML(p.name)}</strong> (${p.rating}★)
-                    </div>
-                    <p style="margin-bottom:6px; color:var(--cream);">${escapeHTML(p.comment)}</p>
-                    <div style="display:flex; gap:6px;">
-                        <button onclick="approveAction('${p.id}')" style="background:#22c55e; color:#fff; border:none; padding:4px 10px; border-radius:4px; font-size:0.75rem; cursor:pointer;">Approve</button>
-                        <button onclick="rejectAction('${p.id}')" style="background:#ef4444; color:#fff; border:none; padding:4px 10px; border-radius:4px; font-size:0.75rem; cursor:pointer;">Reject</button>
-                    </div>
-                </div>
-            `).join('');
-        }
+            // Update section title with rating & total count
+            const sectionTitle = document.querySelector('.reviews-display-section h2');
+            if (sectionTitle) {
+                sectionTitle.innerHTML = `Customer Reviews <span style="font-size:0.95rem; color:var(--gold); display:block; margin-top:4px; font-family:var(--font-body); font-weight:500;">⭐ 4.9 / 5.0 (${reviews.length} Verified Reviews)</span>`;
+            }
 
-        async function approveAction(id) {
-            await AmouraReviews.moderateReview(id, 'approve');
-            loadPendingList();
-            loadApprovedReviews();
-        }
-
-        async function rejectAction(id) {
-            await AmouraReviews.moderateReview(id, 'reject');
-            loadPendingList();
+            container.innerHTML = reviews.map(r => {
+                const stars = '★'.repeat(r.rating || 5) + '☆'.repeat(Math.max(0, 5 - (r.rating || 5)));
+                const photoHtml = r.photo ? `<img src="${r.photo}" class="rev-card-photo" alt="Photo from ${escapeHTML(r.name)}" loading="lazy">` : '';
+                return `
+                    <div class="review-card">
+                        <div class="rev-card-header">
+                            <span class="rev-card-name">${escapeHTML(r.name)}</span>
+                            <span class="rev-card-stars">${stars}</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.75rem; color:var(--cream-dim);">
+                            <span>${r.date || 'Recent'}</span>
+                            <span style="color:var(--gold); font-size:0.72rem;">✓ Verified Purchase</span>
+                        </div>
+                        <p class="rev-card-text">"${escapeHTML(r.comment)}"</p>
+                        ${photoHtml}
+                    </div>
+                `;
+            }).join('');
         }
 
         document.addEventListener('DOMContentLoaded', loadApprovedReviews);

@@ -3813,6 +3813,17 @@
                     <h3>Share Your Experience</h3>
                     <p class="form-subtitle">Takes less than a minute — we read every single review.</p>
 
+                    
+    <!-- Netlify Forms Integration for Persistent Reviews Dashboard -->
+    <form name="customer-reviews" method="POST" data-netlify="true" netlify-honeypot="bot-field" hidden>
+        <input type="hidden" name="form-name" value="customer-reviews">
+        <input type="text" name="bot-field">
+        <input type="text" name="name">
+        <input type="text" name="rating">
+        <textarea name="comment"></textarea>
+        <input type="text" name="date">
+    </form>
+
                     <form id="homeFeedbackForm" onsubmit="handleHomeFeedbackSubmit(event)">
                         <!-- Honeypot anti-spam -->
                         <div style="display:none;" aria-hidden="true">
@@ -5344,33 +5355,7 @@ Please share the final price, delivery timeline and payment options.`;
            ================================================================ */
         window.addEventListener("DOMContentLoaded", () => {
             renderProducts();
-
-        // Render Top 3 Reviews on Homepage Preview
-        async function loadHomeReviews() {
-            const container = document.getElementById("homeReviewsPreview");
-            if (!container || !window.AmouraReviews) return;
-
-            const reviews = await AmouraReviews.getReviews({ sortBy: 'highest' });
-            const topReviews = reviews.slice(0, 4);
-
-            container.innerHTML = topReviews.map(r => `
-                <div class="home-review-card">
-                    <div class="home-rev-header">
-                        <span class="home-rev-name">${r.name}</span>
-                        <span class="home-rev-stars">${'★'.repeat(r.rating)}</span>
-                    </div>
-                    <span class="home-rev-product">🕯️ ${r.productName}</span>
-                    <p class="home-rev-comment">"${r.comment}"</p>
-                </div>
-            `).join("");
-        }
-
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', loadHomeReviews);
-        } else {
             loadHomeReviews();
-        }
-
             renderCart();
             initBulk();
             initShowcase();
@@ -5574,6 +5559,196 @@ Please share the final price, delivery timeline and payment options.`;
 
 </script>
 <script src="reviews-engine.js"></script>
+
+    <!-- Customer Feedback & Reviews Controller -->
+    <script>
+        let homeCurrentRating = 5;
+        let homeUploadedPhotoData = null;
+
+        const homeRatingLabels = {
+            1: "1 Star — Needs Improvement",
+            2: "2 Stars — Fair",
+            3: "3 Stars — Average",
+            4: "4 Stars — Very Good",
+            5: "5 Stars — Excellent!"
+        };
+
+        function setHomeStar(n) {
+            homeCurrentRating = n;
+            const stars = document.querySelectorAll('#homeStarPicker button');
+            stars.forEach((s, i) => {
+                s.classList.toggle('active', i < n);
+            });
+            const lbl = document.getElementById('homeStarLabel');
+            if (lbl) lbl.textContent = homeRatingLabels[n] || (n + " Stars");
+        }
+
+        function handleHomePhoto(e) {
+            const file = e.target.files && e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const MAX = 600;
+                    let w = img.width, h = img.height;
+                    if (w > h && w > MAX) {
+                        h *= MAX / w;
+                        w = MAX;
+                    } else if (h > MAX) {
+                        w *= MAX / h;
+                        h = MAX;
+                    }
+                    canvas.width = w;
+                    canvas.height = h;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, w, h);
+                    homeUploadedPhotoData = canvas.toDataURL('image/jpeg', 0.8);
+                    const thumb = document.getElementById('homePhotoThumb');
+                    if (thumb) {
+                        thumb.src = homeUploadedPhotoData;
+                        thumb.style.display = 'block';
+                    }
+                };
+                img.src = evt.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function handleHomeFeedbackSubmit(e) {
+            e.preventDefault();
+            const btn = document.getElementById('homeSubmitBtn');
+            const succ = document.getElementById('homeFeedbackSuccess');
+            const err = document.getElementById('homeFeedbackError');
+            if (succ) succ.style.display = 'none';
+            if (err) err.style.display = 'none';
+
+            const name = document.getElementById('homeReviewName').value.trim();
+            const comment = document.getElementById('homeReviewComment').value.trim();
+            const trap = document.getElementById('homeHoneypot') ? document.getElementById('homeHoneypot').value : '';
+
+            if (trap) return; // bot
+            if (!name || name.length < 2) {
+                if (err) { err.textContent = 'Please enter your name (minimum 2 characters).'; err.style.display = 'block'; }
+                return;
+            }
+            if (!comment || comment.length < 10) {
+                if (err) { err.textContent = 'Please write feedback of at least 10 characters.'; err.style.display = 'block'; }
+                return;
+            }
+
+            if (btn) {
+                btn.disabled = true;
+                btn.textContent = 'Submitting Review...';
+            }
+
+            try {
+                if (window.ReviewManager) {
+                    await window.ReviewManager.submitReview({
+                        name: name,
+                        rating: homeCurrentRating,
+                        comment: comment,
+                        photo: homeUploadedPhotoData,
+                        website_trap: trap
+                    });
+                }
+                
+                // Show success message with WhatsApp sharing button for the owner!
+                if (succ) {
+                    const waText = encodeURIComponent(
+                        "Hi Amoura Crafts! I just submitted a " + homeCurrentRating + "-star review on your website:\n\n" +
+                        "Name: " + name + "\n" +
+                        "Rating: " + "★".repeat(homeCurrentRating) + "\n" +
+                        "Review: \"" + comment + "\"\n\n" +
+                        "Thank you!"
+                    );
+                    succ.innerHTML = `
+                        ✨ <b>Thank you, ${name}!</b> Your review is now live on our website.<br>
+                        <a href="https://wa.me/918700689036?text=${waText}" target="_blank" style="margin-top:8px; display:inline-flex; align-items:center; gap:6px; background:#25D366; color:#180a08; font-weight:600; padding:6px 12px; border-radius:5px; text-decoration:none; font-size:0.78rem;">
+                            📲 Click to send this review to Amoura Crafts on WhatsApp
+                        </a>
+                    `;
+                    succ.style.display = 'block';
+                }
+
+                document.getElementById('homeFeedbackForm').reset();
+                setHomeStar(5);
+                homeUploadedPhotoData = null;
+                const thumb = document.getElementById('homePhotoThumb');
+                if (thumb) thumb.style.display = 'none';
+
+                // Instantly re-render reviews so the newly submitted review appears live on screen!
+                await loadHomeReviews();
+            } catch (ex) {
+                if (err) {
+                    err.textContent = ex.message || 'Error saving feedback. Please try again.';
+                    err.style.display = 'block';
+                }
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.textContent = 'Submit Feedback ✨';
+                }
+            }
+        }
+
+        async function loadHomeReviews() {
+            const stream = document.getElementById('homeReviewsStream');
+            if (!stream) return;
+
+            let reviews = [];
+            if (window.ReviewManager) {
+                reviews = await window.ReviewManager.getReviews();
+            }
+            if (!reviews || reviews.length === 0) {
+                try {
+                    const res = await fetch('data/reviews.json');
+                    if (res.ok) {
+                        reviews = await res.json();
+                    }
+                } catch(e) {}
+            }
+
+            if (!reviews || reviews.length === 0) {
+                stream.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align:center; padding:24px 16px; background:rgba(33,8,16,0.6); border-radius:10px; border:1px dashed var(--line);">
+                        <p style="color:var(--gold-light); font-size:0.92rem; margin-bottom:4px;">✨ Be the first to share your experience!</p>
+                        <p style="color:var(--cream-dim); font-size:0.78rem; margin:0;">Fill out the form on the left to feature your feedback here.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Display reviews in compact luxury cards
+            const displayList = reviews.slice(0, 8);
+            stream.innerHTML = displayList.map(r => {
+                const stars = '★'.repeat(r.rating || 5) + '☆'.repeat(Math.max(0, 5 - (r.rating || 5)));
+                const photoHtml = r.photo ? `<img src="${r.photo}" alt="Customer photo" class="review-thumb-img" loading="lazy">` : '';
+                const verifiedHtml = r.verified !== false ? `<span class="review-verified-badge">✓ Verified</span>` : '';
+                return `
+                    <div class="review-item-card">
+                        <div class="review-item-head">
+                            <span class="review-item-stars">${stars}</span>
+                            <span class="review-item-date">${r.date || 'Recent'}</span>
+                        </div>
+                        <p class="review-item-text">"${r.comment}"</p>
+                        ${photoHtml}
+                        <div class="review-item-author">
+                            <span>${r.name}</span>
+                            ${verifiedHtml}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            const countBadge = document.getElementById('reviewsCountBadge');
+            if (countBadge) {
+                countBadge.textContent = `⭐ 4.9 (${reviews.length}+ reviews)`;
+            }
+        }
+    </script>
+
 </body>
 
 </html>

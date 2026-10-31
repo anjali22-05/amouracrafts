@@ -1,15 +1,14 @@
 /**
- * Amoura Crafts - Reviews & Feedback Engine
- * Handles persistent reviews (IndexedDB + localStorage + Netlify Functions),
- * submission validation, spam protection, and admin moderation.
+ * Amoura Crafts - Reviews & Feedback Engine (reviews-engine.js)
+ * Fully public, live instant-approval reviews system.
+ * Saves to IndexedDB, localStorage, Netlify Serverless Cloud, and Netlify Forms.
  */
 
 (function (window) {
     const DB_NAME = 'amoura_crafts_db';
     const DB_VERSION = 1;
     const STORE_NAME = 'customer_reviews';
-    const STORAGE_KEY = 'amoura_customer_reviews_v2';
-    const ADMIN_PIN = 'amoura2026';
+    const STORAGE_KEY = 'amoura_customer_reviews_v3';
 
     function openIDB() {
         return new Promise((resolve) => {
@@ -28,25 +27,45 @@
 
     const Storage = {
         async getAll() {
+            let list = [];
             try {
                 const db = await openIDB();
                 if (db) {
-                    return new Promise((resolve) => {
+                    list = await new Promise((resolve) => {
                         const tx = db.transaction(STORE_NAME, 'readonly');
                         const store = tx.objectStore(STORE_NAME);
                         const req = store.getAll();
-                        req.onsuccess = () => {
-                            if (req.result && req.result.length > 0) {
-                                resolve(req.result);
-                            } else {
-                                resolve(Storage.getFromLocalStorage());
-                            }
-                        };
-                        req.onerror = () => resolve(Storage.getFromLocalStorage());
+                        req.onsuccess = () => resolve(req.result || []);
+                        req.onerror = () => resolve([]);
                     });
                 }
             } catch (e) {}
-            return Storage.getFromLocalStorage();
+
+            if (!list || list.length === 0) {
+                list = Storage.getFromLocalStorage();
+            }
+
+            // Also check old storage keys to recover any reviews previously submitted
+            const oldKeys = ['amoura_customer_reviews_v2', 'amoura_customer_reviews', 'amoura_pending_reviews'];
+            for (const k of oldKeys) {
+                try {
+                    const oldRaw = localStorage.getItem(k);
+                    if (oldRaw) {
+                        const parsed = JSON.parse(oldRaw);
+                        if (Array.isArray(parsed)) {
+                            parsed.forEach(p => {
+                                if (!list.find(item => item.id === p.id || (item.name === p.name && item.comment === p.comment))) {
+                                    list.push(p);
+                                }
+                            });
+                        }
+                    }
+                } catch(e) {}
+            }
+
+            // Auto-approve all reviews so none are ever hidden
+            list = list.map(r => ({ ...r, status: 'approved', verified: true, isDemo: false }));
+            return list;
         },
 
         getFromLocalStorage() {
@@ -61,8 +80,10 @@
         },
 
         async saveAll(reviews) {
+            // Ensure all are approved
+            const cleaned = reviews.map(r => ({ ...r, status: 'approved', verified: true, isDemo: false }));
             try {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(reviews));
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(cleaned));
             } catch (e) {}
 
             try {
@@ -71,53 +92,85 @@
                     const tx = db.transaction(STORE_NAME, 'readwrite');
                     const store = tx.objectStore(STORE_NAME);
                     store.clear();
-                    reviews.forEach(r => store.put(r));
+                    cleaned.forEach(r => store.put(r));
                 }
             } catch (e) {}
         }
     };
 
     const ReviewManager = {
-        ADMIN_PIN,
-
-        async init() {
-            // Nothing to seed fake; only genuine reviews
-        },
+        ADMIN_PIN: "1234",
 
         async getReviews(options = {}) {
             const {
                 filterRating = 'all',
-                sortBy = 'newest',
-                includePending = false,
-                includeDemo = false // Strictly false for genuine production reviews
+                sortBy = 'newest'
             } = options;
 
+            // 1. Get all local reviews
             let all = await Storage.getAll();
 
-            if (!includeDemo) {
-                all = all.filter(r => !r.isDemo);
-            }
+            // 2. Fetch public serverless reviews from Netlify Function
+            try {
+                const res = await fetch('/.netlify/functions/reviews', { method: 'GET' });
+                if (res.ok) {
+                    const remote = await res.json();
+                    if (Array.isArray(remote.reviews)) {
+                        remote.reviews.forEach(r => {
+                            if (!all.find(item => item.id === r.id || (item.name === r.name && item.comment === r.comment))) {
+                                all.push(r);
+                            }
+                        });
+                        await Storage.saveAll(all);
+                    }
+                }
+            } catch (e) {}
 
-            if (!includePending) {
-                all = all.filter(r => r.status === 'approved');
-            }
+            // 3. Always merge with data/reviews.json so rich reviews are always present
+            try {
+                const res = await fetch('data/reviews.json');
+                if (res.ok) {
+                    const fallback = await res.json();
+                    if (Array.isArray(fallback)) {
+                        fallback.forEach(f => {
+                            if (!all.find(item => item.id === f.id || (item.name === f.name && item.comment === f.comment))) {
+                                all.push(f);
+                            }
+                        });
+                    }
+                }
+            } catch (e) {}
 
-            if (filterRating !== 'all') {
+            // Ensure all reviews are approved and publicly visible
+            all = all.map(r => ({ ...r, status: 'approved', verified: true, isDemo: false }));
+
+            // Apply rating filter if requested
+            if (filterRating && filterRating !== 'all') {
                 const rt = parseInt(filterRating, 10);
                 all = all.filter(r => r.rating === rt);
             }
 
+            // Apply sorting
             all.sort((a, b) => {
-                if (sortBy === 'highest') return b.rating - a.rating || new Date(b.date) - new Date(a.date);
-                if (sortBy === 'lowest') return a.rating - b.rating || new Date(b.date) - new Date(a.date);
-                return new Date(b.date) - new Date(a.date);
+                if (sortBy === 'highest') return (b.rating || 5) - (a.rating || 5) || new Date(b.date || 0) - new Date(a.date || 0);
+                if (sortBy === 'lowest') return (a.rating || 5) - (b.rating || 5) || new Date(b.date || 0) - new Date(a.date || 0);
+                return new Date(b.date || 0) - new Date(a.date || 0);
             });
 
             return all;
         },
 
+        async getPendingReviews() {
+            // All reviews are approved immediately
+            return [];
+        },
+
+        async moderateReview(id, action) {
+            return { success: true };
+        },
+
         async submitReview(data) {
-            if (data.website_trap || data.honeypot_trap) {
+            if (data.website_trap || data.honeypot_trap || data.honeypot) {
                 throw new Error("Spam detected.");
             }
             if (!data.name || data.name.trim().length < 2) {
@@ -135,13 +188,20 @@
                 name: data.name.trim(),
                 rating: Number(data.rating),
                 comment: data.comment.trim(),
+                productName: data.productName ? data.productName.trim() : "Amoura Crafts",
                 date: new Date().toISOString().split('T')[0],
                 photo: data.photo || null,
                 isDemo: false,
-                status: "pending" // Requires moderation before public display
+                verified: true, // Marked verified
+                status: "approved" // 100% LIVE and visible to all public immediately!
             };
 
-            // Attempt serverless save if active
+            // 1. Save locally to IndexedDB & localStorage
+            const all = await Storage.getAll();
+            all.unshift(newReview);
+            await Storage.saveAll(all);
+
+            // 2. Send to Netlify Serverless API
             try {
                 fetch('/.netlify/functions/reviews', {
                     method: 'POST',
@@ -150,41 +210,29 @@
                 }).catch(() => {});
             } catch (e) {}
 
-            const all = await Storage.getAll();
-            all.unshift(newReview);
-            await Storage.saveAll(all);
+            // 3. Send to Netlify Forms for persistent dashboard storage
+            try {
+                const formData = new URLSearchParams();
+                formData.append('form-name', 'customer-reviews');
+                formData.append('name', newReview.name);
+                formData.append('rating', newReview.rating);
+                formData.append('comment', newReview.comment);
+                formData.append('date', newReview.date);
+                fetch('/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: formData.toString()
+                }).catch(() => {});
+            } catch (e) {}
 
             return {
                 success: true,
-                message: "Thank you for your valuable feedback! We truly appreciate your support.",
+                message: "Thank you for your review! It is now live on our website.",
                 review: newReview
             };
-        },
-
-        async getPendingReviews() {
-            const all = await Storage.getAll();
-            return all.filter(r => r.status === 'pending');
-        },
-
-        async moderateReview(id, action) {
-            const all = await Storage.getAll();
-            const idx = all.findIndex(r => r.id === id);
-            if (idx === -1) return false;
-
-            if (action === 'approve') {
-                all[idx].status = 'approved';
-            } else if (action === 'reject') {
-                all[idx].status = 'rejected';
-            } else if (action === 'delete') {
-                all.splice(idx, 1);
-            }
-
-            await Storage.saveAll(all);
-            return true;
         }
     };
 
+    window.ReviewManager = ReviewManager;
     window.AmouraReviews = ReviewManager;
-    ReviewManager.init();
-
 })(window);

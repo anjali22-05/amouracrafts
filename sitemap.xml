@@ -1,28 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://amouracrafts.com/</loc>
-    <lastmod>2026-10-31</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://amouracrafts.com/reviews.html</loc>
-    <lastmod>2026-10-31</lastmod>
+    <lastmod>2026-11-02</lastmod>
     <changefreq>daily</changefreq>
-    <priority>0.9</priority>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://amouracrafts.com/images/thumbs/img_19.webp</image:loc>
+      <image:title>Amoura Crafts Handcrafted Soy Candle Collection</image:title>
+      <image:caption>Hand-poured organic scented soy candles and festive diyas</image:caption>
+    </image:image>
+    <image:image>
+      <image:loc>https://amouracrafts.com/images/thumbs/img_25.webp</image:loc>
+      <image:title>Aurelia Bloom Royal Golden Floral Candle</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://amouracrafts.com/images/thumbs/img_27.webp</image:loc>
+      <image:title>Mayura Royal Twin Peacock Floral Panchdeep Candle</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://amouracrafts.com/images/thumbs/img_26.webp</image:loc>
+      <image:title>Gulnaar Bloom Royal Floral Urli Candle</image:title>
+    </image:image>
   </url>
   <url>
     <loc>https://amouracrafts.com/plants.html</loc>
-    <lastmod>2026-10-31</lastmod>
+    <lastmod>2026-11-02</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.85</priority>
+    <image:image>
+      <image:loc>https://amouracrafts.com/images/3d/gallery_3d_1.webp</image:loc>
+      <image:title>Botanical Tree and Plant Resin Decor</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://amouracrafts.com/images/3d/gallery_3d_2.webp</image:loc>
+      <image:title>Handcrafted Floral Crystal Resin Tree</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://amouracrafts.com/reviews.html</loc>
+    <lastmod>2026-11-02</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.85</priority>
   </url>
   <url>
     <loc>https://amouracrafts.com/about.html</loc>
-    <lastmod>2026-10-31</lastmod>
+    <lastmod>2026-11-02</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <image:image>
+      <image:loc>https://amouracrafts.com/images/logo.png</image:loc>
+      <image:title>Amoura Crafts Studio Logo</image:title>
+    </image:image>
   </url>
 </urlset>
-

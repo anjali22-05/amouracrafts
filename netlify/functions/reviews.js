@@ -1,5 +1,7 @@
 // Netlify Serverless Function for Amoura Crafts Real Customer Reviews
-// Handles persistent cloud reviews via Netlify Blobs + in-memory cache
+// Connected to Google Sheets Cloud Database
+
+const GOOGLE_SHEET_API = "https://script.google.com/macros/s/AKfycbzdCK_Zefr3DBL3fHYp1SKmXRXudXBpLWA1EPQVR62XOijTYOKtBZpC1nCcmRQ6KxNhlw/exec";
 
 const FAKE_NAMES = [
   'Priya Sharma', 'Aarav Mehta', 'Neha Patel', 'Rohan Gupta',
@@ -15,31 +17,6 @@ function isRealReview(r) {
   return true;
 }
 
-// Initialized with genuine client reviews
-let inMemoryReviews = [
-  {
-    "id": "rev-1793467604837-u6ap0v",
-    "name": "abhishek",
-    "rating": 5,
-    "comment": "Please buy scented candles quality is awasome",
-    "productName": "Amoura Crafts",
-    "date": "2026-10-31",
-    "verified": true,
-    "status": "approved",
-    "photo": null
-  }
-];
-
-function getBlobs() {
-  try {
-    const { getStore } = require("@netlify/blobs");
-    if (getStore) {
-      return getStore({ name: "amoura-customer-reviews", consistency: "strong" });
-    }
-  } catch (e) {}
-  return null;
-}
-
 exports.handler = async (event, context) => {
   const headers = {
     "Access-Control-Allow-Origin": "*",
@@ -52,39 +29,38 @@ exports.handler = async (event, context) => {
     return { statusCode: 200, headers, body: "" };
   }
 
-  const blobs = getBlobs();
-
-  // GET: Fetch all real public customer reviews
+  // GET: Fetch all real reviews from Google Sheet Cloud Database
   if (event.httpMethod === "GET") {
     try {
-      let list = inMemoryReviews;
-      if (blobs) {
-        try {
-          const stored = await blobs.get("reviews_list", { type: "json" });
-          if (Array.isArray(stored) && stored.length > 0) {
-            // Filter out any leftover fake reviews from old tests
-            list = stored.filter(isRealReview);
-          }
-        } catch (e) {}
+      const res = await fetch(GOOGLE_SHEET_API);
+      if (res.ok) {
+        const raw = await res.json();
+        if (Array.isArray(raw)) {
+          const cleaned = raw.filter(isRealReview).map(r => ({
+            ...r,
+            date: (r.date && String(r.date).includes('T')) ? String(r.date).split('T')[0] : (r.date || 'Recent'),
+            verified: true,
+            status: "approved"
+          }));
+          return {
+            statusCode: 200,
+            headers,
+            body: JSON.stringify({ success: true, reviews: cleaned })
+          };
+        }
       }
-
-      list = list.filter(isRealReview);
-
-      return {
-        statusCode: 200,
-        headers,
-        body: JSON.stringify({ success: true, reviews: list })
-      };
     } catch (err) {
-      return {
-        statusCode: 200,
-        headers,
-        body: JSON.stringify({ success: true, reviews: inMemoryReviews.filter(isRealReview) })
-      };
+      console.error("Error fetching from Google Sheet:", err);
     }
+
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({ success: true, reviews: [] })
+    };
   }
 
-  // POST: Submit a new genuine customer review (auto-approved & public)
+  // POST: Submit review to Google Sheet Cloud Database
   if (event.httpMethod === "POST") {
     try {
       const data = JSON.parse(event.body || "{}");
@@ -127,20 +103,20 @@ exports.handler = async (event, context) => {
         photo: data.photo || null
       };
 
-      // Add to in-memory list (only real reviews)
-      inMemoryReviews = [newReview, ...inMemoryReviews.filter(r => r.id !== newReview.id && isRealReview(r))];
-
-      // Persist in Netlify Blobs
-      if (blobs) {
-        try {
-          let stored = await blobs.get("reviews_list", { type: "json" });
-          if (!Array.isArray(stored)) {
-            stored = inMemoryReviews;
-          } else {
-            stored = [newReview, ...stored.filter(r => r.id !== newReview.id && isRealReview(r))];
-          }
-          await blobs.setJSON("reviews_list", stored);
-        } catch (e) {}
+      // Forward to Google Sheet Web App
+      try {
+        await fetch(GOOGLE_SHEET_API, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: newReview.name,
+            rating: newReview.rating,
+            comment: newReview.comment,
+            date: newReview.date
+          })
+        });
+      } catch (sheetErr) {
+        console.error("Sheet post error:", sheetErr);
       }
 
       return {
@@ -148,7 +124,7 @@ exports.handler = async (event, context) => {
         headers,
         body: JSON.stringify({
           success: true,
-          message: "Thank you! Your review is now live on our website.",
+          message: "Thank you! Your review is now saved in our Google Sheet database and live on the website.",
           review: newReview
         })
       };

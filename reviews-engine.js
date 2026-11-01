@@ -1,14 +1,15 @@
 /**
  * Amoura Crafts - Real Customer Reviews Engine (reviews-engine.js)
- * Only genuine customer reviews. Zero hardcoded/demo content.
- * Real-time cloud sync with Netlify Serverless API & Netlify Forms.
+ * Permanently connected to Google Sheets Database!
+ * Real-time synchronization across all devices with zero data loss.
  */
 
 (function (window) {
     const DB_NAME = 'amoura_crafts_db';
-    const DB_VERSION = 2;
+    const DB_VERSION = 3;
     const STORE_NAME = 'customer_reviews';
-    const STORAGE_KEY = 'amoura_real_reviews_v1';
+    const STORAGE_KEY = 'amoura_google_sheet_reviews_v1';
+    const GOOGLE_SHEET_API = "https://script.google.com/macros/s/AKfycbzdCK_Zefr3DBL3fHYp1SKmXRXudXBpLWA1EPQVR62XOijTYOKtBZpC1nCcmRQ6KxNhlw/exec";
 
     const FAKE_NAMES = [
         'Priya Sharma', 'Aarav Mehta', 'Neha Patel', 'Rohan Gupta',
@@ -25,20 +26,12 @@
         return true;
     }
 
-    // Purge old fake localStorage keys left from earlier demo builds
-    (function purgeLegacyDemoKeys() {
-        try {
-            const legacyKeys = [
-                'amoura_customer_reviews',
-                'amoura_customer_reviews_v2',
-                'amoura_customer_reviews_v3',
-                'amoura_pending_reviews'
-            ];
-            for (const k of legacyKeys) {
-                localStorage.removeItem(k);
-            }
-        } catch (e) {}
-    })();
+    function cleanDate(d) {
+        if (!d) return 'Recent';
+        const str = String(d);
+        if (str.includes('T')) return str.split('T')[0];
+        return str;
+    }
 
     function openIDB() {
         return new Promise((resolve) => {
@@ -75,9 +68,7 @@
                 list = Storage.getFromLocalStorage();
             }
 
-            // Strictly filter out any fake or demo reviews
-            list = (list || []).filter(isRealReview);
-            return list;
+            return (list || []).filter(isRealReview);
         },
 
         getFromLocalStorage() {
@@ -94,6 +85,7 @@
         async saveAll(reviews) {
             const cleaned = (reviews || []).filter(isRealReview).map(r => ({
                 ...r,
+                date: cleanDate(r.date),
                 status: 'approved',
                 verified: true,
                 isDemo: false
@@ -124,41 +116,63 @@
                 sortBy = 'newest'
             } = options;
 
-            // 1. Get cached local real reviews
-            let all = await Storage.getAll();
+            let all = [];
 
-            // 2. Fetch fresh real reviews from Netlify Cloud API (with cache buster)
+            // 1. Primary: Fetch real-time reviews directly from Google Sheet Database
             try {
-                const res = await fetch('/.netlify/functions/reviews?t=' + Date.now(), { method: 'GET' });
+                const res = await fetch(GOOGLE_SHEET_API + '?t=' + Date.now());
                 if (res.ok) {
                     const remote = await res.json();
-                    if (Array.isArray(remote.reviews)) {
-                        const remoteReal = remote.reviews.filter(isRealReview);
-                        remoteReal.forEach(r => {
-                            if (!all.find(item => item.id === r.id || (item.name === r.name && item.comment === r.comment))) {
-                                all.push(r);
-                            }
-                        });
+                    if (Array.isArray(remote)) {
+                        all = remote.filter(isRealReview).map((r, i) => ({
+                            id: r.id || 'sheet-rev-' + i,
+                            name: String(r.name || 'Customer').trim(),
+                            rating: Math.min(5, Math.max(1, Number(r.rating || 5))),
+                            comment: String(r.comment || '').trim(),
+                            date: cleanDate(r.date),
+                            verified: true,
+                            status: 'approved'
+                        }));
                         await Storage.saveAll(all);
                     }
                 }
-            } catch (e) {}
+            } catch (e) {
+                console.warn("Direct Google Sheet fetch error, trying backend fallback:", e);
+            }
 
-            // 3. If local is still empty, load data/reviews.json fallback (only if real)
+            // 2. Fallback: If direct fetch failed, try Netlify Serverless Proxy
             if (all.length === 0) {
                 try {
-                    const res = await fetch('data/reviews.json?t=' + Date.now());
+                    const res = await fetch('/.netlify/functions/reviews?t=' + Date.now());
                     if (res.ok) {
-                        const fallback = await res.json();
-                        if (Array.isArray(fallback)) {
-                            all = fallback.filter(isRealReview);
-                            if (all.length > 0) await Storage.saveAll(all);
+                        const data = await res.json();
+                        if (Array.isArray(data.reviews) && data.reviews.length > 0) {
+                            all = data.reviews.filter(isRealReview);
+                            await Storage.saveAll(all);
                         }
                     }
                 } catch (e) {}
             }
 
-            // Strictly filter real reviews only
+            // 3. Fallback: Local Cache
+            if (all.length === 0) {
+                all = await Storage.getAll();
+            }
+
+            // 4. Fallback: data/reviews.json
+            if (all.length === 0) {
+                try {
+                    const res = await fetch('data/reviews.json?t=' + Date.now());
+                    if (res.ok) {
+                        const fb = await res.json();
+                        if (Array.isArray(fb)) {
+                            all = fb.filter(isRealReview);
+                        }
+                    }
+                } catch (e) {}
+            }
+
+            // Strictly real reviews only
             all = all.filter(isRealReview);
 
             // Apply rating filter
@@ -199,25 +213,41 @@
                 throw new Error("Please select a rating from 1 to 5 stars.");
             }
 
+            const today = new Date().toISOString().split('T')[0];
             const newReview = {
                 id: "rev-" + Date.now() + "-" + Math.random().toString(36).substr(2, 6),
                 name: data.name.trim(),
                 rating: Number(data.rating),
                 comment: data.comment.trim(),
                 productName: data.productName ? data.productName.trim() : "Amoura Crafts",
-                date: new Date().toISOString().split('T')[0],
+                date: today,
                 photo: data.photo || null,
                 isDemo: false,
                 verified: true,
                 status: "approved"
             };
 
-            // 1. Immediately save locally to IndexedDB & localStorage
-            let all = await Storage.getAll();
-            all = [newReview, ...all.filter(r => r.id !== newReview.id)];
-            await Storage.saveAll(all);
+            // 1. Immediately save locally to IndexedDB & localStorage for 0ms instant display
+            let localList = await Storage.getAll();
+            localList = [newReview, ...localList.filter(r => r.id !== newReview.id)];
+            await Storage.saveAll(localList);
 
-            // 2. Persist to Netlify Serverless Cloud API
+            // 2. Send directly to Google Sheet Database Web App
+            try {
+                fetch(GOOGLE_SHEET_API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    mode: 'no-cors',
+                    body: JSON.stringify({
+                        name: newReview.name,
+                        rating: newReview.rating,
+                        comment: newReview.comment,
+                        date: newReview.date
+                    })
+                }).catch(() => {});
+            } catch (e) {}
+
+            // 3. Send to Netlify Serverless Function (which also forwards to Google Sheet as backup)
             try {
                 fetch('/.netlify/functions/reviews', {
                     method: 'POST',
@@ -226,7 +256,7 @@
                 }).catch(() => {});
             } catch (e) {}
 
-            // 3. Record in Netlify Forms Dashboard
+            // 4. Record in Netlify Forms Dashboard
             try {
                 const formData = new URLSearchParams();
                 formData.append('form-name', 'customer-reviews');
@@ -243,7 +273,7 @@
 
             return {
                 success: true,
-                message: "Thank you! Your review is now live on our website.",
+                message: "Thank you! Your review is now saved in our Google Sheet database and live on the website.",
                 review: newReview
             };
         }

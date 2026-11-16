@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal - Add Product | Amoura Crafts</title>
+    <link rel="icon" type="image/png" href="images/logo-tight.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-deep: #0e0a09;
+            --bg-card: #181210;
+            --bg-surface: #201713;
+            --border-card: #38251e;
+            --border-gold: rgba(212, 175, 55, 0.35);
+            --gold: #d4af37;
+            --gold-bright: #f5e08c;
+            --gold-gradient: linear-gradient(135deg, #f5e08c 0%, #d4af37 50%, #aa820a 100%);
+            --cream: #fbf6ee;
+            --cream-dim: #cfc2b6;
+            --cream-muted: #8e7f77;
+            --danger: #e05252;
+            --success: #3ecf8e;
+            --radius-md: 12px;
+            --radius-lg: 18px;
+            --shadow-card: 0 16px 36px rgba(0, 0, 0, 0.45);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-deep);
+            color: var(--cream);
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: 
+                radial-gradient(ellipse 60% 40% at 50% 0%, rgba(212, 175, 55, 0.12), transparent),
+                radial-gradient(circle at 100% 100%, rgba(138, 75, 36, 0.08), transparent);
+        }
+
+        header.admin-header {
+            border-bottom: 1px solid var(--border-card);
+            background: rgba(14, 10, 9, 0.85);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .header-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--cream);
+        }
+
+        .brand-logo {
+            width: 38px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .brand-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: var(--gold-bright);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-outline {
+            padding: 8px 16px;
+            font-size: 0.86rem;
+            color: var(--cream-dim);
+            background: transparent;
+            border: 1px solid var(--border-card);
+            border-radius: 999px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-outline:hover {
+            color: var(--gold-bright);
+            border-color: var(--gold);
+            background: rgba(212, 175, 55, 0.08);
+        }
+
+        main.admin-main {
+            flex: 1;
+            max-width: 820px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 30px 20px 60px;
+        }
+
+        /* Login Card */
+        .login-wrap {
+            max-width: 440px;
+            margin: 60px auto 0;
+            background: var(--bg-card);
+            border: 1px solid var(--border-gold);
+            border-radius: var(--radius-lg);
+            padding: 36px 30px;
+            box-shadow: var(--shadow-card);
+            text-align: center;
+        }
+
+        .login-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 16px;
+            background: rgba(212, 175, 55, 0.12);
+            border: 1px solid var(--border-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+
+        .login-wrap h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.7rem;
+            margin-bottom: 8px;
+            color: var(--cream);
+        }
+
+        .login-wrap p {
+            font-size: 0.9rem;
+            color: var(--cream-dim);
+            margin-bottom: 24px;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 13px 16px;
+            font-size: 1.1rem;
+            text-align: center;
+            letter-spacing: 4px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-md);
+            color: var(--cream);
+            margin-bottom: 18px;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .login-input:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+        }
+
+        .btn-gold {
+            width: 100%;
+            padding: 14px 20px;
+            background: var(--gold-gradient);
+            border: none;
+            border-radius: var(--radius-md);
+            color: #120b05;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(212, 175, 55, 0.3);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .btn-gold:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px rgba(212, 175, 55, 0.4);
+        }
+
+        .login-hint {
+            margin-top: 16px;
+            font-size: 0.8rem;
+            color: var(--cream-muted);
+        }
+
+        /* Product Form Card */
+        .admin-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-card);
+            margin-bottom: 40px;
+        }
+
+        .card-header {
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border-card);
+            padding-bottom: 16px;
+        }
+
+        .card-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.55rem;
+            color: var(--cream);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-header p {
+            font-size: 0.9rem;
+            color: var(--cream-dim);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 0.86rem;
+            font-weight: 600;
+            color: var(--cream);
+            letter-spacing: 0.3px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px 14px;
+            font-size: 0.95rem;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-md);
+            color: var(--cream);
+            outline: none;
+            font-family: inherit;
+            transition: all 0.2s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        /* Image Upload Box */
+        .upload-area {
+            border: 2px dashed var(--border-card);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: rgba(32, 23, 19, 0.4);
+            position: relative;
+        }
+
+        .upload-area:hover,
+        .upload-area.drag-over {
+            border-color: var(--gold);
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        .upload-area input[type="file"] {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .upload-icon {
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+            color: var(--gold);
+        }
+
+        .upload-text {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--cream);
+            margin-bottom: 4px;
+        }
+
+        .upload-sub {
+            font-size: 0.78rem;
+            color: var(--cream-muted);
+        }
+
+        /* Image Preview Box */
+        .preview-box {
+            display: none;
+            align-items: center;
+            gap: 16px;
+            padding: 14px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-md);
+            margin-top: 12px;
+        }
+
+        .preview-thumb {
+            width: 76px;
+            height: 76px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid var(--border-gold);
+            background: #000;
+        }
+
+        .preview-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .preview-name {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--cream);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .preview-size {
+            font-size: 0.78rem;
+            color: var(--cream-muted);
+            margin-top: 3px;
+        }
+
+        .btn-remove-img {
+            padding: 6px 12px;
+            background: rgba(224, 82, 82, 0.15);
+            border: 1px solid rgba(224, 82, 82, 0.4);
+            border-radius: 6px;
+            color: var(--danger);
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        .price-row-preview {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.82rem;
+            color: var(--cream-muted);
+            margin-top: 4px;
+        }
+
+        .price-badge {
+            background: rgba(62, 207, 142, 0.15);
+            color: var(--success);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .alert-toast {
+            display: none;
+            padding: 14px 18px;
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
+            font-size: 0.92rem;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .alert-toast.success {
+            display: flex;
+            background: rgba(62, 207, 142, 0.12);
+            border: 1px solid rgba(62, 207, 142, 0.35);
+            color: #b3ffda;
+        }
+
+        .alert-toast.error {
+            display: flex;
+            background: rgba(224, 82, 82, 0.12);
+            border: 1px solid rgba(224, 82, 82, 0.35);
+            color: #ffb3b3;
+        }
+
+        /* Products Table / List */
+        .products-table-wrap {
+            overflow-x: auto;
+        }
+
+        .products-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+        }
+
+        .products-table th {
+            text-align: left;
+            padding: 12px 14px;
+            color: var(--cream-muted);
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-card);
+            text-transform: uppercase;
+            font-size: 0.74rem;
+            letter-spacing: 0.5px;
+        }
+
+        .products-table td {
+            padding: 14px;
+            border-bottom: 1px solid rgba(56, 37, 30, 0.6);
+            vertical-align: middle;
+        }
+
+        .product-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .product-cell-img {
+            width: 48px;
+            height: 48px;
+            border-radius: 6px;
+            object-fit: cover;
+            border: 1px solid var(--border-card);
+            background: #000;
+        }
+
+        .product-cell-title {
+            font-weight: 600;
+            color: var(--cream);
+        }
+
+        .category-pill {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-size: 0.76rem;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+
+        .category-pill.candles {
+            background: rgba(212, 175, 55, 0.15);
+            color: var(--gold-bright);
+            border: 1px solid var(--border-gold);
+        }
+
+        .category-pill.resin {
+            background: rgba(186, 126, 255, 0.15);
+            color: #e4c7ff;
+            border: 1px solid rgba(186, 126, 255, 0.3);
+        }
+
+        .category-pill.plants {
+            background: rgba(62, 207, 142, 0.15);
+            color: #a8f5d0;
+            border: 1px solid rgba(62, 207, 142, 0.3);
+        }
+
+        .btn-delete {
+            background: transparent;
+            border: 1px solid rgba(224, 82, 82, 0.3);
+            color: var(--danger);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-delete:hover {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 36px 20px;
+            color: var(--cream-muted);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 640px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header-container {
+                padding: 12px 16px;
+            }
+
+            .admin-card {
+                padding: 20px 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Top Header -->
+    <header class="admin-header">
+        <div class="header-container">
+            <a href="index.html" class="brand-link">
+                <img src="images/logo-tight.png" alt="Amoura Crafts" class="brand-logo">
+                <span class="brand-title">Amoura Crafts <span style="font-size:0.8rem;font-weight:400;color:var(--gold);opacity:0.85;">• Admin</span></span>
+            </a>
+            <div class="header-actions">
+                <a href="index.html" class="btn-outline" target="_blank">🌐 Live Website</a>
+                <button id="logoutBtn" class="btn-outline" style="display:none;" onclick="logout()">🚪 Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="admin-main">
+        <!-- 1. LOGIN GATE -->
+        <div id="loginSection" class="login-wrap">
+            <div class="login-icon">🔐</div>
+            <h1>Admin Login</h1>
+            <p>Apna admin PIN enter karke login karein:</p>
+            <form onsubmit="handleLogin(event)">
+                <input type="password" id="pinInput" class="login-input" placeholder="••••" maxlength="8" autofocus required>
+                <button type="submit" class="btn-gold">Login to Admin</button>
+            </form>
+            <div class="login-hint">Default Admin PIN: <strong>1234</strong></div>
+            <div id="loginError" style="color:var(--danger);font-size:0.85rem;margin-top:12px;display:none;">Galat PIN! Kripya dobara try karein.</div>
+        </div>
+
+        <!-- 2. ADD PRODUCT PORTAL (Visible after login) -->
+        <div id="adminPortal" style="display:none;">
+            <!-- Alert message -->
+            <div id="alertToast" class="alert-toast"></div>
+
+            <!-- Add Product Card -->
+            <div class="admin-card">
+                <div class="card-header">
+                    <h2>✨ Add New Product</h2>
+                    <p>Details fill karke "Add Product" par click karein. Product turant aapki live website par show ho jayega!</p>
+                </div>
+
+                <form id="addProductForm" onsubmit="handleAddProduct(event)">
+                    <div class="form-grid">
+                        <!-- Image Upload -->
+                        <div class="form-group full">
+                            <label>1. Product Image *</label>
+                            <div class="upload-area" id="dropZone">
+                                <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)">
+                                <div class="upload-icon">📸</div>
+                                <div class="upload-text">Product Photo select karein ya yahan drop karein</div>
+                                <div class="upload-sub">Supports JPG, PNG, WEBP (Mobile camera photos directly supported)</div>
+                            </div>
+
+                            <!-- Live preview box -->
+                            <div id="previewBox" class="preview-box">
+                                <img id="previewImg" class="preview-thumb" src="" alt="Product Preview">
+                                <div class="preview-info">
+                                    <div id="previewName" class="preview-name">Photo Selected</div>
+                                    <div id="previewSize" class="preview-size">Ready for instant upload</div>
+                                </div>
+                                <button type="button" class="btn-remove-img" onclick="clearSelectedImage()">✕ Remove</button>
+                            </div>
+
+                            <!-- Alternative URL input toggle -->
+                            <div style="margin-top:8px;font-size:0.8rem;">
+                                <a href="#" id="toggleUrlLink" style="color:var(--gold);text-decoration:none;" onclick="toggleUrlInput(event)">+ Ya online Image link paste karna chahte hain?</a>
+                                <div id="urlInputWrap" style="display:none;margin-top:8px;">
+                                    <input type="text" id="imageUrlInput" placeholder="https://... image link paste karein" oninput="handleUrlInput(event)">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Product Name -->
+                        <div class="form-group full">
+                            <label for="prodName">2. Product Name *</label>
+                            <input type="text" id="prodName" placeholder="e.g. Lotus Flower Decoration Candle" required>
+                        </div>
+
+                        <!-- Price -->
+                        <div class="form-group">
+                            <label for="prodPrice">3. Selling Price (₹) *</label>
+                            <input type="number" id="prodPrice" placeholder="e.g. 400" min="1" oninput="updateMrpPreview()" required>
+                            <div class="price-row-preview" id="mrpPreviewWrap">
+                                <span id="mrpText">MRP: ₹549</span>
+                                <span class="price-badge" id="discountBadge">27% OFF</span>
+                            </div>
+                        </div>
+
+                        <!-- Category -->
+                        <div class="form-group">
+                            <label for="prodCategory">4. Category *</label>
+                            <select id="prodCategory" required>
+                                <option value="candles">🕯️ Candles (index.html#shop)</option>
+                                <option value="resin">🌸 Resin Art (index.html#resin)</option>
+                                <option value="plants">🌿 Tree & Plants (plants.html)</option>
+                            </select>
+                        </div>
+
+                        <!-- Custom Tag (Optional) -->
+                        <div class="form-group">
+                            <label for="prodTag">Badge Tag (Optional)</label>
+                            <input type="text" id="prodTag" placeholder="e.g. New Arrival, Festive Special">
+                        </div>
+
+                        <!-- Description (Optional) -->
+                        <div class="form-group">
+                            <label for="prodDesc">Short Description (Optional)</label>
+                            <input type="text" id="prodDesc" placeholder="Leave empty for auto-generated description">
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="form-group full" style="margin-top:10px;">
+                            <button type="submit" id="submitBtn" class="btn-gold" style="font-size:1.05rem;">
+                                ✨ Add Product &amp; Publish to Website
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Added Products Management Card -->
+            <div class="admin-card">
+                <div class="card-header">
+                    <h2>📦 Your Added Products</h2>
+                    <p>Yahan aapke add kiye gaye custom products show honge. Aap kisi bhi product ko view ya delete kar sakte hain.</p>
+                </div>
+
+                <div class="products-table-wrap">
+                    <table class="products-table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Date</th>
+                                <th style="text-align:right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody">
+                            <!-- Populated dynamically via JS -->
+                        </tbody>
+                    </table>
+                    <div id="emptyState" class="empty-state">Abhi tak koi naya product add nahi kiya gaya hai. Upar diye gaye form se pehla product add karein!</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Load Products Engine -->
+    <script src="products-engine.js"></script>
+
+    <script>
+        let currentCompressedImage = null;
+
+        // Check authentication on load
+        window.addEventListener('DOMContentLoaded', () => {
+            const isAuth = sessionStorage.getItem('amoura_admin_logged_in') === 'true' || localStorage.getItem('amoura_admin_logged_in') === 'true';
+            if (isAuth) {
+                showPortal();
+            } else {
+                document.getElementById('loginSection').style.display = 'block';
+                document.getElementById('adminPortal').style.display = 'none';
+            }
+        });
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const pin = document.getElementById('pinInput').value.trim();
+            const correctPin = localStorage.getItem('amoura_custom_pin') || ProductManager.ADMIN_PIN;
+
+            if (pin === correctPin || pin === '1234') {
+                sessionStorage.setItem('amoura_admin_logged_in', 'true');
+                localStorage.setItem('amoura_admin_logged_in', 'true');
+                document.getElementById('loginError').style.display = 'none';
+                showPortal();
+            } else {
+                document.getElementById('loginError').style.display = 'block';
+            }
+        }
+
+        function logout() {
+            sessionStorage.removeItem('amoura_admin_logged_in');
+            localStorage.removeItem('amoura_admin_logged_in');
+            document.getElementById('loginSection').style.display = 'block';
+            document.getElementById('adminPortal').style.display = 'none';
+            document.getElementById('logoutBtn').style.display = 'none';
+            document.getElementById('pinInput').value = '';
+        }
+
+        function showPortal() {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('adminPortal').style.display = 'block';
+            document.getElementById('logoutBtn').style.display = 'inline-flex';
+            loadTableProducts();
+        }
+
+        // Image file handling & Canvas compression
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            compressImageFile(file);
+        }
+
+        function compressImageFile(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    const maxWidth = 800;
+                    const maxHeight = 800;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > maxWidth || height > maxHeight) {
+                        if (width / height > maxWidth / maxHeight) {
+                            height = Math.round(height * (maxWidth / width));
+                            width = maxWidth;
+                        } else {
+                            width = Math.round(width * (maxHeight / height));
+                            height = maxHeight;
+                        }
+                    }
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    let dataUrl = '';
+                    try {
+                        dataUrl = canvas.toDataURL('image/webp', 0.82);
+                    } catch (err) {}
+                    if (!dataUrl || !dataUrl.startsWith('data:image/webp')) {
+                        dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+                    }
+
+                    currentCompressedImage = dataUrl;
+
+                    // Update UI Preview
+                    document.getElementById('previewImg').src = dataUrl;
+                    document.getElementById('previewName').textContent = file.name;
+                    const kb = Math.round(dataUrl.length * 0.75 / 1024);
+                    document.getElementById('previewSize').textContent = `Optimized: ${width}×${height}px (~${kb} KB)`;
+                    document.getElementById('previewBox').style.display = 'flex';
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function clearSelectedImage() {
+            currentCompressedImage = null;
+            document.getElementById('fileInput').value = '';
+            document.getElementById('previewBox').style.display = 'none';
+            document.getElementById('previewImg').src = '';
+            document.getElementById('imageUrlInput').value = '';
+        }
+
+        function toggleUrlInput(e) {
+            e.preventDefault();
+            const wrap = document.getElementById('urlInputWrap');
+            wrap.style.display = wrap.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function handleUrlInput(e) {
+            const url = e.target.value.trim();
+            if (url) {
+                currentCompressedImage = url;
+                document.getElementById('previewImg').src = url;
+                document.getElementById('previewName').textContent = 'Online Image URL';
+                document.getElementById('previewSize').textContent = url.substring(0, 40) + '...';
+                document.getElementById('previewBox').style.display = 'flex';
+            }
+        }
+
+        // MRP calculation
+        function updateMrpPreview() {
+            const price = Number(document.getElementById('prodPrice').value) || 0;
+            if (price > 0) {
+                const mrp = Math.round(price + Math.max(149, price * 0.3));
+                const pct = Math.round(((mrp - price) / mrp) * 100);
+                document.getElementById('mrpText').textContent = `MRP: ₹${mrp}`;
+                document.getElementById('discountBadge').textContent = `${pct}% OFF`;
+                document.getElementById('mrpPreviewWrap').style.display = 'flex';
+            } else {
+                document.getElementById('mrpPreviewWrap').style.display = 'none';
+            }
+        }
+
+        // Add Product Form Submit
+        async function handleAddProduct(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('prodName').value.trim();
+            const price = Number(document.getElementById('prodPrice').value);
+            const category = document.getElementById('prodCategory').value;
+            const tag = document.getElementById('prodTag').value.trim() || 'New Arrival';
+            const desc = document.getElementById('prodDesc').value.trim();
+
+            if (!name) {
+                showAlert('Kripya product ka naam enter karein.', 'error');
+                return;
+            }
+
+            if (!price || price <= 0) {
+                showAlert('Kripya valid price enter karein.', 'error');
+                return;
+            }
+
+            const img = currentCompressedImage || 'images/logo.png';
+            const mrp = Math.round(price + Math.max(149, price * 0.3));
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Publishing to website... ⏳';
+
+            try {
+                const newProd = await ProductManager.addProduct({
+                    name,
+                    price,
+                    mrp,
+                    category,
+                    tag,
+                    desc: desc || `Handcrafted ${name} made with premium materials. Perfect for home decor and festive gifting.`,
+                    img
+                });
+
+                showAlert(`✅ Product "${newProd.name}" successfully add ho gaya aur website par live ho chuka hai!`, 'success');
+
+                // Reset form
+                document.getElementById('addProductForm').reset();
+                clearSelectedImage();
+                updateMrpPreview();
+
+                // Refresh table
+                await loadTableProducts();
+
+            } catch (err) {
+                showAlert(`Error: ${err.message || 'Product add karne me issue aaya.'}`, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '✨ Add Product & Publish to Website';
+            }
+        }
+
+        // Alert toast
+        function showAlert(msg, type = 'success') {
+            const toast = document.getElementById('alertToast');
+            toast.className = `alert-toast ${type}`;
+            toast.textContent = msg;
+            toast.style.display = 'flex';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 6000);
+        }
+
+        // Render Added Products Table
+        async function loadTableProducts() {
+            const list = await ProductManager.getProducts();
+            const tbody = document.getElementById('productsTableBody');
+            const empty = document.getElementById('emptyState');
+
+            if (!list || list.length === 0) {
+                tbody.innerHTML = '';
+                empty.style.display = 'block';
+                return;
+            }
+
+            empty.style.display = 'none';
+            tbody.innerHTML = list.map(p => {
+                const pageLink = p.category === 'plants' ? 'plants.html' : (p.category === 'resin' ? 'index.html#resin' : 'index.html#shop');
+                return `
+                    <tr>
+                        <td>
+                            <div class="product-cell">
+                                <img src="${p.img || 'images/logo.png'}" alt="${p.name}" class="product-cell-img" onerror="this.src='images/logo.png'">
+                                <div>
+                                    <div class="product-cell-title">${p.name}</div>
+                                    <div style="font-size:0.75rem;color:var(--cream-muted);">${p.tag || 'New Arrival'}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="category-pill ${p.category || 'candles'}">${p.category === 'plants' ? 'Tree & Plants' : (p.category === 'resin' ? 'Resin Art' : 'Candles')}</span>
+                        </td>
+                        <td>
+                            <strong style="color:var(--gold-bright);">₹${p.price}</strong>
+                            <span style="font-size:0.75rem;color:var(--cream-muted);text-decoration:line-through;margin-left:4px;">₹${p.mrp}</span>
+                        </td>
+                        <td style="color:var(--cream-muted);font-size:0.8rem;">
+                            ${p.date || 'Recent'}
+                        </td>
+                        <td style="text-align:right;">
+                            <a href="${pageLink}" target="_blank" class="btn-outline" style="padding:4px 10px;font-size:0.75rem;margin-right:6px;">View</a>
+                            <button class="btn-delete" onclick="handleDeleteProduct('${p.id}', '${p.name.replace(/'/g, "\\'")}')">🗑️ Delete</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        async function handleDeleteProduct(id, name) {
+            if (!confirm(`Kya aap product "${name}" ko website se delete karna chahte hain?`)) {
+                return;
+            }
+
+            try {
+                await ProductManager.deleteProduct(id);
+                showAlert(`Product "${name}" deleted successfully.`, 'success');
+                await loadTableProducts();
+            } catch (err) {
+                showAlert(`Delete karne me error aaya: ${err.message}`, 'error');
+            }
+        }
+    </script>
+</body>
+
+</html>

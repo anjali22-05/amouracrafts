@@ -2988,7 +2988,7 @@
                 </div>
             </div>
             <div class="foot-note">
-                <span>© 2026 Amoura Crafts. All rights reserved.</span>
+                <span>© 2026 Amoura Crafts. All rights reserved. • <a href="admin.html" style="color:inherit;opacity:0.6;text-decoration:none;">Admin</a></span>
                 <span>Made by Harsh Kumar  🪔</span>
             </div>
         </div>
@@ -3034,6 +3034,7 @@
 
     <div class="toast" id="toast"></div>
 
+    <script src="products-engine.js"></script>
     <script>
         /* ================================================================
            CONFIG — put your own WhatsApp number here.
@@ -3185,6 +3186,9 @@ Please confirm availability and Online Payment details.`;
            ================================================================ */
         function getThumbPaths(imgSrc) {
             if (!imgSrc) return { webp: '', fallback: '', orig: '' };
+            if (imgSrc.startsWith('http://') || imgSrc.startsWith('https://') || imgSrc.startsWith('data:')) {
+                return { webp: imgSrc, fallback: imgSrc, orig: imgSrc };
+            }
             const filename = imgSrc.replace(/^images\//, '');
             const baseName = filename.replace(/\.[^/.]+$/, '');
             return {
@@ -3431,6 +3435,9 @@ Please share the final price, delivery timeline and payment options.`;
             initSparks();
             initUI();
             observeReveals();
+            if (window.ProductManager && window.ProductManager.syncWithPlantsPage) {
+                ProductManager.syncWithPlantsPage(PRODUCTS, renderProducts, initBulk);
+            }
         });
     </script>
 

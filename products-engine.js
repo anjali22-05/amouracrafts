@@ -81,8 +81,6 @@
     };
 
     const ProductManager = {
-        ADMIN_PIN: "1234",
-
         // Fetch products with multi-tier cloud fallbacks
         async getProducts(onCloudUpdate = null) {
             // 1. Return cached products instantly (0ms)

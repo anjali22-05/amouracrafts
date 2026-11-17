@@ -92,7 +92,7 @@
         .header-actions {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
         .btn-outline {
@@ -162,24 +162,49 @@
             margin-bottom: 24px;
         }
 
+        .password-field-wrap {
+            position: relative;
+            width: 100%;
+            margin-bottom: 18px;
+        }
+
         .login-input {
             width: 100%;
-            padding: 13px 16px;
-            font-size: 1.1rem;
-            text-align: center;
-            letter-spacing: 4px;
+            padding: 13px 44px 13px 16px;
+            font-size: 1rem;
+            text-align: left;
             background: var(--bg-surface);
             border: 1px solid var(--border-card);
             border-radius: var(--radius-md);
             color: var(--cream);
-            margin-bottom: 18px;
             outline: none;
-            transition: border-color 0.2s ease;
+            transition: all 0.2s ease;
+            letter-spacing: 2px;
         }
 
         .login-input:focus {
             border-color: var(--gold);
             box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+        }
+
+        .eye-toggle-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--cream-muted);
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s ease;
+        }
+
+        .eye-toggle-btn:hover {
+            color: var(--gold-bright);
         }
 
         .btn-gold {
@@ -201,10 +226,10 @@
             box-shadow: 0 8px 24px rgba(212, 175, 55, 0.4);
         }
 
-        .login-hint {
-            margin-top: 16px;
-            font-size: 0.8rem;
-            color: var(--cream-muted);
+        .btn-gold:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
         }
 
         /* Product Form Card */
@@ -263,6 +288,7 @@
 
         input[type="text"],
         input[type="number"],
+        input[type="password"],
         select {
             width: 100%;
             padding: 12px 14px;
@@ -278,6 +304,7 @@
 
         input[type="text"]:focus,
         input[type="number"]:focus,
+        input[type="password"]:focus,
         select:focus {
             border-color: var(--gold);
             box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
@@ -522,6 +549,63 @@
             font-size: 0.9rem;
         }
 
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-gold);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            width: 100%;
+            max-width: 440px;
+            box-shadow: var(--shadow-card);
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-card);
+            padding-bottom: 12px;
+        }
+
+        .modal-header h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.35rem;
+            color: var(--gold-bright);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--cream-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            line-height: 1;
+            padding: 4px;
+        }
+
+        .modal-close:hover {
+            color: var(--cream);
+        }
+
         @media (max-width: 640px) {
             .form-grid {
                 grid-template-columns: 1fr;
@@ -548,6 +632,7 @@
             </a>
             <div class="header-actions">
                 <a href="index.html" class="btn-outline" target="_blank">🌐 Live Website</a>
+                <button id="changePassBtn" class="btn-outline" style="display:none;" onclick="openChangePasswordModal()">🔑 Change Password</button>
                 <button id="logoutBtn" class="btn-outline" style="display:none;" onclick="logout()">🚪 Logout</button>
             </div>
         </div>
@@ -558,13 +643,20 @@
         <div id="loginSection" class="login-wrap">
             <div class="login-icon">🔐</div>
             <h1>Admin Login</h1>
-            <p>Apna admin PIN enter karke login karein:</p>
+            <p>Apna admin password enter karke login karein:</p>
             <form onsubmit="handleLogin(event)">
-                <input type="password" id="pinInput" class="login-input" placeholder="••••" maxlength="8" autofocus required>
-                <button type="submit" class="btn-gold">Login to Admin</button>
+                <div class="password-field-wrap">
+                    <input type="password" id="passwordInput" class="login-input" placeholder="Enter Admin Password" autocomplete="current-password" autofocus required>
+                    <button type="button" class="eye-toggle-btn" onclick="togglePasswordVisibility('passwordInput', this)" aria-label="Toggle password visibility">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
+                <button type="submit" id="loginSubmitBtn" class="btn-gold">Login to Admin</button>
             </form>
-            <div class="login-hint">Default Admin PIN: <strong>1234</strong></div>
-            <div id="loginError" style="color:var(--danger);font-size:0.85rem;margin-top:12px;display:none;">Galat PIN! Kripya dobara try karein.</div>
+            <div id="loginError" style="color:var(--danger);font-size:0.88rem;margin-top:14px;display:none;"></div>
         </div>
 
         <!-- 2. ADD PRODUCT PORTAL (Visible after login) -->
@@ -686,52 +778,240 @@
         </div>
     </main>
 
+    <!-- Change Password Modal -->
+    <div id="changePasswordModal" class="modal-overlay" onclick="if(event.target===this) closeChangePasswordModal()">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>🔑 Change Admin Password</h3>
+                <button type="button" class="modal-close" onclick="closeChangePasswordModal()">&times;</button>
+            </div>
+            <form onsubmit="handleChangePassword(event)">
+                <div class="form-group" style="margin-bottom:14px;">
+                    <label for="currentPassword">Current Password *</label>
+                    <div class="password-field-wrap">
+                        <input type="password" id="currentPassword" class="login-input" placeholder="Current password" required>
+                        <button type="button" class="eye-toggle-btn" onclick="togglePasswordVisibility('currentPassword', this)" aria-label="Toggle password visibility">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom:14px;">
+                    <label for="newPassword">New Password * (Min 6 chars)</label>
+                    <div class="password-field-wrap">
+                        <input type="password" id="newPassword" class="login-input" placeholder="New password" minlength="6" required>
+                        <button type="button" class="eye-toggle-btn" onclick="togglePasswordVisibility('newPassword', this)" aria-label="Toggle password visibility">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom:18px;">
+                    <label for="confirmPassword">Confirm New Password *</label>
+                    <div class="password-field-wrap">
+                        <input type="password" id="confirmPassword" class="login-input" placeholder="Confirm new password" minlength="6" required>
+                        <button type="button" class="eye-toggle-btn" onclick="togglePasswordVisibility('confirmPassword', this)" aria-label="Toggle password visibility">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div id="changePassError" style="color:var(--danger);font-size:0.84rem;margin-bottom:12px;display:none;"></div>
+                <button type="submit" id="changePassSubmitBtn" class="btn-gold">Update Password</button>
+            </form>
+        </div>
+    </div>
+
     <!-- Load Products Engine -->
     <script src="products-engine.js"></script>
 
     <script>
+        const AUTH_API = '/.netlify/functions/admin-auth';
         let currentCompressedImage = null;
 
-        // Check authentication on load
-        window.addEventListener('DOMContentLoaded', () => {
-            const isAuth = sessionStorage.getItem('amoura_admin_logged_in') === 'true' || localStorage.getItem('amoura_admin_logged_in') === 'true';
-            if (isAuth) {
-                showPortal();
-            } else {
-                document.getElementById('loginSection').style.display = 'block';
-                document.getElementById('adminPortal').style.display = 'none';
+        // Toggle password show/hide eye icon
+        function togglePasswordVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            const isPass = input.type === 'password';
+            input.type = isPass ? 'text' : 'password';
+            btn.innerHTML = isPass ? `
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                </svg>
+            ` : `
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+            `;
+        }
+
+        // Check authentication on load via secure token
+        window.addEventListener('DOMContentLoaded', async () => {
+            const token = sessionStorage.getItem('amoura_admin_token') || localStorage.getItem('amoura_admin_token');
+            if (token) {
+                try {
+                    const res = await fetch(AUTH_API, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'verify', token })
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data && data.success) {
+                            showPortal();
+                            return;
+                        }
+                    }
+                } catch (e) {
+                    // Fallback to local session if network offline
+                    if (sessionStorage.getItem('amoura_admin_logged_in') === 'true') {
+                        showPortal();
+                        return;
+                    }
+                }
             }
+            logout();
         });
 
-        function handleLogin(e) {
+        // Backend login verification
+        async function handleLogin(e) {
             e.preventDefault();
-            const pin = document.getElementById('pinInput').value.trim();
-            const correctPin = localStorage.getItem('amoura_custom_pin') || ProductManager.ADMIN_PIN;
+            const password = document.getElementById('passwordInput').value;
+            const errDiv = document.getElementById('loginError');
+            const submitBtn = document.getElementById('loginSubmitBtn');
 
-            if (pin === correctPin || pin === '1234') {
-                sessionStorage.setItem('amoura_admin_logged_in', 'true');
-                localStorage.setItem('amoura_admin_logged_in', 'true');
-                document.getElementById('loginError').style.display = 'none';
-                showPortal();
-            } else {
-                document.getElementById('loginError').style.display = 'block';
+            errDiv.style.display = 'none';
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Verifying... ⏳';
+
+            try {
+                const res = await fetch(AUTH_API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'login', password })
+                });
+
+                const data = await res.json();
+                if (res.ok && data.success && data.token) {
+                    sessionStorage.setItem('amoura_admin_token', data.token);
+                    localStorage.setItem('amoura_admin_token', data.token);
+                    sessionStorage.setItem('amoura_admin_logged_in', 'true');
+                    localStorage.setItem('amoura_admin_logged_in', 'true');
+                    document.getElementById('passwordInput').value = '';
+                    showPortal();
+                } else {
+                    errDiv.textContent = data.error || 'Galat password! Kripya dobara try karein.';
+                    errDiv.style.display = 'block';
+                }
+            } catch (err) {
+                errDiv.textContent = 'Server connection error. Please try again.';
+                errDiv.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Login to Admin';
             }
         }
 
         function logout() {
+            sessionStorage.removeItem('amoura_admin_token');
+            localStorage.removeItem('amoura_admin_token');
             sessionStorage.removeItem('amoura_admin_logged_in');
             localStorage.removeItem('amoura_admin_logged_in');
             document.getElementById('loginSection').style.display = 'block';
             document.getElementById('adminPortal').style.display = 'none';
             document.getElementById('logoutBtn').style.display = 'none';
-            document.getElementById('pinInput').value = '';
+            document.getElementById('changePassBtn').style.display = 'none';
+            document.getElementById('passwordInput').value = '';
         }
 
         function showPortal() {
             document.getElementById('loginSection').style.display = 'none';
             document.getElementById('adminPortal').style.display = 'block';
             document.getElementById('logoutBtn').style.display = 'inline-flex';
+            document.getElementById('changePassBtn').style.display = 'inline-flex';
             loadTableProducts();
+        }
+
+        // Change Password Modal
+        function openChangePasswordModal() {
+            document.getElementById('changePasswordModal').classList.add('active');
+            document.getElementById('currentPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+            document.getElementById('changePassError').style.display = 'none';
+        }
+
+        function closeChangePasswordModal() {
+            document.getElementById('changePasswordModal').classList.remove('active');
+        }
+
+        async function handleChangePassword(e) {
+            e.preventDefault();
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const errDiv = document.getElementById('changePassError');
+            const submitBtn = document.getElementById('changePassSubmitBtn');
+
+            errDiv.style.display = 'none';
+
+            if (newPassword !== confirmPassword) {
+                errDiv.textContent = 'New password aur Confirm password match nahi ho rahe.';
+                errDiv.style.display = 'block';
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                errDiv.textContent = 'Password kam se kam 6 characters ka hona chahiye.';
+                errDiv.style.display = 'block';
+                return;
+            }
+
+            const token = sessionStorage.getItem('amoura_admin_token') || localStorage.getItem('amoura_admin_token');
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Updating... ⏳';
+
+            try {
+                const res = await fetch(AUTH_API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'changePassword',
+                        currentPassword,
+                        newPassword,
+                        token
+                    })
+                });
+
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    if (data.token) {
+                        sessionStorage.setItem('amoura_admin_token', data.token);
+                        localStorage.setItem('amoura_admin_token', data.token);
+                    }
+                    closeChangePasswordModal();
+                    showAlert('✅ Password successfully change ho gaya hai! Agli baar naya password use karein.', 'success');
+                } else {
+                    errDiv.textContent = data.error || 'Password update karne me error aaya.';
+                    errDiv.style.display = 'block';
+                }
+            } catch (err) {
+                errDiv.textContent = 'Server connection error. Please try again.';
+                errDiv.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Update Password';
+            }
         }
 
         // Image file handling & Canvas compression

@@ -3,6 +3,7 @@
 // Supports:
 // 1. Real Customer Reviews (Sheet 1)
 // 2. Custom Products & Google Drive Image Hosting (Sheet 2: "Products")
+// 3. Secure Admin Auth Hashed Password Storage (Sheet 3: "AdminAuth")
 // ============================================================================
 // HOW TO INSTALL:
 // 1. Open your Google Spreadsheet:
@@ -48,7 +49,21 @@ function doGet(e) {
       .setMimeType(ContentService.MimeType.JSON);
   }
 
-  // 2. Default: Fetch Reviews (Sheet 1)
+  // 2. Fetch Admin Auth
+  if (params.type === 'auth') {
+    var authSheet = ss.getSheetByName("AdminAuth");
+    if (authSheet) {
+      var data = authSheet.getDataRange().getValues();
+      if (data.length > 1 && data[1][0] && data[1][1]) {
+        return ContentService.createTextOutput(JSON.stringify({ salt: String(data[1][0]), hash: String(data[1][1]) }))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+    return ContentService.createTextOutput(JSON.stringify(null))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  // 3. Default: Fetch Reviews (Sheet 1)
   var sheet = ss.getSheets()[0];
   var data = sheet.getDataRange().getValues();
   var reviews = [];
@@ -130,7 +145,24 @@ function doPost(e) {
         .setMimeType(ContentService.MimeType.JSON);
     }
 
-    // 3. Default Action: Add Customer Review (Sheet 1)
+    // 3. Action: Update Admin Auth (Hashed password credentials)
+    if (data.action === "updateAdminAuth") {
+      var authSheet = ss.getSheetByName("AdminAuth");
+      if (!authSheet) {
+        authSheet = ss.insertSheet("AdminAuth");
+        authSheet.appendRow(["Salt", "Hash", "UpdatedAt"]);
+      }
+      var vals = authSheet.getDataRange().getValues();
+      if (vals.length > 1) {
+        authSheet.getRange(2, 1, 1, 3).setValues([[data.salt, data.hash, data.updatedAt || new Date().toISOString()]]);
+      } else {
+        authSheet.appendRow([data.salt, data.hash, data.updatedAt || new Date().toISOString()]);
+      }
+      return ContentService.createTextOutput(JSON.stringify({ success: true }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // 4. Default Action: Add Customer Review (Sheet 1)
     var sheet = ss.getSheets()[0];
     sheet.appendRow([
       data.name,

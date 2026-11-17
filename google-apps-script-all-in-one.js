@@ -129,7 +129,44 @@ function doPost(e) {
         .setMimeType(ContentService.MimeType.JSON);
     }
 
-    // 2. Action: Delete Product
+    // 2. Action: Update Product
+    if (data.action === "updateProduct") {
+      var prodSheet = ss.getSheetByName("Products");
+      if (prodSheet) {
+        var vals = prodSheet.getDataRange().getValues();
+        for (var i = 1; i < vals.length; i++) {
+          if (String(vals[i][0]) === String(data.id)) {
+            var rowNum = i + 1;
+            var currentImg = vals[i][7];
+            var imgUrl = data.img || currentImg;
+            if (imgUrl && imgUrl.indexOf("data:image") === 0) {
+              try {
+                var contentType = imgUrl.substring(5, imgUrl.indexOf(";"));
+                var base64Data = imgUrl.substring(imgUrl.indexOf(",") + 1);
+                var decoded = Utilities.base64Decode(base64Data);
+                var blob = Utilities.newBlob(decoded, contentType, (data.name || "product") + "_" + Date.now() + ".jpg");
+                var file = DriveApp.createFile(blob);
+                file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+                imgUrl = "https://lh3.googleusercontent.com/d/" + file.getId();
+              } catch (driveErr) {}
+            }
+            if (data.name) prodSheet.getRange(rowNum, 2).setValue(data.name);
+            if (data.price !== undefined) prodSheet.getRange(rowNum, 3).setValue(Number(data.price));
+            if (data.mrp !== undefined) prodSheet.getRange(rowNum, 4).setValue(Number(data.mrp));
+            if (data.category) prodSheet.getRange(rowNum, 5).setValue(data.category);
+            if (data.desc !== undefined) prodSheet.getRange(rowNum, 6).setValue(data.desc);
+            if (data.tag !== undefined) prodSheet.getRange(rowNum, 7).setValue(data.tag);
+            if (imgUrl) prodSheet.getRange(rowNum, 8).setValue(imgUrl);
+            return ContentService.createTextOutput(JSON.stringify({ success: true, img: imgUrl }))
+              .setMimeType(ContentService.MimeType.JSON);
+          }
+        }
+      }
+      return ContentService.createTextOutput(JSON.stringify({ success: false, error: "Product not found" }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // 3. Action: Delete Product
     if (data.action === "deleteProduct") {
       var prodSheet = ss.getSheetByName("Products");
       if (prodSheet) {

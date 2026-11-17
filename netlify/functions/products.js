@@ -1,5 +1,6 @@
 // Netlify Serverless Function for Amoura Crafts Custom Products
 // Connects to Google Sheets Cloud Database and Netlify Blobs
+// Supports: GET, POST (Add Product & Update Product), DELETE
 
 const GOOGLE_SHEET_API = "https://script.google.com/macros/s/AKfycbzdCK_Zefr3DBL3fHYp1SKmXRXudXBpLWA1EPQVR62XOijTYOKtBZpC1nCcmRQ6KxNhlw/exec";
 
@@ -20,7 +21,7 @@ exports.handler = async (event, context) => {
   const headers = {
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Headers": "Content-Type",
-    "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
+    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
     "Content-Type": "application/json"
   };
 
@@ -67,11 +68,106 @@ exports.handler = async (event, context) => {
     };
   }
 
-  // POST: Add new custom product
-  if (event.httpMethod === "POST") {
+  // POST or PUT: Add or Update product
+  if (event.httpMethod === "POST" || event.httpMethod === "PUT") {
     try {
       const data = JSON.parse(event.body || "{}");
+      const action = data.action || (data.id && inMemoryProducts.some(p => p.id === data.id) ? "updateProduct" : "addProduct");
 
+      // CASE 1: UPDATE EXISTING PRODUCT
+      if (action === "updateProduct") {
+        if (!data.id) {
+          return {
+            statusCode: 400,
+            headers,
+            body: JSON.stringify({ error: "Product id is required for update." })
+          };
+        }
+
+        const priceNum = Number(data.price) || 0;
+        const mrpNum = Number(data.mrp) || Math.round(priceNum + 149);
+        const category = String(data.category || "candles").toLowerCase().trim();
+
+        let updatedProduct = null;
+        inMemoryProducts = inMemoryProducts.map(p => {
+          if (p.id === data.id) {
+            updatedProduct = {
+              ...p,
+              name: data.name ? String(data.name).trim() : p.name,
+              price: priceNum || p.price,
+              mrp: mrpNum || p.mrp,
+              category: category || p.category,
+              desc: data.desc !== undefined ? String(data.desc).trim() : p.desc,
+              tag: data.tag !== undefined ? String(data.tag).trim() : p.tag,
+              img: (data.img && data.img.trim()) ? data.img : p.img,
+              updatedAt: new Date().toISOString()
+            };
+            return updatedProduct;
+          }
+          return p;
+        });
+
+        if (!updatedProduct) {
+          updatedProduct = {
+            id: data.id,
+            name: String(data.name || "").trim(),
+            price: priceNum,
+            mrp: mrpNum,
+            category: category,
+            desc: data.desc || "",
+            tag: data.tag || "New Arrival",
+            img: data.img || "images/logo.png",
+            date: data.date || new Date().toISOString().split("T")[0],
+            updatedAt: new Date().toISOString()
+          };
+          inMemoryProducts = [updatedProduct, ...inMemoryProducts];
+        }
+
+        // Update in Netlify Blobs if available
+        if (blobs) {
+          try {
+            let stored = await blobs.get("products_list", { type: "json" });
+            if (Array.isArray(stored)) {
+              let found = false;
+              stored = stored.map(p => {
+                if (p.id === data.id) {
+                  found = true;
+                  return updatedProduct;
+                }
+                return p;
+              });
+              if (!found) stored.unshift(updatedProduct);
+              await blobs.setJSON("products_list", stored);
+            }
+          } catch (e) {}
+        }
+
+        // Forward to Google Sheets database
+        try {
+          await fetch(GOOGLE_SHEET_API, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              action: "updateProduct",
+              ...updatedProduct
+            })
+          });
+        } catch (sheetErr) {
+          console.error("Sheet update error:", sheetErr);
+        }
+
+        return {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify({
+            success: true,
+            message: "Product updated successfully!",
+            product: updatedProduct
+          })
+        };
+      }
+
+      // CASE 2: ADD NEW PRODUCT
       if (!data.name || !data.price) {
         return {
           statusCode: 400,

@@ -181,6 +181,66 @@
             return newProduct;
         },
 
+        // Update an existing product
+        async updateProduct(prod) {
+            if (!prod || !prod.id) {
+                throw new Error("Product ID is required for update.");
+            }
+
+            const current = await Storage.getAll();
+            const existingIndex = current.findIndex(p => p.id === prod.id);
+            if (existingIndex === -1) {
+                throw new Error("Product not found.");
+            }
+
+            const existing = current[existingIndex];
+            const priceNum = Number(prod.price !== undefined ? prod.price : existing.price) || 0;
+            const mrpNum = Number(prod.mrp !== undefined ? prod.mrp : existing.mrp) || Math.round(priceNum + 149);
+            const category = String(prod.category !== undefined ? prod.category : existing.category).toLowerCase().trim();
+
+            const updatedProduct = {
+                ...existing,
+                name: prod.name ? String(prod.name).trim() : existing.name,
+                price: priceNum,
+                mrp: mrpNum,
+                category: category,
+                desc: prod.desc !== undefined ? String(prod.desc).trim() : existing.desc,
+                tag: prod.tag !== undefined ? String(prod.tag).trim() : existing.tag,
+                img: (prod.img && prod.img.trim()) ? prod.img : existing.img,
+                updatedAt: new Date().toISOString()
+            };
+
+            // Update in local cache
+            current[existingIndex] = updatedProduct;
+            await Storage.saveAll(current);
+
+            // Forward to Netlify serverless function
+            try {
+                fetch(NETLIFY_API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'updateProduct',
+                        ...updatedProduct
+                    })
+                }).catch(() => {});
+            } catch (e) {}
+
+            // Forward to Google Sheets database
+            try {
+                fetch(GOOGLE_SHEET_API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'updateProduct',
+                        ...updatedProduct
+                    })
+                }).catch(() => {});
+            } catch (e) {}
+
+            return updatedProduct;
+        },
+
         // Delete a product
         async deleteProduct(id) {
             if (!id) return;
@@ -218,14 +278,34 @@
                 customList.forEach(p => {
                     const cat = (p.category || 'candles').toLowerCase();
                     if (cat === 'resin') {
-                        if (!RESIN_PRODUCTS_ARR.some(item => item.id === p.id)) {
+                        const existingIdx = RESIN_PRODUCTS_ARR.findIndex(item => item.id === p.id);
+                        if (existingIdx >= 0) {
+                            Object.assign(RESIN_PRODUCTS_ARR[existingIdx], p);
+                            resinChanged = true;
+                        } else {
                             RESIN_PRODUCTS_ARR.unshift(p);
                             resinChanged = true;
                         }
+                        // Remove from candles if it was previously categorized as candles
+                        const oldCandleIdx = PRODUCTS_ARR.findIndex(item => item.id === p.id);
+                        if (oldCandleIdx >= 0) {
+                            PRODUCTS_ARR.splice(oldCandleIdx, 1);
+                            candlesChanged = true;
+                        }
                     } else if (cat === 'candles') {
-                        if (!PRODUCTS_ARR.some(item => item.id === p.id)) {
+                        const existingIdx = PRODUCTS_ARR.findIndex(item => item.id === p.id);
+                        if (existingIdx >= 0) {
+                            Object.assign(PRODUCTS_ARR[existingIdx], p);
+                            candlesChanged = true;
+                        } else {
                             PRODUCTS_ARR.unshift(p);
                             candlesChanged = true;
+                        }
+                        // Remove from resin if it was previously categorized as resin
+                        const oldResinIdx = RESIN_PRODUCTS_ARR.findIndex(item => item.id === p.id);
+                        if (oldResinIdx >= 0) {
+                            RESIN_PRODUCTS_ARR.splice(oldResinIdx, 1);
+                            resinChanged = true;
                         }
                     }
                 });
@@ -254,7 +334,11 @@
                 customList.forEach(p => {
                     const cat = (p.category || '').toLowerCase();
                     if (cat === 'plants') {
-                        if (!PLANTS_ARR.some(item => item.id === p.id)) {
+                        const existingIdx = PLANTS_ARR.findIndex(item => item.id === p.id);
+                        if (existingIdx >= 0) {
+                            Object.assign(PLANTS_ARR[existingIdx], p);
+                            plantsChanged = true;
+                        } else {
                             PLANTS_ARR.unshift(p);
                             plantsChanged = true;
                         }

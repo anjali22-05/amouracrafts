@@ -4053,14 +4053,12 @@
             customerWhatsAppNumber: "918700689036",
             adminWhatsAppNumber: "918700689036",
             qrImage: "images/payment.jpeg",
-            upiId: "saxena.dun09@okhdfcbank",
             orderStorageKey: "amouraCraftsOrders"
         };
 
         const WHATSAPP_NUMBER = SITE_CONFIG.customerWhatsAppNumber;
         const PAYMENT_CONFIG = {
             qrImage: SITE_CONFIG.qrImage,
-            upiId: SITE_CONFIG.upiId,
             adminWhatsAppNumber: SITE_CONFIG.adminWhatsAppNumber
         };
 
@@ -4450,8 +4448,7 @@
                 shipping: shipping,
                 discount: 0,
                 finalTotal: subtotal + shipping,
-                paymentMethod: "UPI",
-                upiId: PAYMENT_CONFIG.upiId,
+                paymentMethod: "Online / QR",
                 paymentStatus: "Payment Confirmation Pending",
                 orderStatus: "Payment Confirmation Pending",
                 customerDetails: {
@@ -4490,7 +4487,7 @@
                 itemList,
                 "",
                 `Total Amount: ₹${order.finalTotal}`,
-                "Payment Method: UPI",
+                `Payment Method: ${order.paymentMethod || "Online / QR"}`,
                 `Payment Status: ${order.paymentStatus}`,
                 "",
                 `Delivery Address: ${order.address}, ${order.city}, ${order.state} - ${order.pincode}`,
@@ -4647,8 +4644,6 @@
             doc.setFontSize(11);
             doc.text(`Payment Method: ${order.paymentMethod}`, margin, y);
             y += 16;
-            doc.text(`UPI ID: ${order.upiId}`, margin, y);
-            y += 16;
             doc.text(`Payment Status: ${order.paymentStatus}`, margin, y);
             y += 16;
             doc.text(`Order Status: ${order.orderStatus}`, margin, y);
@@ -4747,12 +4742,10 @@
 
         function openPaymentModal(amount = 0) {
             const modal = document.getElementById("paymentModal");
-            const upiIdEl = document.getElementById("paymentUpiId");
             const amountEl = document.getElementById("paymentAmount");
             const qrImg = document.getElementById("paymentQrImg");
 
-            if (qrImg) qrImg.src = PAYMENT_CONFIG.qrImage;
-            if (upiIdEl) upiIdEl.textContent = PAYMENT_CONFIG.upiId;
+            if (qrImg) qrImg.src = (typeof PAYMENT_CONFIG !== 'undefined' && PAYMENT_CONFIG.qrImage) ? PAYMENT_CONFIG.qrImage : "images/payment.jpeg";
             if (amountEl) amountEl.textContent = formatINR(amount);
 
             if (modal) {
@@ -4773,17 +4766,6 @@
                 if (invoiceModal && invoiceModal.classList.contains("active")) return;
                 document.body.style.overflow = "";
             }
-        }
-
-        function copyUpiId() {
-            const upiId = PAYMENT_CONFIG.upiId;
-            if (!navigator.clipboard) {
-                showToast("Copy failed in this browser.");
-                return;
-            }
-            navigator.clipboard.writeText(upiId)
-                .then(() => showToast("UPI ID copied."))
-                .catch(() => showToast("Unable to copy UPI ID."));
         }
 
         function openCartCheckout() {
@@ -5039,7 +5021,6 @@
                     <div class="invoice-section">
                         <h5>Payment</h5>
                         <p>Method: ${order.paymentMethod}</p>
-                        <p>UPI ID: ${order.upiId}</p>
                         <p>Status: ${order.paymentStatus}</p>
                         <p>Order Status: ${order.orderStatus}</p>
                     </div>
@@ -5513,12 +5494,6 @@ Please share the final price, delivery timeline and payment options.`;
             </div>
 
             <div class="payment-detail-row">
-                <span>UPI ID</span>
-                <strong id="paymentUpiId">saxena.dun09@okhdfcbank</strong>
-                <button type="button" class="copy-upi-btn" onclick="copyUpiId()">Copy</button>
-            </div>
-
-            <div class="payment-detail-row">
                 <span>Amount to Pay</span>
                 <strong id="paymentAmount">₹0</strong>
             </div>
@@ -5596,12 +5571,10 @@ Please share the final price, delivery timeline and payment options.`;
            ================================================================ */
         function openPaymentModal(amount = 0) {
             const modal = document.getElementById("paymentModal");
-            const upiIdEl = document.getElementById("paymentUpiId");
             const amountEl = document.getElementById("paymentAmount");
             const qrImg = document.getElementById("paymentQrImg");
 
             if (qrImg) qrImg.src = (typeof PAYMENT_CONFIG !== 'undefined' && PAYMENT_CONFIG.qrImage) ? PAYMENT_CONFIG.qrImage : "images/payment.jpeg";
-            if (upiIdEl && typeof PAYMENT_CONFIG !== 'undefined') upiIdEl.textContent = PAYMENT_CONFIG.upiId;
             if (amountEl) {
                 if (typeof formatINR === 'function') {
                     amountEl.textContent = formatINR(amount);

@@ -3454,7 +3454,7 @@ Please share the final price, delivery timeline and payment options.`;
                 <p>Scan the code below using any UPI app (Google Pay, PhonePe, Paytm) to complete your payment.</p>
             </div>
             <div class="payment-qr-frame">
-                <img src="images/qr.im.jpeg" alt="Amoura Crafts Payment QR Code" class="payment-qr-img"
+                <img src="images/payment.jpeg" alt="Amoura Crafts Payment QR Code" class="payment-qr-img"
                     id="paymentQrImg">
             </div>
             <div class="payment-modal-footer">
@@ -3472,6 +3472,8 @@ Please share the final price, delivery timeline and payment options.`;
            ================================================================ */
         function openPaymentModal() {
             const modal = document.getElementById("paymentModal");
+            const qrImg = document.getElementById("paymentQrImg");
+            if (qrImg) qrImg.src = "images/payment.jpeg";
             if (modal) {
                 modal.classList.add("active");
                 modal.setAttribute("aria-hidden", "false");

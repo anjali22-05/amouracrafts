@@ -4052,7 +4052,7 @@
         const SITE_CONFIG = {
             customerWhatsAppNumber: "918700689036",
             adminWhatsAppNumber: "918700689036",
-            qrImage: "images/qr.im.jpeg",
+            qrImage: "images/payment.jpeg",
             upiId: "saxena.dun09@okhdfcbank",
             orderStorageKey: "amouraCraftsOrders"
         };
@@ -5509,7 +5509,7 @@ Please share the final price, delivery timeline and payment options.`;
                 <p>Scan the code below using any UPI app (Google Pay, PhonePe, Paytm) to complete your payment.</p>
             </div>
             <div class="payment-qr-frame">
-                <img src="images/qr.im.jpeg" alt="Amoura Crafts Payment QR Code" class="payment-qr-img" id="paymentQrImg">
+                <img src="images/payment.jpeg" alt="Amoura Crafts Payment QR Code" class="payment-qr-img" id="paymentQrImg">
             </div>
 
             <div class="payment-detail-row">
@@ -5594,8 +5594,22 @@ Please share the final price, delivery timeline and payment options.`;
         /* ================================================================
            ONLINE PAYMENT MODAL
            ================================================================ */
-        function openPaymentModal() {
+        function openPaymentModal(amount = 0) {
             const modal = document.getElementById("paymentModal");
+            const upiIdEl = document.getElementById("paymentUpiId");
+            const amountEl = document.getElementById("paymentAmount");
+            const qrImg = document.getElementById("paymentQrImg");
+
+            if (qrImg) qrImg.src = (typeof PAYMENT_CONFIG !== 'undefined' && PAYMENT_CONFIG.qrImage) ? PAYMENT_CONFIG.qrImage : "images/payment.jpeg";
+            if (upiIdEl && typeof PAYMENT_CONFIG !== 'undefined') upiIdEl.textContent = PAYMENT_CONFIG.upiId;
+            if (amountEl) {
+                if (typeof formatINR === 'function') {
+                    amountEl.textContent = formatINR(amount);
+                } else {
+                    amountEl.textContent = amount ? ("₹" + Number(amount).toLocaleString("en-IN")) : "₹0";
+                }
+            }
+
             if (modal) {
                 modal.classList.add("active");
                 modal.setAttribute("aria-hidden", "false");
@@ -5604,12 +5618,16 @@ Please share the final price, delivery timeline and payment options.`;
         }
 
         function closePaymentModal() {
-            const modal = document.getElementById("paymentModal");
-            if (modal) {
-                modal.classList.remove("active");
-                modal.setAttribute("aria-hidden", "true");
-                document.body.style.overflow = "";
+            const paymentModal = document.getElementById("paymentModal");
+            const checkoutModal = document.getElementById("checkoutModal");
+            const invoiceModal = document.getElementById("invoiceModal");
+            if (paymentModal) {
+                paymentModal.classList.remove("active");
+                paymentModal.setAttribute("aria-hidden", "true");
             }
+            if (checkoutModal && checkoutModal.classList.contains("active")) return;
+            if (invoiceModal && invoiceModal.classList.contains("active")) return;
+            document.body.style.overflow = "";
         }
 
         document.addEventListener("keydown", function (e) {

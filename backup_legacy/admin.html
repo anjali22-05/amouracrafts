@@ -1,0 +1,1781 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Admin Portal - Add &amp; Edit Product | Amoura Crafts</title>
+    <link rel="icon" type="image/png" href="images/logo-tight.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-deep: #0e0a09;
+            --bg-card: #181210;
+            --bg-surface: #201713;
+            --bg-surface-elevated: #281c17;
+            --border-card: #38251e;
+            --border-gold: rgba(212, 175, 55, 0.35);
+            --border-gold-subtle: rgba(212, 175, 55, 0.2);
+            --gold: #d4af37;
+            --gold-bright: #f5e08c;
+            --gold-gradient: linear-gradient(135deg, #f5e08c 0%, #d4af37 50%, #aa820a 100%);
+            --cream: #fbf6ee;
+            --cream-dim: #cfc2b6;
+            --cream-muted: #8e7f77;
+            --danger: #e05252;
+            --danger-bg: rgba(224, 82, 82, 0.12);
+            --success: #3ecf8e;
+            --info: #5ca0ff;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 18px;
+            --shadow-card: 0 16px 36px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 0 24px rgba(212, 175, 55, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-deep);
+            color: var(--cream);
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: 
+                radial-gradient(ellipse 70% 40% at 50% 0%, rgba(212, 175, 55, 0.12), transparent),
+                radial-gradient(circle at 100% 100%, rgba(138, 75, 36, 0.08), transparent);
+        }
+
+        /* Header */
+        header.admin-header {
+            border-bottom: 1px solid var(--border-card);
+            background: rgba(14, 10, 9, 0.92);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            width: 100%;
+        }
+
+        .header-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .brand-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--cream);
+            flex-shrink: 0;
+        }
+
+        .brand-logo {
+            width: 36px;
+            height: 30px;
+            object-fit: contain;
+        }
+
+        .brand-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: var(--gold-bright);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn-outline {
+            padding: 7px 14px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--cream-dim);
+            background: transparent;
+            border: 1px solid var(--border-card);
+            border-radius: 999px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .btn-outline:hover {
+            color: var(--gold-bright);
+            border-color: var(--gold);
+            background: rgba(212, 175, 55, 0.08);
+        }
+
+        /* Main Container */
+        main.admin-main {
+            flex: 1;
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 24px 16px 60px;
+        }
+
+        /* Login Card */
+        .login-wrap {
+            max-width: 420px;
+            width: 100%;
+            margin: 40px auto 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-gold);
+            border-radius: var(--radius-lg);
+            padding: 34px 26px;
+            box-shadow: var(--shadow-card);
+            text-align: center;
+        }
+
+        .login-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 14px;
+            background: rgba(212, 175, 55, 0.12);
+            border: 1px solid var(--border-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.7rem;
+        }
+
+        .login-wrap h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.65rem;
+            margin-bottom: 8px;
+            color: var(--cream);
+        }
+
+        .login-wrap p {
+            font-size: 0.88rem;
+            color: var(--cream-dim);
+            margin-bottom: 22px;
+        }
+
+        .password-field-wrap {
+            position: relative;
+            width: 100%;
+            margin-bottom: 16px;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 13px 44px 13px 16px;
+            font-size: 16px; /* Prevents auto-zoom on iOS */
+            text-align: left;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-md);
+            color: var(--cream);
+            outline: none;
+            transition: all 0.2s ease;
+            letter-spacing: 2px;
+        }
+
+        .login-input:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+        }
+
+        .eye-toggle-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--cream-muted);
+            cursor: pointer;
+            padding: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s ease;
+        }
+
+        .eye-toggle-btn:hover {
+            color: var(--gold-bright);
+        }
+
+        .btn-gold {
+            width: 100%;
+            padding: 13px 20px;
+            background: var(--gold-gradient);
+            border: none;
+            border-radius: var(--radius-md);
+            color: #120b05;
+            font-weight: 700;
+            font-size: 0.98rem;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(212, 175, 55, 0.28);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 46px;
+        }
+
+        .btn-gold:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 24px rgba(212, 175, 55, 0.4);
+        }
+
+        .btn-gold:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Admin Cards */
+        .admin-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-lg);
+            padding: 26px;
+            box-shadow: var(--shadow-card);
+            margin-bottom: 30px;
+            width: 100%;
+        }
+
+        .card-header {
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-card);
+            padding-bottom: 14px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .card-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.45rem;
+            color: var(--cream);
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-header p {
+            font-size: 0.88rem;
+            color: var(--cream-dim);
+        }
+
+        .product-count-badge {
+            background: rgba(212, 175, 55, 0.15);
+            color: var(--gold-bright);
+            border: 1px solid var(--border-gold);
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        /* Form Grid */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            width: 100%;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 0.84rem;
+            font-weight: 600;
+            color: var(--cream);
+            letter-spacing: 0.2px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="password"],
+        select {
+            width: 100%;
+            padding: 11px 14px;
+            font-size: 16px; /* iOS auto-zoom prevention */
+            background: var(--bg-surface);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-md);
+            color: var(--cream);
+            outline: none;
+            font-family: inherit;
+            transition: all 0.2s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        input[type="password"]:focus,
+        select:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        /* Image Upload Box */
+        .upload-area {
+            border: 2px dashed var(--border-card);
+            border-radius: var(--radius-md);
+            padding: 20px 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: rgba(32, 23, 19, 0.4);
+            position: relative;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .upload-area:hover,
+        .upload-area.drag-over {
+            border-color: var(--gold);
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        .upload-area input[type="file"] {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .upload-icon {
+            font-size: 1.8rem;
+            margin-bottom: 6px;
+            color: var(--gold);
+        }
+
+        .upload-text {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--cream);
+            margin-bottom: 2px;
+        }
+
+        .upload-sub {
+            font-size: 0.75rem;
+            color: var(--cream-muted);
+            max-width: 90%;
+        }
+
+        /* Image Preview Box */
+        .preview-box {
+            display: none;
+            align-items: center;
+            gap: 14px;
+            padding: 12px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-md);
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .preview-thumb {
+            width: 68px;
+            height: 68px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid var(--border-gold);
+            background: #000;
+            flex-shrink: 0;
+        }
+
+        .preview-info {
+            flex: 1;
+            min-width: 160px;
+        }
+
+        .preview-name {
+            font-size: 0.86rem;
+            font-weight: 600;
+            color: var(--cream);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .preview-size {
+            font-size: 0.75rem;
+            color: var(--cream-muted);
+            margin-top: 3px;
+        }
+
+        .btn-remove-img {
+            padding: 6px 12px;
+            background: var(--danger-bg);
+            border: 1px solid rgba(224, 82, 82, 0.4);
+            border-radius: 6px;
+            color: var(--danger);
+            font-size: 0.78rem;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .price-row-preview {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            color: var(--cream-muted);
+            margin-top: 4px;
+            flex-wrap: wrap;
+        }
+
+        .price-badge {
+            background: rgba(62, 207, 142, 0.15);
+            color: var(--success);
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+
+        .alert-toast {
+            display: none;
+            padding: 13px 16px;
+            border-radius: var(--radius-md);
+            margin-bottom: 18px;
+            font-size: 0.88rem;
+            align-items: center;
+            gap: 10px;
+            word-break: break-word;
+        }
+
+        .alert-toast.success {
+            display: flex;
+            background: rgba(62, 207, 142, 0.12);
+            border: 1px solid rgba(62, 207, 142, 0.35);
+            color: #b3ffda;
+        }
+
+        .alert-toast.error {
+            display: flex;
+            background: rgba(224, 82, 82, 0.12);
+            border: 1px solid rgba(224, 82, 82, 0.35);
+            color: #ffb3b3;
+        }
+
+        /* Desktop Table View (> 768px) */
+        .products-table-wrap {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .products-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+            min-width: 600px;
+        }
+
+        .products-table th {
+            text-align: left;
+            padding: 12px 14px;
+            color: var(--cream-muted);
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-card);
+            text-transform: uppercase;
+            font-size: 0.72rem;
+            letter-spacing: 0.5px;
+        }
+
+        .products-table td {
+            padding: 12px 14px;
+            border-bottom: 1px solid rgba(56, 37, 30, 0.6);
+            vertical-align: middle;
+        }
+
+        .product-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .product-cell-img {
+            width: 48px;
+            height: 48px;
+            border-radius: 6px;
+            object-fit: cover;
+            border: 1px solid var(--border-card);
+            background: #000;
+            flex-shrink: 0;
+        }
+
+        .product-cell-title {
+            font-weight: 600;
+            color: var(--cream);
+            line-height: 1.3;
+        }
+
+        .category-pill {
+            display: inline-block;
+            padding: 3px 9px;
+            border-radius: 999px;
+            font-size: 0.74rem;
+            font-weight: 600;
+            text-transform: capitalize;
+            white-space: nowrap;
+        }
+
+        .category-pill.candles {
+            background: rgba(212, 175, 55, 0.15);
+            color: var(--gold-bright);
+            border: 1px solid var(--border-gold);
+        }
+
+        .category-pill.resin {
+            background: rgba(186, 126, 255, 0.15);
+            color: #e4c7ff;
+            border: 1px solid rgba(186, 126, 255, 0.3);
+        }
+
+        .category-pill.plants {
+            background: rgba(62, 207, 142, 0.15);
+            color: #a8f5d0;
+            border: 1px solid rgba(62, 207, 142, 0.3);
+        }
+
+        /* Action Buttons */
+        .btn-table-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .btn-table-view {
+            background: transparent;
+            border: 1px solid var(--border-card);
+            color: var(--cream-dim);
+        }
+
+        .btn-table-view:hover {
+            color: var(--gold-bright);
+            border-color: var(--gold);
+        }
+
+        .btn-table-edit {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid var(--border-gold);
+            color: var(--gold-bright);
+        }
+
+        .btn-table-edit:hover {
+            background: var(--gold);
+            color: #120b05;
+        }
+
+        .btn-table-delete {
+            background: transparent;
+            border: 1px solid rgba(224, 82, 82, 0.3);
+            color: var(--danger);
+        }
+
+        .btn-table-delete:hover {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        /* Mobile Products Cards (<= 768px) */
+        .mobile-products-list {
+            display: none;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .mobile-product-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-md);
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: border-color 0.2s ease;
+        }
+
+        .mobile-product-card:hover {
+            border-color: var(--border-gold-subtle);
+        }
+
+        .mp-top {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .mp-thumb {
+            width: 72px;
+            height: 72px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 1px solid var(--border-gold);
+            background: #000;
+            flex-shrink: 0;
+        }
+
+        .mp-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .mp-title {
+            font-size: 0.96rem;
+            font-weight: 700;
+            color: var(--cream);
+            line-height: 1.3;
+            margin-bottom: 5px;
+            word-break: break-word;
+        }
+
+        .mp-meta-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 6px;
+        }
+
+        .mp-tag {
+            font-size: 0.72rem;
+            color: var(--cream-muted);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .mp-price-row {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .mp-price-row strong {
+            font-size: 1.05rem;
+            color: var(--gold-bright);
+        }
+
+        .mp-price-row span.mrp {
+            font-size: 0.78rem;
+            color: var(--cream-muted);
+            text-decoration: line-through;
+        }
+
+        .mp-actions-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(56, 37, 30, 0.6);
+        }
+
+        .mp-actions-row .btn-table-action {
+            width: 100%;
+            padding: 9px 6px;
+            font-size: 0.8rem;
+            min-height: 38px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 32px 16px;
+            color: var(--cream-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Modal Overlay & Card */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            overflow-y: auto;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-gold);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            width: 100%;
+            max-width: 520px;
+            box-shadow: var(--shadow-card);
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            border-bottom: 1px solid var(--border-card);
+            padding-bottom: 12px;
+        }
+
+        .modal-header h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: var(--gold-bright);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--cream-muted);
+            font-size: 1.6rem;
+            cursor: pointer;
+            line-height: 1;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .modal-close:hover {
+            color: var(--cream);
+        }
+
+        .modal-footer-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .modal-footer-actions button {
+            flex: 1;
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+
+            .products-table-wrap {
+                display: none !important;
+            }
+
+            .mobile-products-list {
+                display: flex !important;
+            }
+
+            .header-container {
+                padding: 10px 14px;
+            }
+
+            .brand-title {
+                font-size: 1.05rem;
+            }
+
+            .admin-card {
+                padding: 18px 14px;
+                border-radius: 14px;
+            }
+
+            .card-header h2 {
+                font-size: 1.25rem;
+            }
+
+            .btn-outline {
+                padding: 6px 11px;
+                font-size: 0.76rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            main.admin-main {
+                padding: 14px 10px 50px;
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: flex-start;
+                margin-top: 4px;
+            }
+
+            .modal-card {
+                padding: 18px 14px;
+            }
+
+            .mp-actions-row {
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 6px;
+            }
+
+            .mp-actions-row .btn-table-action {
+                font-size: 0.75rem;
+                padding: 8px 4px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Top Header -->
+    <header class="admin-header">
+        <div class="header-container">
+            <a href="index.html" class="brand-link">
+                <img src="images/logo-tight.png" alt="Amoura Crafts" class="brand-logo">
+                <span class="brand-title">Amoura Crafts <span style="font-size:0.78rem;font-weight:400;color:var(--gold);opacity:0.9;">• Admin</span></span>
+            </a>
+            <div class="header-actions">
+                <a href="index.html" class="btn-outline" target="_blank">🌐 Live Website</a>
+                <button id="changePassBtn" class="btn-outline" style="display:none;" onclick="openChangePasswordModal()">🔑 Password</button>
+                <button id="logoutBtn" class="btn-outline" style="display:none;" onclick="logout()">🚪 Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="admin-main">
+        <!-- 1. LOGIN GATE -->
+        <div id="loginSection" class="login-wrap">
+            <div class="login-icon">🔐</div>
+            <h1>Admin Login</h1>
+            <p>Apna admin password enter karke login karein:</p>
+            <form onsubmit="handleLogin(event)">
+                <div class="password-field-wrap">
+                    <input type="password" id="passwordInput" class="login-input" placeholder="Enter Admin Password" autocomplete="current-password" autofocus required>
+                    <button type="button" class="eye-toggle-btn" onclick="togglePasswordVisibility('passwordInput', this)" aria-label="Toggle password visibility">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                </div>
+                <button type="submit" id="loginSubmitBtn" class="btn-gold">Login to Admin</button>
+            </form>
+            <div id="loginError" style="color:var(--danger);font-size:0.86rem;margin-top:14px;display:none;"></div>
+        </div>
+
+        <!-- 2. ADD & MANAGE PRODUCT PORTAL (Visible after login) -->
+        <div id="adminPortal" style="display:none;">
+            <!-- Alert message -->
+            <div id="alertToast" class="alert-toast"></div>
+
+            <!-- Add Product Card -->
+            <div class="admin-card">
+                <div class="card-header">
+                    <div>
+                        <h2>✨ Add New Product</h2>
+                        <p>Details fill karke "Add Product" par click karein. Product turant live website par publish ho jayega!</p>
+                    </div>
+                </div>
+
+                <form id="addProductForm" onsubmit="handleAddProduct(event)">
+                    <div class="form-grid">
+                        <!-- Image Upload -->
+                        <div class="form-group full">
+                            <label>1. Product Image *</label>
+                            <div class="upload-area" id="dropZone">
+                                <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)">
+                                <div class="upload-icon">📸</div>
+                                <div class="upload-text">Product Photo select karein ya drop karein</div>
+                                <div class="upload-sub">JPG, PNG, WEBP supported (Camera photos automatically compressed)</div>
+                            </div>
+
+                            <!-- Live preview box -->
+                            <div id="previewBox" class="preview-box">
+                                <img id="previewImg" class="preview-thumb" src="" alt="Product Preview">
+                                <div class="preview-info">
+                                    <div id="previewName" class="preview-name">Photo Selected</div>
+                                    <div id="previewSize" class="preview-size">Optimized for fast mobile loading</div>
+                                </div>
+                                <button type="button" class="btn-remove-img" onclick="clearSelectedImage()">✕ Remove</button>
+                            </div>
+
+                            <!-- Alternative URL input toggle -->
+                            <div style="margin-top:8px;font-size:0.8rem;">
+                                <a href="#" id="toggleUrlLink" style="color:var(--gold);text-decoration:none;" onclick="toggleUrlInput(event)">+ Ya online Image URL link paste karein</a>
+                                <div id="urlInputWrap" style="display:none;margin-top:8px;">
+                                    <input type="text" id="imageUrlInput" placeholder="https://... image link paste karein" oninput="handleUrlInput(event)">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Product Name -->
+                        <div class="form-group full">
+                            <label for="prodName">2. Product Name *</label>
+                            <input type="text" id="prodName" placeholder="e.g. Lotus Flower Decoration Candle" required>
+                        </div>
+
+                        <!-- Selling Price -->
+                        <div class="form-group">
+                            <label for="prodPrice">3. Selling Price (₹) *</label>
+                            <input type="number" id="prodPrice" placeholder="e.g. 400" min="1" oninput="updateMrpPreview()" required>
+                            <div class="price-row-preview" id="mrpPreviewWrap">
+                                <span id="mrpText">Suggested MRP: ₹549</span>
+                                <span class="price-badge" id="discountBadge">27% OFF</span>
+                            </div>
+                        </div>
+
+                        <!-- Original Price / MRP -->
+                        <div class="form-group">
+                            <label for="prodMrp">Original Price / MRP (₹)</label>
+                            <input type="number" id="prodMrp" placeholder="e.g. 549" min="1">
+                        </div>
+
+                        <!-- Category -->
+                        <div class="form-group">
+                            <label for="prodCategory">4. Category *</label>
+                            <select id="prodCategory" required>
+                                <option value="candles">🕯️ Candles (index.html#shop)</option>
+                                <option value="resin">🌸 Resin Art (index.html#resin)</option>
+                                <option value="plants">🌿 Tree & Plants (plants.html)</option>
+                            </select>
+                        </div>
+
+                        <!-- Custom Tag -->
+                        <div class="form-group">
+                            <label for="prodTag">Badge Tag (e.g. New Arrival, Festive Special)</label>
+                            <input type="text" id="prodTag" placeholder="New Arrival">
+                        </div>
+
+                        <!-- Description -->
+                        <div class="form-group full">
+                            <label for="prodDesc">Short Description (Optional)</label>
+                            <input type="text" id="prodDesc" placeholder="Leave empty for auto-generated description">
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="form-group full" style="margin-top:6px;">
+                            <button type="submit" id="submitBtn" class="btn-gold">
+                                ✨ Add Product &amp; Publish to Website
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Manage Products Card -->
+            <div class="admin-card">
+                <div class="card-header">
+                    <div>
+                        <h2>📦 Your Added Products</h2>
+                        <p>Yahan aapke add kiye gaye products show honge. Aap kisi bhi product ko View, Edit ya Delete kar sakte hain.</p>
+                    </div>
+                    <span id="productCountBadge" class="product-count-badge">0 Products</span>
+                </div>
+
+                <!-- Desktop Table (> 768px) -->
+                <div class="products-table-wrap">
+                    <table class="products-table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Category</th>
+                                <th>Selling Price</th>
+                                <th>MRP</th>
+                                <th>Date</th>
+                                <th style="text-align:right;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productsTableBody">
+                            <!-- Populated dynamically via JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Mobile Responsive Cards (<= 768px) -->
+                <div id="mobileProductsList" class="mobile-products-list">
+                    <!-- Populated dynamically via JS -->
+                </div>
+
+                <div id="emptyState" class="empty-state">Abhi tak koi naya product add nahi kiya gaya hai. Upar diye gaye form se pehla product add karein!</div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 3. EDIT PRODUCT MODAL -->
+    <div id="editProductModal" class="modal-overlay" onclick="if(event.target===this) closeEditProductModal()">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>✏️ Edit Product</h3>
+                <button type="button" class="modal-close" onclick="closeEditProductModal()">&times;</button>
+            </div>
+            <form id="editProductForm" onsubmit="handleUpdateProduct(event)">
+                <input type="hidden" id="editProdId">
+                <input type="hidden" id="editCurrentImg">
+
+                <!-- Image Section -->
+                <div class="form-group" style="margin-bottom:14px;">
+                    <label>Product Image</label>
+                    <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+                        <img id="editPreviewThumb" class="preview-thumb" src="" alt="Current Product Image">
+                        <div style="flex:1;">
+                            <div style="font-size:0.8rem;color:var(--cream-dim);margin-bottom:6px;">Current image will be kept if no new image is selected.</div>
+                            <label class="btn-outline" style="cursor:pointer;display:inline-flex;padding:5px 12px;font-size:0.78rem;">
+                                📁 Choose New Photo
+                                <input type="file" id="editFileInput" accept="image/*" style="display:none;" onchange="handleEditFileSelect(event)">
+                            </label>
+                        </div>
+                    </div>
+                    <div style="font-size:0.78rem;">
+                        <input type="text" id="editImageUrlInput" placeholder="Or enter new image URL..." oninput="handleEditUrlInput(event)">
+                    </div>
+                </div>
+
+                <!-- Product Name -->
+                <div class="form-group" style="margin-bottom:14px;">
+                    <label for="editProdName">Product Name *</label>
+                    <input type="text" id="editProdName" required>
+                </div>
+
+                <!-- Prices -->
+                <div class="form-grid" style="margin-bottom:14px;">
+                    <div class="form-group">
+                        <label for="editProdPrice">Selling Price (₹) *</label>
+                        <input type="number" id="editProdPrice" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editProdMrp">Original Price / MRP (₹)</label>
+                        <input type="number" id="editProdMrp" min="1">
+                    </div>
+                </div>
+
+                <!-- Category -->
+                <div class="form-group" style="margin-bottom:14px;">
+                    <label for="editProdCategory">Category *</label>
+                    <select id="editProdCategory" required>
+                        <option value="candles">🕯️ Candles (index.html#shop)</option>
+                        <option value="resin">🌸 Resin Art (index.html#resin)</option>
+                        <option value="plants">🌿 Tree & Plants (plants.html)</option>
+                    </select>
+                </div>
+
+                <!-- Badge Tag -->
+                <div class="form-group" style="margin-bottom:14px;">
+                    <label for="editProdTag">Badge Tag</label>
+                    <input type="text" id="editProdTag" placeholder="e.g. New Arrival, Festive Special">
+                </div>
+
+                <!-- Description -->
+                <div class="form-group" style="margin-bottom:18px;">
+                    <label for="editProdDesc">Short Description</label>
+                    <input type="text" id="editProdDesc">
+                </div>
+
+                <div id="editError" style="color:var(--danger);font-size:0.84rem;margin-bottom:12px;display:none;"></div>
+
+                <div class="modal-footer-actions">
+                    <button type="button" class="btn-outline" onclick="closeEditProductModal()">Cancel</button>
+                    <button type="submit" id="editSubmitBtn" class="btn-gold">💾 Update Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 4. CHANGE PASSWORD MODAL -->
+    <div id="changePasswordModal" class="modal-overlay" onclick="if(event.target===this) closeChangePasswordModal()">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>🔑 Change Admin Password</h3>
+                <button type="button" class="modal-close" onclick="closeChangePasswordModal()">&times;</button>
+            </div>
+            <form onsubmit="handleChangePassword(event)">
+                <div class="form-group" style="margin-bottom:14px;">
+                    <label for="currentPassword">Current Password *</label>
+                    <div class="password-field-wrap">
+                        <input type="password" id="currentPassword" class="login-input" placeholder="Current password" required>
+                        <button type="button" class="eye-toggle-btn" onclick="togglePasswordVisibility('currentPassword', this)" aria-label="Toggle password visibility">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom:14px;">
+                    <label for="newPassword">New Password * (Min 6 chars)</label>
+                    <div class="password-field-wrap">
+                        <input type="password" id="newPassword" class="login-input" placeholder="New password" minlength="6" required>
+                        <button type="button" class="eye-toggle-btn" onclick="togglePasswordVisibility('newPassword', this)" aria-label="Toggle password visibility">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom:18px;">
+                    <label for="confirmPassword">Confirm New Password *</label>
+                    <div class="password-field-wrap">
+                        <input type="password" id="confirmPassword" class="login-input" placeholder="Confirm new password" minlength="6" required>
+                        <button type="button" class="eye-toggle-btn" onclick="togglePasswordVisibility('confirmPassword', this)" aria-label="Toggle password visibility">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div id="changePassError" style="color:var(--danger);font-size:0.84rem;margin-bottom:12px;display:none;"></div>
+                <div class="modal-footer-actions">
+                    <button type="button" class="btn-outline" onclick="closeChangePasswordModal()">Cancel</button>
+                    <button type="submit" id="changePassSubmitBtn" class="btn-gold">Update Password</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Load Products Engine -->
+    <script src="products-engine.js?v=20261119_v3"></script>
+
+    <script>
+        const AUTH_API = '/.netlify/functions/admin-auth';
+        let currentCompressedImage = null;
+        let currentEditCompressedImage = null;
+        let cachedProductsList = [];
+
+        // Toggle password visibility
+        function togglePasswordVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            const isPass = input.type === 'password';
+            input.type = isPass ? 'text' : 'password';
+            btn.innerHTML = isPass ? `
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                </svg>
+            ` : `
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+            `;
+        }
+
+        // Check authentication on load via secure token
+        window.addEventListener('DOMContentLoaded', async () => {
+            const token = sessionStorage.getItem('amoura_admin_token') || localStorage.getItem('amoura_admin_token');
+            if (token) {
+                try {
+                    const res = await fetch(AUTH_API, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ action: 'verify', token })
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data && data.success) {
+                            showPortal();
+                            return;
+                        }
+                    }
+                } catch (e) {
+                    if (sessionStorage.getItem('amoura_admin_logged_in') === 'true') {
+                        showPortal();
+                        return;
+                    }
+                }
+            }
+            logout();
+        });
+
+        // Backend login verification
+        async function handleLogin(e) {
+            e.preventDefault();
+            const password = document.getElementById('passwordInput').value;
+            const errDiv = document.getElementById('loginError');
+            const submitBtn = document.getElementById('loginSubmitBtn');
+
+            errDiv.style.display = 'none';
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Verifying... ⏳';
+
+            try {
+                const res = await fetch(AUTH_API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'login', password })
+                });
+
+                const data = await res.json();
+                if (res.ok && data.success && data.token) {
+                    sessionStorage.setItem('amoura_admin_token', data.token);
+                    localStorage.setItem('amoura_admin_token', data.token);
+                    sessionStorage.setItem('amoura_admin_logged_in', 'true');
+                    localStorage.setItem('amoura_admin_logged_in', 'true');
+                    document.getElementById('passwordInput').value = '';
+                    showPortal();
+                } else {
+                    errDiv.textContent = data.error || 'Galat password! Kripya dobara try karein.';
+                    errDiv.style.display = 'block';
+                }
+            } catch (err) {
+                errDiv.textContent = 'Server connection error. Please try again.';
+                errDiv.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Login to Admin';
+            }
+        }
+
+        function logout() {
+            sessionStorage.removeItem('amoura_admin_token');
+            localStorage.removeItem('amoura_admin_token');
+            sessionStorage.removeItem('amoura_admin_logged_in');
+            localStorage.removeItem('amoura_admin_logged_in');
+            document.getElementById('loginSection').style.display = 'block';
+            document.getElementById('adminPortal').style.display = 'none';
+            document.getElementById('logoutBtn').style.display = 'none';
+            document.getElementById('changePassBtn').style.display = 'none';
+            document.getElementById('passwordInput').value = '';
+        }
+
+        function showPortal() {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('adminPortal').style.display = 'block';
+            document.getElementById('logoutBtn').style.display = 'inline-flex';
+            document.getElementById('changePassBtn').style.display = 'inline-flex';
+            loadTableProducts();
+        }
+
+        // Generic Canvas image compressor
+        function compressImageFile(file, callback) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    const maxWidth = 800;
+                    const maxHeight = 800;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > maxWidth || height > maxHeight) {
+                        if (width / height > maxWidth / maxHeight) {
+                            height = Math.round(height * (maxWidth / width));
+                            width = maxWidth;
+                        } else {
+                            width = Math.round(width * (maxHeight / height));
+                            height = maxHeight;
+                        }
+                    }
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    let dataUrl = '';
+                    try {
+                        dataUrl = canvas.toDataURL('image/webp', 0.82);
+                    } catch (err) {}
+                    if (!dataUrl || !dataUrl.startsWith('data:image/webp')) {
+                        dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+                    }
+
+                    callback(dataUrl, width, height, file.name);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Image file handling for Add Product
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            compressImageFile(file, (dataUrl, width, height, fileName) => {
+                currentCompressedImage = dataUrl;
+                document.getElementById('previewImg').src = dataUrl;
+                document.getElementById('previewName').textContent = fileName;
+                const kb = Math.round(dataUrl.length * 0.75 / 1024);
+                document.getElementById('previewSize').textContent = `Optimized: ${width}×${height}px (~${kb} KB)`;
+                document.getElementById('previewBox').style.display = 'flex';
+            });
+        }
+
+        function clearSelectedImage() {
+            currentCompressedImage = null;
+            document.getElementById('fileInput').value = '';
+            document.getElementById('previewBox').style.display = 'none';
+            document.getElementById('previewImg').src = '';
+            document.getElementById('imageUrlInput').value = '';
+        }
+
+        function toggleUrlInput(e) {
+            e.preventDefault();
+            const wrap = document.getElementById('urlInputWrap');
+            wrap.style.display = wrap.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function handleUrlInput(e) {
+            const url = e.target.value.trim();
+            if (url) {
+                currentCompressedImage = url;
+                document.getElementById('previewImg').src = url;
+                document.getElementById('previewName').textContent = 'Online Image URL';
+                document.getElementById('previewSize').textContent = url.substring(0, 40) + '...';
+                document.getElementById('previewBox').style.display = 'flex';
+            }
+        }
+
+        // Image handling for Edit Modal
+        function handleEditFileSelect(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            compressImageFile(file, (dataUrl) => {
+                currentEditCompressedImage = dataUrl;
+                document.getElementById('editPreviewThumb').src = dataUrl;
+            });
+        }
+
+        function handleEditUrlInput(e) {
+            const url = e.target.value.trim();
+            if (url) {
+                currentEditCompressedImage = url;
+                document.getElementById('editPreviewThumb').src = url;
+            }
+        }
+
+        // MRP calculation in Add form
+        function updateMrpPreview() {
+            const price = Number(document.getElementById('prodPrice').value) || 0;
+            const mrpInput = document.getElementById('prodMrp');
+            if (price > 0) {
+                const autoMrp = Math.round(price + Math.max(149, price * 0.3));
+                if (!mrpInput.value || mrpInput.value === '') {
+                    mrpInput.value = autoMrp;
+                }
+                const currentMrp = Number(mrpInput.value) || autoMrp;
+                const pct = Math.round(((currentMrp - price) / currentMrp) * 100);
+                document.getElementById('mrpText').textContent = `Suggested MRP: ₹${currentMrp}`;
+                document.getElementById('discountBadge').textContent = `${Math.max(0, pct)}% OFF`;
+                document.getElementById('mrpPreviewWrap').style.display = 'flex';
+            } else {
+                document.getElementById('mrpPreviewWrap').style.display = 'none';
+            }
+        }
+
+        // Add Product Form Submit
+        async function handleAddProduct(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('prodName').value.trim();
+            const price = Number(document.getElementById('prodPrice').value);
+            const userMrp = Number(document.getElementById('prodMrp').value);
+            const category = document.getElementById('prodCategory').value;
+            const tag = document.getElementById('prodTag').value.trim() || 'New Arrival';
+            const desc = document.getElementById('prodDesc').value.trim();
+
+            if (!name) {
+                showAlert('Kripya product ka naam enter karein.', 'error');
+                return;
+            }
+
+            if (!price || price <= 0) {
+                showAlert('Kripya valid price enter karein.', 'error');
+                return;
+            }
+
+            const img = currentCompressedImage || 'images/logo.png';
+            const mrp = userMrp && userMrp > price ? userMrp : Math.round(price + Math.max(149, price * 0.3));
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Publishing to website... ⏳';
+
+            try {
+                const newProd = await ProductManager.addProduct({
+                    name,
+                    price,
+                    mrp,
+                    category,
+                    tag,
+                    desc: desc || `Handcrafted ${name} made with premium materials. Perfect for home decor and festive gifting.`,
+                    img
+                });
+
+                showAlert(`✅ Product "${newProd.name}" successfully add ho gaya aur website par live ho chuka hai!`, 'success');
+
+                // Reset form
+                document.getElementById('addProductForm').reset();
+                clearSelectedImage();
+                updateMrpPreview();
+
+                // Refresh tables & cards
+                await loadTableProducts();
+
+            } catch (err) {
+                showAlert(`Error: ${err.message || 'Product add karne me issue aaya.'}`, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '✨ Add Product & Publish to Website';
+            }
+        }
+
+        // Open Edit Product Modal
+        function openEditProductModal(productId) {
+            const product = cachedProductsList.find(p => p.id === productId);
+            if (!product) {
+                showAlert('Product nahi mila.', 'error');
+                return;
+            }
+
+            document.getElementById('editProdId').value = product.id;
+            document.getElementById('editProdName').value = product.name || '';
+            document.getElementById('editProdPrice').value = product.price || '';
+            document.getElementById('editProdMrp').value = product.mrp || Math.round(product.price * 1.35);
+            document.getElementById('editProdCategory').value = (product.category || 'candles').toLowerCase();
+            document.getElementById('editProdTag').value = product.tag || '';
+            document.getElementById('editProdDesc').value = product.desc || '';
+            document.getElementById('editCurrentImg').value = product.img || '';
+            document.getElementById('editPreviewThumb').src = product.img || 'images/logo.png';
+            document.getElementById('editImageUrlInput').value = '';
+            document.getElementById('editFileInput').value = '';
+            document.getElementById('editError').style.display = 'none';
+
+            currentEditCompressedImage = null; // Reset new image buffer
+
+            document.getElementById('editProductModal').classList.add('active');
+        }
+
+        function closeEditProductModal() {
+            document.getElementById('editProductModal').classList.remove('active');
+            currentEditCompressedImage = null;
+        }
+
+        // Handle Update Product Submit
+        async function handleUpdateProduct(e) {
+            e.preventDefault();
+
+            const id = document.getElementById('editProdId').value;
+            const name = document.getElementById('editProdName').value.trim();
+            const price = Number(document.getElementById('editProdPrice').value);
+            const userMrp = Number(document.getElementById('editProdMrp').value);
+            const category = document.getElementById('editProdCategory').value;
+            const tag = document.getElementById('editProdTag').value.trim() || 'New Arrival';
+            const desc = document.getElementById('editProdDesc').value.trim();
+            const currentImg = document.getElementById('editCurrentImg').value;
+            const errDiv = document.getElementById('editError');
+            const submitBtn = document.getElementById('editSubmitBtn');
+
+            errDiv.style.display = 'none';
+
+            if (!name) {
+                errDiv.textContent = 'Product name is required.';
+                errDiv.style.display = 'block';
+                return;
+            }
+
+            if (!price || price <= 0) {
+                errDiv.textContent = 'Valid price is required.';
+                errDiv.style.display = 'block';
+                return;
+            }
+
+            // If user selected new photo, use it; otherwise preserve current image!
+            const img = currentEditCompressedImage || currentImg || 'images/logo.png';
+            const mrp = userMrp && userMrp > 0 ? userMrp : Math.round(price + Math.max(149, price * 0.3));
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Updating... ⏳';
+
+            try {
+                const updatedProd = await ProductManager.updateProduct({
+                    id,
+                    name,
+                    price,
+                    mrp,
+                    category,
+                    tag,
+                    desc: desc || `Handcrafted ${name} made with premium materials. Perfect for home decor and festive gifting.`,
+                    img
+                });
+
+                closeEditProductModal();
+                showAlert(`✅ Product "${updatedProd.name}" successfully update ho gaya aur website par live ho chuka hai!`, 'success');
+                await loadTableProducts();
+
+            } catch (err) {
+                errDiv.textContent = `Update failed: ${err.message || 'Error occurred.'}`;
+                errDiv.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '💾 Update Product';
+            }
+        }
+
+        // Alert toast
+        function showAlert(msg, type = 'success') {
+            const toast = document.getElementById('alertToast');
+            toast.className = `alert-toast ${type}`;
+            toast.textContent = msg;
+            toast.style.display = 'flex';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 6000);
+        }
+
+        // Render Added Products (Both Desktop Table & Mobile Responsive Cards)
+        async function loadTableProducts() {
+            const list = await ProductManager.getProducts();
+            cachedProductsList = Array.isArray(list) ? list : [];
+
+            const tbody = document.getElementById('productsTableBody');
+            const mobileList = document.getElementById('mobileProductsList');
+            const empty = document.getElementById('emptyState');
+            const countBadge = document.getElementById('productCountBadge');
+
+            countBadge.textContent = `${cachedProductsList.length} Product${cachedProductsList.length === 1 ? '' : 's'}`;
+
+            if (!cachedProductsList || cachedProductsList.length === 0) {
+                tbody.innerHTML = '';
+                mobileList.innerHTML = '';
+                empty.style.display = 'block';
+                return;
+            }
+
+            empty.style.display = 'none';
+
+            // 1. Render Desktop Table Rows
+            tbody.innerHTML = cachedProductsList.map(p => {
+                const pageLink = p.category === 'plants' ? 'plants.html' : (p.category === 'resin' ? 'index.html#resin' : 'index.html#shop');
+                const catLabel = p.category === 'plants' ? 'Tree & Plants' : (p.category === 'resin' ? 'Resin Art' : 'Candles');
+                const safeName = (p.name || '').replace(/'/g, "\\'");
+
+                return `
+                    <tr>
+                        <td>
+                            <div class="product-cell">
+                                <img src="${p.img || 'images/logo.png'}" alt="${p.name}" class="product-cell-img" onerror="this.src='images/logo.png'">
+                                <div>
+                                    <div class="product-cell-title">${p.name}</div>
+                                    <div style="font-size:0.75rem;color:var(--cream-muted);">${p.tag || 'New Arrival'}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="category-pill ${p.category || 'candles'}">${catLabel}</span>
+                        </td>
+                        <td>
+                            <strong style="color:var(--gold-bright);">₹${p.price}</strong>
+                        </td>
+                        <td>
+                            <span style="color:var(--cream-muted);text-decoration:line-through;font-size:0.84rem;">₹${p.mrp || Math.round(p.price * 1.35)}</span>
+                        </td>
+                        <td style="color:var(--cream-muted);font-size:0.8rem;">
+                            ${p.date || 'Recent'}
+                        </td>
+                        <td style="text-align:right;">
+                            <div style="display:inline-flex;gap:6px;">
+                                <a href="${pageLink}" target="_blank" class="btn-table-action btn-table-view">👁️ View</a>
+                                <button class="btn-table-action btn-table-edit" onclick="openEditProductModal('${p.id}')">✏️ Edit</button>
+                                <button class="btn-table-action btn-table-delete" onclick="handleDeleteProduct('${p.id}', '${safeName}')">🗑️ Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            // 2. Render Mobile Responsive Cards
+            mobileList.innerHTML = cachedProductsList.map(p => {
+                const pageLink = p.category === 'plants' ? 'plants.html' : (p.category === 'resin' ? 'index.html#resin' : 'index.html#shop');
+                const catLabel = p.category === 'plants' ? 'Tree & Plants' : (p.category === 'resin' ? 'Resin Art' : 'Candles');
+                const safeName = (p.name || '').replace(/'/g, "\\'");
+                const mrpVal = p.mrp || Math.round(p.price * 1.35);
+                const discount = mrpVal > p.price ? Math.round(((mrpVal - p.price) / mrpVal) * 100) : 0;
+
+                return `
+                    <div class="mobile-product-card">
+                        <div class="mp-top">
+                            <img src="${p.img || 'images/logo.png'}" alt="${p.name}" class="mp-thumb" onerror="this.src='images/logo.png'">
+                            <div class="mp-details">
+                                <div class="mp-title">${p.name}</div>
+                                <div class="mp-meta-row">
+                                    <span class="category-pill ${p.category || 'candles'}">${catLabel}</span>
+                                    <span class="mp-tag">${p.tag || 'New Arrival'}</span>
+                                </div>
+                                <div class="mp-price-row">
+                                    <strong>₹${p.price}</strong>
+                                    <span class="mrp">₹${mrpVal}</span>
+                                    ${discount > 0 ? `<span class="price-badge">${discount}% OFF</span>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mp-actions-row">
+                            <a href="${pageLink}" target="_blank" class="btn-table-action btn-table-view">👁️ View</a>
+                            <button class="btn-table-action btn-table-edit" onclick="openEditProductModal('${p.id}')">✏️ Edit</button>
+                            <button class="btn-table-action btn-table-delete" onclick="handleDeleteProduct('${p.id}', '${safeName}')">🗑️ Delete</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function handleDeleteProduct(id, name) {
+            const displayName = name || 'this product';
+            if (!confirm(`Kya aap product "${displayName}" ko website se delete karna chahte hain?`)) {
+                return;
+            }
+
+            try {
+                await ProductManager.deleteProduct(id, name);
+                showAlert(`✅ Product "${displayName}" successfully delete ho gaya!`, 'success');
+                await loadTableProducts();
+            } catch (err) {
+                showAlert(`Delete karne me error aaya: ${err.message}`, 'error');
+            }
+        }
+
+        // Change Password Modal
+        function openChangePasswordModal() {
+            document.getElementById('changePasswordModal').classList.add('active');
+            document.getElementById('currentPassword').value = '';
+            document.getElementById('newPassword').value = '';
+            document.getElementById('confirmPassword').value = '';
+            document.getElementById('changePassError').style.display = 'none';
+        }
+
+        function closeChangePasswordModal() {
+            document.getElementById('changePasswordModal').classList.remove('active');
+        }
+
+        async function handleChangePassword(e) {
+            e.preventDefault();
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const errDiv = document.getElementById('changePassError');
+            const submitBtn = document.getElementById('changePassSubmitBtn');
+
+            errDiv.style.display = 'none';
+
+            if (newPassword !== confirmPassword) {
+                errDiv.textContent = 'New password aur Confirm password match nahi ho rahe.';
+                errDiv.style.display = 'block';
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                errDiv.textContent = 'Password kam se kam 6 characters ka hona chahiye.';
+                errDiv.style.display = 'block';
+                return;
+            }
+
+            const token = sessionStorage.getItem('amoura_admin_token') || localStorage.getItem('amoura_admin_token');
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Updating... ⏳';
+
+            try {
+                const res = await fetch(AUTH_API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        action: 'changePassword',
+                        currentPassword,
+                        newPassword,
+                        token
+                    })
+                });
+
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    if (data.token) {
+                        sessionStorage.setItem('amoura_admin_token', data.token);
+                        localStorage.setItem('amoura_admin_token', data.token);
+                    }
+                    closeChangePasswordModal();
+                    showAlert('✅ Password successfully change ho gaya hai! Agli baar naya password use karein.', 'success');
+                } else {
+                    errDiv.textContent = data.error || 'Password update karne me error aaya.';
+                    errDiv.style.display = 'block';
+                }
+            } catch (err) {
+                errDiv.textContent = 'Server connection error. Please try again.';
+                errDiv.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Update Password';
+            }
+        }
+    </script>
+</body>
+
+</html>

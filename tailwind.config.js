@@ -6,6 +6,9 @@ export default {
   ],
   theme: {
     extend: {
+      screens: {
+        'xs': '420px',
+      },
       colors: {
         amoura: {
           ivory: '#F8F5EF',       // Primary background canvas

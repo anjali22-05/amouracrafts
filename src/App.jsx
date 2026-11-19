@@ -31,7 +31,7 @@ export default function App() {
   const isAdminRoute = location.pathname.startsWith('/admin');
 
   return (
-    <div className="min-h-screen flex flex-col bg-amoura-bg text-amoura-cream selection:bg-amoura-gold selection:text-amoura-dark">
+    <div className="min-h-screen flex flex-col bg-amoura-ivory text-amoura-charcoal selection:bg-amoura-forest selection:text-amoura-ivory">
       {/* Announcement bar at the top */}
       <AnnouncementBar />
 

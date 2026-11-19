@@ -10,6 +10,9 @@
     color: #292B28;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
   }
 
   body {
@@ -18,6 +21,14 @@
     padding: 0;
     min-height: 100vh;
     background-color: #F8F5EF;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  #root {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
   }
 
   h1, h2, h3, h4, .font-serif {
@@ -46,7 +57,7 @@
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(6px);
   }
   to {
     opacity: 1;
@@ -55,5 +66,5 @@
 }
 
 .animate-fadeIn {
-  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }

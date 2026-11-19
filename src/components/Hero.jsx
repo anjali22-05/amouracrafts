@@ -114,7 +114,7 @@ export default function Hero({ onShopClick, onExploreClick }) {
               </div>
 
               {/* Floating Pill Accent */}
-              <div className="absolute -top-3 -right-3 px-4 py-2 rounded-full bg-amoura-forest text-amoura-ivory shadow-lg flex items-center gap-2 text-xs font-semibold">
+              <div className="absolute -top-3 right-1 sm:-right-3 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-amoura-forest text-amoura-ivory shadow-lg flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs font-semibold select-none">
                 <Heart className="w-3.5 h-3.5 text-amoura-terracotta fill-amoura-terracotta" />
                 <span>Small Batch Artisan Pours</span>
               </div>

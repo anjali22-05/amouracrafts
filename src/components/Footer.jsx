@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Heart, Phone, Mail, ShieldCheck, Sparkles, Truck } from 'lucide-react';
+import { Heart, Phone, Mail, ShieldCheck, Sparkles, Truck, Leaf } from 'lucide-react';
 import { openWhatsApp } from '../utils/whatsapp';
 
 function InstagramIcon({ className = "w-4 h-4" }) {
@@ -32,37 +32,38 @@ function FacebookIcon({ className = "w-4 h-4" }) {
 
 export default function Footer() {
   return (
-    <footer className="bg-amoura-dark border-t border-amoura-line text-amoura-subtext transition-colors">
+    <footer className="bg-amoura-cream border-t border-amoura-border text-amoura-charcoal">
+      
       {/* Trust Badges Bar */}
-      <div className="border-b border-amoura-line/60 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="border-b border-amoura-border/60 py-8 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
           <div className="flex items-center justify-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-amoura-card border border-amoura-line flex items-center justify-center text-amoura-gold shadow-sm">
-              <Sparkles className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-full bg-white border border-amoura-border flex items-center justify-center text-amoura-forest shadow-sm">
+              <Leaf className="w-5 h-5 text-amoura-sage-dark" />
             </div>
             <div className="text-left">
-              <h4 className="text-sm font-semibold text-amoura-cream">100% Pure Soy Wax</h4>
-              <p className="text-xs text-amoura-muted">Clean burning, toxin-free & smoke-less</p>
+              <h4 className="text-sm font-semibold text-amoura-charcoal">100% Pure Soy Wax</h4>
+              <p className="text-xs text-amoura-muted">Clean burning, toxin-free &amp; smokeless</p>
             </div>
           </div>
 
           <div className="flex items-center justify-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-amoura-card border border-amoura-line flex items-center justify-center text-amoura-gold shadow-sm">
-              <Truck className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-full bg-white border border-amoura-border flex items-center justify-center text-amoura-forest shadow-sm">
+              <Truck className="w-5 h-5 text-amoura-forest" />
             </div>
             <div className="text-left">
-              <h4 className="text-sm font-semibold text-amoura-cream">Free Shipping Above ₹1,000</h4>
+              <h4 className="text-sm font-semibold text-amoura-charcoal">Free Shipping Above ₹1,000</h4>
               <p className="text-xs text-amoura-muted">Safe, double-cushioned delivery across India</p>
             </div>
           </div>
 
           <div className="flex items-center justify-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-amoura-card border border-amoura-line flex items-center justify-center text-amoura-gold shadow-sm">
-              <ShieldCheck className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-full bg-white border border-amoura-border flex items-center justify-center text-amoura-forest shadow-sm">
+              <ShieldCheck className="w-5 h-5 text-amoura-forest" />
             </div>
             <div className="text-left">
-              <h4 className="text-sm font-semibold text-amoura-cream">Secure UPI & Instant Orders</h4>
-              <p className="text-xs text-amoura-muted">Fast verification & automated PDF invoices</p>
+              <h4 className="text-sm font-semibold text-amoura-charcoal">Secure UPI &amp; Instant Verification</h4>
+              <p className="text-xs text-amoura-muted">Fast dispatch with automated PDF invoices</p>
             </div>
           </div>
         </div>
@@ -78,17 +79,17 @@ export default function Footer() {
               <img
                 src="/images/logo.png"
                 alt="Amoura Crafts"
-                className="w-10 h-10 rounded-full border border-amoura-gold/50 object-cover"
+                className="w-10 h-10 rounded-full border border-amoura-border object-cover"
                 onError={(e) => {
                   e.target.onerror = null;
                   e.target.src = '/image/Aurelia Bloom Royal Glden Floral Candle 320.jpg';
                 }}
               />
-              <span className="font-display text-xl font-bold tracking-wider text-amoura-cream">
+              <span className="font-serif text-2xl font-bold tracking-wider text-amoura-charcoal">
                 AMOURA CRAFTS
               </span>
             </div>
-            <p className="text-xs leading-relaxed text-amoura-subtext">
+            <p className="text-xs leading-relaxed text-amoura-muted">
               An artisan luxury studio crafting exquisite organic soy candles, festive urli centerpieces, bespoke resin keepsakes, and botanical decor to infuse your home with warmth and aroma.
             </p>
             <div className="flex items-center gap-3 pt-2">
@@ -96,7 +97,7 @@ export default function Footer() {
                 href="https://www.instagram.com/craftsamoura"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-8 h-8 rounded-full bg-amoura-card border border-amoura-line flex items-center justify-center text-amoura-cream hover:text-amoura-gold hover:border-amoura-gold transition-colors"
+                className="w-8 h-8 rounded-full bg-white border border-amoura-border flex items-center justify-center text-amoura-charcoal hover:text-amoura-forest hover:border-amoura-forest transition-colors shadow-sm"
                 aria-label="Instagram"
               >
                 <InstagramIcon className="w-4 h-4" />
@@ -105,7 +106,7 @@ export default function Footer() {
                 href="https://youtube.com/@craftsamoura"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-8 h-8 rounded-full bg-amoura-card border border-amoura-line flex items-center justify-center text-amoura-cream hover:text-amoura-gold hover:border-amoura-gold transition-colors"
+                className="w-8 h-8 rounded-full bg-white border border-amoura-border flex items-center justify-center text-amoura-charcoal hover:text-amoura-forest hover:border-amoura-forest transition-colors shadow-sm"
                 aria-label="YouTube"
               >
                 <YoutubeIcon className="w-4 h-4" />
@@ -114,7 +115,7 @@ export default function Footer() {
                 href="https://www.facebook.com/share/1CJcVrPDrr/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-8 h-8 rounded-full bg-amoura-card border border-amoura-line flex items-center justify-center text-amoura-cream hover:text-amoura-gold hover:border-amoura-gold transition-colors"
+                className="w-8 h-8 rounded-full bg-white border border-amoura-border flex items-center justify-center text-amoura-charcoal hover:text-amoura-forest hover:border-amoura-forest transition-colors shadow-sm"
                 aria-label="Facebook"
               >
                 <FacebookIcon className="w-4 h-4" />
@@ -124,36 +125,36 @@ export default function Footer() {
 
           {/* Collections */}
           <div>
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-amoura-gold mb-4">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-amoura-forest mb-4">
               Our Collections
             </h4>
-            <ul className="space-y-2.5 text-xs">
+            <ul className="space-y-2.5 text-xs text-amoura-charcoal/85">
               <li>
-                <Link to="/candles" className="hover:text-amoura-gold transition-colors">
+                <Link to="/candles" className="hover:text-amoura-forest transition-colors">
                   Artisan Soy Candles
                 </Link>
               </li>
               <li>
-                <Link to="/resin-art" className="hover:text-amoura-gold transition-colors">
-                  Bespoke Resin Art & Trays
+                <Link to="/resin-art" className="hover:text-amoura-forest transition-colors">
+                  Bespoke Resin Art &amp; Trays
                 </Link>
               </li>
               <li>
-                <Link to="/plants" className="hover:text-amoura-gold transition-colors">
-                  Botanical Plants & Accessories
+                <Link to="/plants" className="hover:text-amoura-forest transition-colors">
+                  Botanical Plants &amp; Accessories
                 </Link>
               </li>
               <li>
-                <a href="/#gallery" className="hover:text-amoura-gold transition-colors">
-                  3D Virtual Gallery
+                <a href="/#gallery" className="hover:text-amoura-forest transition-colors">
+                  3D Virtual Showcase
                 </a>
               </li>
               <li>
                 <button
                   onClick={() => openWhatsApp('Hi Amoura Crafts! We are interested in your candles for wedding favors & corporate gifting. Please share your catalog!')}
-                  className="hover:text-amoura-gold transition-colors text-left"
+                  className="hover:text-amoura-forest transition-colors text-left cursor-pointer"
                 >
-                  Bulk & Corporate Gifting
+                  Bulk &amp; Corporate Gifting
                 </button>
               </li>
             </ul>
@@ -161,24 +162,24 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-amoura-gold mb-4">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-amoura-forest mb-4">
               Quick Links
             </h4>
-            <ul className="space-y-2.5 text-xs">
+            <ul className="space-y-2.5 text-xs text-amoura-charcoal/85">
               <li>
-                <Link to="/about" className="hover:text-amoura-gold transition-colors">
-                  Our Story & Craftsmanship
+                <Link to="/about" className="hover:text-amoura-forest transition-colors">
+                  Our Story &amp; Craftsmanship
                 </Link>
               </li>
               <li>
-                <Link to="/reviews" className="hover:text-amoura-gold transition-colors">
-                  Customer Reviews & Ratings
+                <Link to="/reviews" className="hover:text-amoura-forest transition-colors">
+                  Customer Reviews &amp; Ratings
                 </Link>
               </li>
               <li>
                 <button
                   onClick={() => openWhatsApp('Hi Amoura Crafts! I would like to track my recent order.')}
-                  className="hover:text-amoura-gold transition-colors text-left"
+                  className="hover:text-amoura-forest transition-colors text-left cursor-pointer"
                 >
                   Track an Order
                 </button>
@@ -186,13 +187,13 @@ export default function Footer() {
               <li>
                 <button
                   onClick={() => openWhatsApp('Hi Amoura Crafts! Could you please share details about your return & replacement policy?')}
-                  className="hover:text-amoura-gold transition-colors text-left"
+                  className="hover:text-amoura-forest transition-colors text-left cursor-pointer"
                 >
-                  Shipping & Return Policy
+                  Shipping &amp; Return Policy
                 </button>
               </li>
               <li>
-                <Link to="/admin" className="text-amoura-gold hover:underline font-semibold flex items-center gap-1.5">
+                <Link to="/admin" className="text-amoura-forest hover:underline font-semibold flex items-center gap-1.5">
                   <ShieldCheck className="w-3.5 h-3.5" /> Admin Portal
                 </Link>
               </li>
@@ -201,29 +202,29 @@ export default function Footer() {
 
           {/* Contact Details */}
           <div>
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-amoura-gold mb-4">
-              Connect With Us
+            <h4 className="text-xs font-bold uppercase tracking-wider text-amoura-forest mb-4">
+              Studio &amp; Inquiries
             </h4>
-            <div className="space-y-3 text-xs">
+            <div className="space-y-3 text-xs text-amoura-charcoal/85">
               <a
                 href="https://wa.me/918700689036"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-start gap-2.5 hover:text-amoura-gold transition-colors"
+                className="flex items-start gap-2.5 hover:text-amoura-forest transition-colors"
               >
-                <Phone className="w-4 h-4 text-amoura-gold mt-0.5 flex-shrink-0" />
-                <span>+91 87006 89036 (WhatsApp & Call)</span>
+                <Phone className="w-4 h-4 text-amoura-sage-dark mt-0.5 flex-shrink-0" />
+                <span>+91 87006 89036 (WhatsApp &amp; Support)</span>
               </a>
               <a
                 href="mailto:craftsamoura@gmail.com"
-                className="flex items-start gap-2.5 hover:text-amoura-gold transition-colors"
+                className="flex items-start gap-2.5 hover:text-amoura-forest transition-colors"
               >
-                <Mail className="w-4 h-4 text-amoura-gold mt-0.5 flex-shrink-0" />
+                <Mail className="w-4 h-4 text-amoura-sage-dark mt-0.5 flex-shrink-0" />
                 <span>craftsamoura@gmail.com</span>
               </a>
-              <p className="text-amoura-muted text-[11px] pt-2">
-                Available Mon – Sat: 10:00 AM – 8:00 PM IST.<br />
-                Fast delivery across all pin codes in India.
+              <p className="text-amoura-muted text-[11px] pt-1">
+                Mon – Sat: 10:00 AM – 8:00 PM IST.<br />
+                Pan-India delivery across all postal codes.
               </p>
             </div>
           </div>
@@ -231,10 +232,10 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-12 pt-8 border-t border-amoura-line/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-amoura-muted">
+        <div className="mt-12 pt-8 border-t border-amoura-border/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-amoura-muted">
           <p>© {new Date().getFullYear()} Amoura Crafts. All rights reserved.</p>
-          <p className="flex items-center gap-1 text-amoura-cream-dim">
-            Handcrafted with <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" /> in India
+          <p className="flex items-center gap-1 text-amoura-charcoal">
+            Handcrafted with <Heart className="w-3.5 h-3.5 text-amoura-terracotta fill-amoura-terracotta" /> in India
           </p>
         </div>
       </div>

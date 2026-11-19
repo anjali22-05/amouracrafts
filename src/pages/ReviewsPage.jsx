@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ReviewCard from '../components/ReviewCard';
 import ReviewModal from '../components/ReviewModal';
 import { reviewService } from '../services/reviewService';
-import { Star, Sparkles, Plus, ShieldCheck } from 'lucide-react';
+import { Star, Sparkles, Plus } from 'lucide-react';
 
 export default function ReviewsPage() {
   const [reviews, setReviews] = useState([]);
@@ -21,44 +21,44 @@ export default function ReviewsPage() {
       
       {/* Header Banner */}
       <div className="text-center space-y-4">
-        <span className="text-xs uppercase tracking-widest text-amoura-gold font-bold inline-flex items-center gap-1.5">
-          <Sparkles className="w-3.5 h-3.5" /> 100% Genuine Customer Feedback
+        <span className="text-xs uppercase tracking-widest text-amoura-sage-dark font-bold inline-flex items-center gap-1.5">
+          <Sparkles className="w-3.5 h-3.5 text-amoura-terracotta" /> 100% Genuine Customer Feedback
         </span>
-        <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-amoura-cream">
+        <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl font-semibold text-amoura-charcoal">
           Customer Reviews &amp; Stories
         </h1>
-        <p className="text-xs sm:text-sm text-amoura-subtext max-w-2xl mx-auto">
+        <p className="text-xs sm:text-sm text-amoura-muted max-w-2xl mx-auto">
           Read genuine feedback from customers across India who have illuminated their homes with Amoura Crafts.
         </p>
 
         {/* Rating Summary Card */}
-        <div className="max-w-md mx-auto p-5 rounded-2xl bg-amoura-card border border-amoura-line flex items-center justify-around shadow-xl">
+        <div className="max-w-md mx-auto p-5 rounded-2xl bg-white border border-amoura-border flex items-center justify-around shadow-soft">
           <div className="text-center">
-            <span className="font-display text-4xl font-bold text-amoura-gold">5.0</span>
-            <div className="flex items-center gap-1 text-amoura-gold justify-center mt-1">
+            <span className="font-serif text-4xl font-bold text-amoura-forest">5.0</span>
+            <div className="flex items-center gap-1 text-amoura-terracotta justify-center mt-1">
               {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-4 h-4 fill-amoura-gold text-amoura-gold" />
+                <Star key={i} className="w-4 h-4 fill-amoura-terracotta text-amoura-terracotta" />
               ))}
             </div>
             <span className="text-[11px] text-amoura-muted mt-1 block">Overall Star Rating</span>
           </div>
 
-          <div className="h-12 w-px bg-amoura-line/60" />
+          <div className="h-12 w-px bg-amoura-border" />
 
           <div className="text-center">
-            <span className="font-display text-2xl font-bold text-amoura-cream">100%</span>
-            <span className="text-[11px] text-emerald-400 font-semibold block mt-1">Verified Purchases</span>
-            <span className="text-[11px] text-amoura-muted block">Direct WhatsApp Orders</span>
+            <span className="font-serif text-2xl font-bold text-amoura-charcoal">100%</span>
+            <span className="text-[11px] text-amoura-forest font-semibold block mt-1">Verified Purchases</span>
+            <span className="text-[11px] text-amoura-muted block">Direct Artisan Delivery</span>
           </div>
         </div>
 
         <div>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs font-semibold bg-gradient-to-r from-amoura-gold via-amoura-gold-light to-amoura-gold-dark text-amoura-dark hover:shadow-gold-glow transition-all"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs font-semibold bg-amoura-forest text-amoura-ivory hover:bg-amoura-charcoal transition-all shadow-sm cursor-pointer"
           >
             <Plus className="w-4 h-4" />
-            <span>Write a Review</span>
+            <span>Write a Verified Review</span>
           </button>
         </div>
       </div>

@@ -4,13 +4,12 @@ import { useCart } from '../context/CartContext';
 import { formatINR } from '../utils/formatters';
 
 const COLOR_OPTIONS = [
-  "Default / As Shown in Photos",
-  "Golden Champagne & Amber",
-  "Warm Ivory & Natural White",
-  "Royal Rose Pink & Gold Flakes",
-  "Lavender Blossom Purple",
+  "Default / Original As Shown",
+  "Warm Ivory & Natural Linen",
   "Sage Green & Botanical Leaves",
-  "Deep Crimson & Festive Maroon"
+  "Terracotta & Warm Amber",
+  "Royal Rose Pink & Gold Accents",
+  "Charcoal Ash & Earth Tone"
 ];
 
 export default function CheckoutModal() {
@@ -47,12 +46,12 @@ export default function CheckoutModal() {
 
     const cleanMobile = formData.mobile.replace(/\D/g, '');
     if (cleanMobile.length < 10) {
-      setError('Please enter a valid 10-digit mobile number for order updates.');
+      setError('Please enter a valid 10-digit mobile number for order delivery.');
       return;
     }
 
     if (!formData.address.trim() || !formData.city.trim() || !formData.state.trim() || !formData.pincode.trim()) {
-      setError('Please complete the shipping address fields.');
+      setError('Please complete all shipping address fields.');
       return;
     }
 
@@ -84,21 +83,21 @@ export default function CheckoutModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto bg-black/80 backdrop-blur-sm animate-fadeIn">
-      <div className="relative w-full max-w-2xl bg-amoura-card border border-amoura-line rounded-2xl shadow-2xl overflow-hidden my-8">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto bg-amoura-charcoal/70 backdrop-blur-sm animate-fadeIn">
+      <div className="relative w-full max-w-2xl bg-white border border-amoura-border rounded-2xl shadow-elevated overflow-hidden my-8">
         
         {/* Header */}
-        <div className="p-4 sm:p-6 border-b border-amoura-line bg-amoura-bg flex items-center justify-between">
+        <div className="p-4 sm:p-6 border-b border-amoura-border bg-amoura-cream flex items-center justify-between">
           <div>
-            <h2 className="font-display text-xl sm:text-2xl font-bold text-amoura-cream flex items-center gap-2">
-              <ShieldCheck className="w-5 h-5 text-amoura-gold" />
+            <h2 className="font-serif text-xl sm:text-2xl font-bold text-amoura-charcoal flex items-center gap-2">
+              <ShieldCheck className="w-5 h-5 text-amoura-forest" />
               Delivery &amp; Customer Details
             </h2>
             <p className="text-xs text-amoura-muted mt-0.5">Step 1 of 2: Shipping address &amp; custom color preference</p>
           </div>
           <button
             onClick={closeCheckout}
-            className="p-1.5 rounded-lg text-amoura-muted hover:text-amoura-cream hover:bg-amoura-card transition-colors"
+            className="p-1.5 rounded-lg text-amoura-muted hover:text-amoura-charcoal hover:bg-white transition-colors cursor-pointer"
             aria-label="Close Checkout"
           >
             <X className="w-5 h-5" />
@@ -107,7 +106,7 @@ export default function CheckoutModal() {
 
         {/* Error Alert */}
         {error && (
-          <div className="mx-6 mt-4 p-3 rounded-xl bg-rose-950/80 border border-rose-500/50 text-rose-200 text-xs font-medium">
+          <div className="mx-6 mt-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium">
             {error}
           </div>
         )}
@@ -115,15 +114,15 @@ export default function CheckoutModal() {
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-5 max-h-[75vh] overflow-y-auto">
           
-          {/* Customer Personal Info */}
+          {/* Contact Details */}
           <div className="space-y-3">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-amoura-gold flex items-center gap-1.5">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-amoura-forest flex items-center gap-1.5">
               <User className="w-3.5 h-3.5" /> Contact Details
             </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-medium text-amoura-cream mb-1">Full Name *</label>
+                <label className="block text-xs font-medium text-amoura-charcoal mb-1">Full Name *</label>
                 <input
                   type="text"
                   name="fullName"
@@ -131,12 +130,12 @@ export default function CheckoutModal() {
                   placeholder="e.g. Ananya Sharma"
                   value={formData.fullName}
                   onChange={handleChange}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-amoura-bg border border-amoura-line text-xs text-amoura-cream placeholder-amoura-muted focus:outline-none focus:border-amoura-gold"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-amoura-ivory border border-amoura-border text-xs text-amoura-charcoal placeholder-amoura-muted focus:outline-none focus:border-amoura-forest"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-amoura-cream mb-1">WhatsApp / Phone Number *</label>
+                <label className="block text-xs font-medium text-amoura-charcoal mb-1">WhatsApp / Phone Number *</label>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-amoura-muted font-medium">+91</span>
                   <input
@@ -147,33 +146,33 @@ export default function CheckoutModal() {
                     placeholder="10-digit number"
                     value={formData.mobile}
                     onChange={handleChange}
-                    className="w-full pl-11 pr-3.5 py-2.5 rounded-xl bg-amoura-bg border border-amoura-line text-xs text-amoura-cream placeholder-amoura-muted focus:outline-none focus:border-amoura-gold"
+                    className="w-full pl-11 pr-3.5 py-2.5 rounded-xl bg-amoura-ivory border border-amoura-border text-xs text-amoura-charcoal placeholder-amoura-muted focus:outline-none focus:border-amoura-forest"
                   />
                 </div>
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-amoura-cream mb-1">Email Address (Optional)</label>
+              <label className="block text-xs font-medium text-amoura-charcoal mb-1">Email Address (Optional)</label>
               <input
                 type="email"
                 name="email"
-                placeholder="For PDF invoice copy"
+                placeholder="For PDF invoice receipt"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-amoura-bg border border-amoura-line text-xs text-amoura-cream placeholder-amoura-muted focus:outline-none focus:border-amoura-gold"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-amoura-ivory border border-amoura-border text-xs text-amoura-charcoal placeholder-amoura-muted focus:outline-none focus:border-amoura-forest"
               />
             </div>
           </div>
 
-          {/* Delivery Address */}
-          <div className="space-y-3 pt-2 border-t border-amoura-line/60">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-amoura-gold flex items-center gap-1.5">
+          {/* Shipping Address */}
+          <div className="space-y-3 pt-2 border-t border-amoura-border/60">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-amoura-forest flex items-center gap-1.5">
               <MapPin className="w-3.5 h-3.5" /> Shipping Address
             </h3>
 
             <div>
-              <label className="block text-xs font-medium text-amoura-cream mb-1">Street Address / House No / Landmark *</label>
+              <label className="block text-xs font-medium text-amoura-charcoal mb-1">Street Address / House No / Landmark *</label>
               <textarea
                 name="address"
                 required
@@ -181,13 +180,13 @@ export default function CheckoutModal() {
                 placeholder="Flat/House No, Building, Street, Area"
                 value={formData.address}
                 onChange={handleChange}
-                className="w-full px-3.5 py-2 rounded-xl bg-amoura-bg border border-amoura-line text-xs text-amoura-cream placeholder-amoura-muted focus:outline-none focus:border-amoura-gold"
+                className="w-full px-3.5 py-2 rounded-xl bg-amoura-ivory border border-amoura-border text-xs text-amoura-charcoal placeholder-amoura-muted focus:outline-none focus:border-amoura-forest"
               />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
-                <label className="block text-xs font-medium text-amoura-cream mb-1">City *</label>
+                <label className="block text-xs font-medium text-amoura-charcoal mb-1">City *</label>
                 <input
                   type="text"
                   name="city"
@@ -195,12 +194,12 @@ export default function CheckoutModal() {
                   placeholder="City"
                   value={formData.city}
                   onChange={handleChange}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-amoura-bg border border-amoura-line text-xs text-amoura-cream placeholder-amoura-muted focus:outline-none focus:border-amoura-gold"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-amoura-ivory border border-amoura-border text-xs text-amoura-charcoal placeholder-amoura-muted focus:outline-none focus:border-amoura-forest"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-amoura-cream mb-1">State *</label>
+                <label className="block text-xs font-medium text-amoura-charcoal mb-1">State *</label>
                 <input
                   type="text"
                   name="state"
@@ -208,12 +207,12 @@ export default function CheckoutModal() {
                   placeholder="State"
                   value={formData.state}
                   onChange={handleChange}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-amoura-bg border border-amoura-line text-xs text-amoura-cream placeholder-amoura-muted focus:outline-none focus:border-amoura-gold"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-amoura-ivory border border-amoura-border text-xs text-amoura-charcoal placeholder-amoura-muted focus:outline-none focus:border-amoura-forest"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-amoura-cream mb-1">PIN Code *</label>
+                <label className="block text-xs font-medium text-amoura-charcoal mb-1">PIN Code *</label>
                 <input
                   type="text"
                   name="pincode"
@@ -222,28 +221,28 @@ export default function CheckoutModal() {
                   placeholder="6-digit PIN"
                   value={formData.pincode}
                   onChange={handleChange}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-amoura-bg border border-amoura-line text-xs text-amoura-cream placeholder-amoura-muted focus:outline-none focus:border-amoura-gold"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-amoura-ivory border border-amoura-border text-xs text-amoura-charcoal placeholder-amoura-muted focus:outline-none focus:border-amoura-forest"
                 />
               </div>
             </div>
           </div>
 
-          {/* Preferred Color & Customization */}
-          <div className="space-y-3 pt-2 border-t border-amoura-line/60">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-amoura-gold flex items-center gap-1.5">
+          {/* Custom Color Preference */}
+          <div className="space-y-3 pt-2 border-t border-amoura-border/60">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-amoura-forest flex items-center gap-1.5">
               <Palette className="w-3.5 h-3.5" /> Custom Color Preference
             </h3>
 
             <div>
-              <label className="block text-xs font-medium text-amoura-cream mb-1">Select Custom Shade for Your Handcrafted Items</label>
+              <label className="block text-xs font-medium text-amoura-charcoal mb-1">Select Custom Shade for Your Handcrafted Items</label>
               <select
                 name="preferredColor"
                 value={formData.preferredColor}
                 onChange={handleChange}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-amoura-bg border border-amoura-line text-xs text-amoura-cream focus:outline-none focus:border-amoura-gold"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-amoura-ivory border border-amoura-border text-xs text-amoura-charcoal focus:outline-none focus:border-amoura-forest"
               >
                 {COLOR_OPTIONS.map((opt) => (
-                  <option key={opt} value={opt} className="bg-amoura-dark text-amoura-cream">
+                  <option key={opt} value={opt}>
                     {opt}
                   </option>
                 ))}
@@ -251,33 +250,33 @@ export default function CheckoutModal() {
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-amoura-cream mb-1">Special Gift Message / Custom Instructions (Optional)</label>
+              <label className="block text-xs font-medium text-amoura-charcoal mb-1">Special Gift Message / Custom Instructions (Optional)</label>
               <input
                 type="text"
                 name="note"
-                placeholder="e.g. 'Please pack as Diwali gift with card for Priya'"
+                placeholder="e.g. 'Pack with handwritten greeting card for Priya'"
                 value={formData.note}
                 onChange={handleChange}
-                className="w-full px-3.5 py-2 rounded-xl bg-amoura-bg border border-amoura-line text-xs text-amoura-cream placeholder-amoura-muted focus:outline-none focus:border-amoura-gold"
+                className="w-full px-3.5 py-2 rounded-xl bg-amoura-ivory border border-amoura-border text-xs text-amoura-charcoal placeholder-amoura-muted focus:outline-none focus:border-amoura-forest"
               />
             </div>
           </div>
 
           {/* Pricing Preview */}
-          <div className="p-3.5 rounded-xl bg-amoura-bg border border-amoura-line flex items-center justify-between text-xs">
+          <div className="p-3.5 rounded-xl bg-amoura-cream border border-amoura-border flex items-center justify-between text-xs">
             <div>
               <span className="text-amoura-muted block">Total Payable:</span>
-              <span className="font-display text-xl font-bold text-amoura-gold">{formatINR(finalTotal)}</span>
+              <span className="font-serif text-2xl font-bold text-amoura-forest">{formatINR(finalTotal)}</span>
             </div>
-            <div className="text-right text-[11px] text-amoura-subtext">
-              <span>{cart.length} item(s)</span> • <span>Shipping: {shippingFee === 0 ? 'FREE' : formatINR(shippingFee)}</span>
+            <div className="text-right text-[11px] text-amoura-charcoal">
+              <span>{cart.length} item(s)</span> • <span>Delivery: {shippingFee === 0 ? 'Complimentary' : formatINR(shippingFee)}</span>
             </div>
           </div>
 
           {/* Submit */}
           <button
             type="submit"
-            className="w-full py-3.5 px-4 rounded-xl font-semibold text-sm bg-gradient-to-r from-amoura-gold via-amoura-gold-light to-amoura-gold-dark text-amoura-dark hover:shadow-gold-glow flex items-center justify-center gap-2 transition-all duration-200 cursor-pointer"
+            className="w-full py-3.5 px-4 rounded-xl font-semibold text-sm bg-amoura-forest text-amoura-ivory hover:bg-amoura-charcoal flex items-center justify-center gap-2 transition-all shadow-sm cursor-pointer"
           >
             <span>Continue to Payment</span>
             <ArrowRight className="w-4 h-4" />

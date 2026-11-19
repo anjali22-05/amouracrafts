@@ -4,35 +4,36 @@ import { cleanDate } from '../utils/formatters';
 
 export default function ReviewCard({ review }) {
   return (
-    <div className="bg-amoura-card border border-amoura-line rounded-2xl p-5 sm:p-6 flex flex-col justify-between shadow-card hover:border-amoura-gold/50 transition-all">
-      <div className="space-y-3">
-        {/* Rating & Quote */}
+    <div className="bg-white border border-amoura-border rounded-2xl p-6 sm:p-7 flex flex-col justify-between shadow-soft hover:shadow-elevated transition-all duration-300">
+      <div className="space-y-3.5">
+        
+        {/* Rating Stars & Quote */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1 text-amoura-gold">
+          <div className="flex items-center gap-1 text-amoura-terracotta">
             {[...Array(review.rating || 5)].map((_, i) => (
-              <Star key={i} className="w-4 h-4 fill-amoura-gold text-amoura-gold" />
+              <Star key={i} className="w-4 h-4 fill-amoura-terracotta text-amoura-terracotta" />
             ))}
           </div>
-          <Quote className="w-5 h-5 text-amoura-gold/30" />
+          <Quote className="w-5 h-5 text-amoura-sage/40" />
         </div>
 
         {/* Comment Text */}
-        <p className="text-xs sm:text-sm text-amoura-cream-dim leading-relaxed italic">
+        <p className="font-serif italic text-sm sm:text-base text-amoura-charcoal leading-relaxed">
           "{review.comment}"
         </p>
       </div>
 
       {/* Reviewer Meta */}
-      <div className="pt-4 mt-4 border-t border-amoura-line/60 flex items-center justify-between text-xs">
+      <div className="pt-4 mt-6 border-t border-amoura-border/60 flex items-center justify-between text-xs">
         <div>
-          <div className="flex items-center gap-1.5 font-bold text-amoura-cream">
+          <div className="flex items-center gap-1.5 font-bold text-amoura-charcoal">
             <span>{review.name}</span>
-            <span className="flex items-center gap-0.5 text-[10px] text-emerald-400 font-medium bg-emerald-950/60 px-1.5 py-0.2 rounded border border-emerald-500/30">
-              <CheckCircle className="w-2.5 h-2.5" /> Verified
+            <span className="flex items-center gap-0.5 text-[10px] text-amoura-forest font-semibold bg-amoura-cream px-1.5 py-0.5 rounded border border-amoura-border">
+              <CheckCircle className="w-2.5 h-2.5 text-amoura-forest" /> Verified
             </span>
           </div>
           <span className="text-[11px] text-amoura-muted">
-            {review.productName || 'Handcrafted Soy Candle'}
+            {review.productName || 'Artisan Soy Creation'}
           </span>
         </div>
         <span className="text-[11px] text-amoura-muted">{cleanDate(review.date)}</span>

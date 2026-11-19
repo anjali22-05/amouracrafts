@@ -7,11 +7,53 @@
 
 (function (window) {
     const STORAGE_KEY = 'amoura_custom_products_v1';
+    const DELETED_KEY = 'amoura_deleted_product_ids_v1';
     const IDB_NAME = 'amoura_products_db';
     const IDB_VERSION = 1;
     const STORE_NAME = 'custom_products';
     const NETLIFY_API = '/.netlify/functions/products';
     const GOOGLE_SHEET_API = "https://script.google.com/macros/s/AKfycbzdCK_Zefr3DBL3fHYp1SKmXRXudXBpLWA1EPQVR62XOijTYOKtBZpC1nCcmRQ6KxNhlw/exec";
+
+    // Blacklisted / deleted product identifiers to permanently eliminate
+    function getDeletedSet() {
+        const set = new Set(['sfdrtfyguhio', 'rev-14', 'fsdfmjkg']);
+        try {
+            const raw = localStorage.getItem(DELETED_KEY);
+            if (raw) {
+                const arr = JSON.parse(raw);
+                if (Array.isArray(arr)) {
+                    arr.forEach(item => {
+                        if (item) set.add(String(item).toLowerCase().trim());
+                    });
+                }
+            }
+        } catch (e) {}
+        return set;
+    }
+
+    function recordDeleted(id, name) {
+        try {
+            const current = getDeletedSet();
+            if (id) current.add(String(id).toLowerCase().trim());
+            if (name) current.add(String(name).toLowerCase().trim());
+            localStorage.setItem(DELETED_KEY, JSON.stringify(Array.from(current)));
+        } catch (e) {}
+    }
+
+    function filterOutDeleted(list) {
+        if (!Array.isArray(list)) return [];
+        const deleted = getDeletedSet();
+        return list.filter(p => {
+            if (!p) return false;
+            const pId = String(p.id || '').toLowerCase().trim();
+            const pName = String(p.name || '').toLowerCase().trim();
+            const pDesc = String(p.desc || '').toLowerCase().trim();
+            if (deleted.has(pId)) return false;
+            if (deleted.has(pName)) return false;
+            if (pName === 'sfdrtfyguhio' || pDesc === 'fsdfmjkg') return false;
+            return true;
+        });
+    }
 
     // Open IndexedDB
     function openIDB() {
@@ -48,7 +90,7 @@
             if (!list || list.length === 0) {
                 list = Storage.getFromLocalStorage();
             }
-            return Array.isArray(list) ? list : [];
+            return filterOutDeleted(list);
         },
 
         getFromLocalStorage() {
@@ -56,16 +98,16 @@
                 const raw = localStorage.getItem(STORAGE_KEY);
                 if (raw) {
                     const parsed = JSON.parse(raw);
-                    if (Array.isArray(parsed)) return parsed;
+                    if (Array.isArray(parsed)) return filterOutDeleted(parsed);
                 }
             } catch (e) {}
             return [];
         },
 
         async saveAll(products) {
-            if (!Array.isArray(products)) return;
+            const clean = filterOutDeleted(products);
             try {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(products));
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(clean));
             } catch (e) {}
 
             try {
@@ -74,8 +116,12 @@
                     const tx = db.transaction(STORE_NAME, 'readwrite');
                     const store = tx.objectStore(STORE_NAME);
                     store.clear();
-                    products.forEach(p => store.put(p));
+                    clean.forEach(p => store.put(p));
                 }
+            } catch (e) {}
+
+            try {
+                window.dispatchEvent(new CustomEvent('amoura_products_changed', { detail: clean }));
             } catch (e) {}
         }
     };
@@ -88,34 +134,34 @@
 
             // 2. Background sync from Cloud
             (async () => {
-                let remote = [];
+                let remote = null;
 
                 // Try Netlify serverless function first
                 try {
                     const res = await fetch(NETLIFY_API + '?t=' + Date.now());
                     if (res.ok) {
                         const data = await res.json();
-                        if (Array.isArray(data.products) && data.products.length > 0) {
-                            remote = data.products;
+                        if (data && Array.isArray(data.products)) {
+                            remote = filterOutDeleted(data.products);
                         }
                     }
                 } catch (e) {}
 
-                // If Netlify function returned nothing, try Google Sheets API directly
-                if (remote.length === 0) {
+                // If Netlify function returned nothing or failed, try Google Sheets API directly
+                if (remote === null) {
                     try {
                         const res = await fetch(GOOGLE_SHEET_API + '?type=products&t=' + Date.now());
                         if (res.ok) {
                             const raw = await res.json();
                             if (Array.isArray(raw) && raw.length > 0 && raw[0].category) {
-                                remote = raw;
+                                remote = filterOutDeleted(raw);
                             }
                         }
                     } catch (e) {}
                 }
 
-                // If remote returned valid products, compare and update
-                if (remote.length > 0) {
+                // If remote returned valid product list (even if empty, representing deleted state)
+                if (Array.isArray(remote)) {
                     const remoteStr = JSON.stringify(remote);
                     const localStr = JSON.stringify(local);
                     if (remoteStr !== localStr) {
@@ -162,7 +208,7 @@
                 fetch(NETLIFY_API, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(newProduct)
+                    body: JSON.stringify({ action: 'addProduct', ...newProduct })
                 }).catch(() => {});
             } catch (e) {}
 
@@ -171,10 +217,7 @@
                 fetch(GOOGLE_SHEET_API, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: "addProduct",
-                        ...newProduct
-                    })
+                    body: JSON.stringify({ action: "addProduct", ...newProduct })
                 }).catch(() => {});
             } catch (e) {}
 
@@ -188,7 +231,7 @@
             }
 
             const current = await Storage.getAll();
-            const existingIndex = current.findIndex(p => p.id === prod.id);
+            const existingIndex = current.findIndex(p => String(p.id).trim() === String(prod.id).trim());
             if (existingIndex === -1) {
                 throw new Error("Product not found.");
             }
@@ -219,10 +262,7 @@
                 fetch(NETLIFY_API, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'updateProduct',
-                        ...updatedProduct
-                    })
+                    body: JSON.stringify({ action: 'updateProduct', ...updatedProduct })
                 }).catch(() => {});
             } catch (e) {}
 
@@ -231,38 +271,58 @@
                 fetch(GOOGLE_SHEET_API, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'updateProduct',
-                        ...updatedProduct
-                    })
+                    body: JSON.stringify({ action: 'updateProduct', ...updatedProduct })
                 }).catch(() => {});
             } catch (e) {}
 
             return updatedProduct;
         },
 
-        // Delete a product
-        async deleteProduct(id) {
-            if (!id) return;
+        // Delete a product (by id and optional name)
+        async deleteProduct(id, name = '') {
+            if (!id && !name) return false;
+
+            const targetId = String(id || '').trim();
+            const targetName = String(name || '').trim().toLowerCase();
+
+            // 1. Record in persistent deleted blacklist
+            recordDeleted(targetId, targetName);
+
+            // 2. Remove from local Storage
             const current = await Storage.getAll();
-            const updated = current.filter(p => p.id !== id);
+            const updated = current.filter(p => {
+                if (!p) return false;
+                const pId = String(p.id || '').trim();
+                const pName = String(p.name || '').trim().toLowerCase();
+                if (targetId && pId === targetId) return false;
+                if (targetName && pName === targetName) return false;
+                return true;
+            });
             await Storage.saveAll(updated);
 
-            // Forward DELETE to Netlify API
+            // 3. Forward DELETE to Netlify API via both DELETE and POST
             try {
-                fetch(NETLIFY_API, {
+                fetch(NETLIFY_API + '?id=' + encodeURIComponent(targetId), {
                     method: 'DELETE',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id })
+                    body: JSON.stringify({ id: targetId, name: targetName })
                 }).catch(() => {});
             } catch (e) {}
 
-            // Forward DELETE to Google Sheets
+            try {
+                fetch(NETLIFY_API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'deleteProduct', id: targetId, name: targetName })
+                }).catch(() => {});
+            } catch (e) {}
+
+            // 4. Forward DELETE to Google Sheets
             try {
                 fetch(GOOGLE_SHEET_API, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: "deleteProduct", id })
+                    body: JSON.stringify({ action: 'deleteProduct', id: targetId, name: targetName })
                 }).catch(() => {});
             } catch (e) {}
 
@@ -272,10 +332,39 @@
         // Sync helper for index.html (Candles & Resin Art)
         async syncWithIndexPage(PRODUCTS_ARR, RESIN_PRODUCTS_ARR, renderCandlesFn, renderResinFn, initBulkFn) {
             function injectProducts(customList) {
+                const cleanList = filterOutDeleted(customList);
+                const validIds = new Set(cleanList.map(p => String(p.id)));
                 let candlesChanged = false;
                 let resinChanged = false;
 
-                customList.forEach(p => {
+                // 1. Purge deleted or unlisted custom products from candles
+                for (let i = PRODUCTS_ARR.length - 1; i >= 0; i--) {
+                    const item = PRODUCTS_ARR[i];
+                    if (item && item.id) {
+                        const idStr = String(item.id);
+                        const nameStr = String(item.name || '').toLowerCase().trim();
+                        if (nameStr === 'sfdrtfyguhio' || (idStr.startsWith('prod-') && !validIds.has(idStr))) {
+                            PRODUCTS_ARR.splice(i, 1);
+                            candlesChanged = true;
+                        }
+                    }
+                }
+
+                // 2. Purge deleted or unlisted custom products from resin
+                for (let i = RESIN_PRODUCTS_ARR.length - 1; i >= 0; i--) {
+                    const item = RESIN_PRODUCTS_ARR[i];
+                    if (item && item.id) {
+                        const idStr = String(item.id);
+                        const nameStr = String(item.name || '').toLowerCase().trim();
+                        if (nameStr === 'sfdrtfyguhio' || (idStr.startsWith('prod-') && !validIds.has(idStr))) {
+                            RESIN_PRODUCTS_ARR.splice(i, 1);
+                            resinChanged = true;
+                        }
+                    }
+                }
+
+                // 3. Inject / Update active custom products
+                cleanList.forEach(p => {
                     const cat = (p.category || 'candles').toLowerCase();
                     if (cat === 'resin') {
                         const existingIdx = RESIN_PRODUCTS_ARR.findIndex(item => item.id === p.id);
@@ -286,7 +375,6 @@
                             RESIN_PRODUCTS_ARR.unshift(p);
                             resinChanged = true;
                         }
-                        // Remove from candles if it was previously categorized as candles
                         const oldCandleIdx = PRODUCTS_ARR.findIndex(item => item.id === p.id);
                         if (oldCandleIdx >= 0) {
                             PRODUCTS_ARR.splice(oldCandleIdx, 1);
@@ -301,7 +389,6 @@
                             PRODUCTS_ARR.unshift(p);
                             candlesChanged = true;
                         }
-                        // Remove from resin if it was previously categorized as resin
                         const oldResinIdx = RESIN_PRODUCTS_ARR.findIndex(item => item.id === p.id);
                         if (oldResinIdx >= 0) {
                             RESIN_PRODUCTS_ARR.splice(oldResinIdx, 1);
@@ -319,7 +406,17 @@
                 }
             }
 
-            // 1. Apply cached products right away
+            // Real-time synchronization when products change in other tabs
+            window.addEventListener('storage', (e) => {
+                if (e.key === STORAGE_KEY || e.key === DELETED_KEY) {
+                    ProductManager.getProducts().then(list => injectProducts(list));
+                }
+            });
+            window.addEventListener('amoura_products_changed', (e) => {
+                if (e.detail) injectProducts(e.detail);
+            });
+
+            // Apply cached products immediately (0ms) and register cloud callback
             const cached = await ProductManager.getProducts((remoteList) => {
                 injectProducts(remoteList);
             });
@@ -329,9 +426,25 @@
         // Sync helper for plants.html (Tree & Plants)
         async syncWithPlantsPage(PLANTS_ARR, renderPlantsFn, initBulkFn) {
             function injectProducts(customList) {
+                const cleanList = filterOutDeleted(customList);
+                const validIds = new Set(cleanList.map(p => String(p.id)));
                 let plantsChanged = false;
 
-                customList.forEach(p => {
+                // 1. Purge deleted or unlisted custom products from plants
+                for (let i = PLANTS_ARR.length - 1; i >= 0; i--) {
+                    const item = PLANTS_ARR[i];
+                    if (item && item.id) {
+                        const idStr = String(item.id);
+                        const nameStr = String(item.name || '').toLowerCase().trim();
+                        if (nameStr === 'sfdrtfyguhio' || (idStr.startsWith('prod-') && !validIds.has(idStr))) {
+                            PLANTS_ARR.splice(i, 1);
+                            plantsChanged = true;
+                        }
+                    }
+                }
+
+                // 2. Inject / Update active custom products
+                cleanList.forEach(p => {
                     const cat = (p.category || '').toLowerCase();
                     if (cat === 'plants') {
                         const existingIdx = PLANTS_ARR.findIndex(item => item.id === p.id);
@@ -351,7 +464,17 @@
                 }
             }
 
-            // 1. Apply cached products right away
+            // Real-time synchronization when products change in other tabs
+            window.addEventListener('storage', (e) => {
+                if (e.key === STORAGE_KEY || e.key === DELETED_KEY) {
+                    ProductManager.getProducts().then(list => injectProducts(list));
+                }
+            });
+            window.addEventListener('amoura_products_changed', (e) => {
+                if (e.detail) injectProducts(e.detail);
+            });
+
+            // Apply cached products immediately (0ms) and register cloud callback
             const cached = await ProductManager.getProducts((remoteList) => {
                 injectProducts(remoteList);
             });

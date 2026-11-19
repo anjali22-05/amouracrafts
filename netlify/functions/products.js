@@ -1,11 +1,23 @@
 // Netlify Serverless Function for Amoura Crafts Custom Products
 // Connects to Google Sheets Cloud Database and Netlify Blobs
-// Supports: GET, POST (Add Product & Update Product), DELETE
+// Supports: GET, POST (Add, Update, Delete Product), DELETE
 
 const GOOGLE_SHEET_API = "https://script.google.com/macros/s/AKfycbzdCK_Zefr3DBL3fHYp1SKmXRXudXBpLWA1EPQVR62XOijTYOKtBZpC1nCcmRQ6KxNhlw/exec";
 
 // In-memory fallback
 let inMemoryProducts = [];
+
+function cleanProductsList(arr) {
+  if (!Array.isArray(arr)) return [];
+  return arr.filter(p => {
+    if (!p) return false;
+    const name = String(p.name || "").toLowerCase().trim();
+    const desc = String(p.desc || "").toLowerCase().trim();
+    const id = String(p.id || "").toLowerCase().trim();
+    if (name === "sfdrtfyguhio" || desc === "fsdfmjkg" || id === "rev-14") return false;
+    return true;
+  });
+}
 
 function getBlobs() {
   try {
@@ -61,18 +73,62 @@ exports.handler = async (event, context) => {
       list = inMemoryProducts;
     }
 
+    const cleaned = cleanProductsList(list);
+
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify({ success: true, products: list })
+      body: JSON.stringify({ success: true, products: cleaned })
     };
   }
 
-  // POST or PUT: Add or Update product
+  // POST or PUT: Add, Update, or Delete product
   if (event.httpMethod === "POST" || event.httpMethod === "PUT") {
     try {
       const data = JSON.parse(event.body || "{}");
       const action = data.action || (data.id && inMemoryProducts.some(p => p.id === data.id) ? "updateProduct" : "addProduct");
+
+      // CASE: DELETE PRODUCT VIA POST
+      if (action === "deleteProduct") {
+        const id = String(data.id || "").trim();
+        const name = String(data.name || "").trim().toLowerCase();
+
+        inMemoryProducts = inMemoryProducts.filter(p => {
+          if (!p) return false;
+          if (id && String(p.id).trim() === id) return false;
+          if (name && String(p.name).trim().toLowerCase() === name) return false;
+          return true;
+        });
+
+        if (blobs) {
+          try {
+            let stored = await blobs.get("products_list", { type: "json" });
+            if (Array.isArray(stored)) {
+              stored = stored.filter(p => {
+                if (!p) return false;
+                if (id && String(p.id).trim() === id) return false;
+                if (name && String(p.name).trim().toLowerCase() === name) return false;
+                return true;
+              });
+              await blobs.setJSON("products_list", stored);
+            }
+          } catch (e) {}
+        }
+
+        try {
+          fetch(GOOGLE_SHEET_API, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ action: "deleteProduct", id, name })
+          }).catch(() => {});
+        } catch (e) {}
+
+        return {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify({ success: true, message: "Product deleted successfully." })
+        };
+      }
 
       // CASE 1: UPDATE EXISTING PRODUCT
       if (action === "updateProduct") {
@@ -137,21 +193,21 @@ exports.handler = async (event, context) => {
                 return p;
               });
               if (!found) stored.unshift(updatedProduct);
-              await blobs.setJSON("products_list", stored);
+              await blobs.setJSON("products_list", cleanProductsList(stored));
             }
           } catch (e) {}
         }
 
         // Forward to Google Sheets database
         try {
-          await fetch(GOOGLE_SHEET_API, {
+          fetch(GOOGLE_SHEET_API, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               action: "updateProduct",
               ...updatedProduct
             })
-          });
+          }).catch(() => {});
         } catch (sheetErr) {
           console.error("Sheet update error:", sheetErr);
         }
@@ -201,20 +257,20 @@ exports.handler = async (event, context) => {
           let stored = await blobs.get("products_list", { type: "json" });
           if (!Array.isArray(stored)) stored = [];
           stored = [newProduct, ...stored.filter(p => p.id !== newProduct.id)];
-          await blobs.setJSON("products_list", stored);
+          await blobs.setJSON("products_list", cleanProductsList(stored));
         } catch (e) {}
       }
 
       // Forward to Google Sheets database
       try {
-        await fetch(GOOGLE_SHEET_API, {
+        fetch(GOOGLE_SHEET_API, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             action: "addProduct",
             ...newProduct
           })
-        });
+        }).catch(() => {});
       } catch (sheetErr) {
         console.error("Sheet post error:", sheetErr);
       }
@@ -241,34 +297,45 @@ exports.handler = async (event, context) => {
   if (event.httpMethod === "DELETE") {
     try {
       const data = JSON.parse(event.body || "{}");
-      const id = data.id;
+      const id = String(data.id || (event.queryStringParameters && event.queryStringParameters.id) || "").trim();
+      const name = String(data.name || (event.queryStringParameters && event.queryStringParameters.name) || "").trim().toLowerCase();
 
-      if (!id) {
+      if (!id && !name) {
         return {
           statusCode: 400,
           headers,
-          body: JSON.stringify({ error: "Product id is required." })
+          body: JSON.stringify({ error: "Product id or name is required." })
         };
       }
 
-      inMemoryProducts = inMemoryProducts.filter(p => p.id !== id);
+      inMemoryProducts = inMemoryProducts.filter(p => {
+        if (!p) return false;
+        if (id && String(p.id).trim() === id) return false;
+        if (name && String(p.name).trim().toLowerCase() === name) return false;
+        return true;
+      });
 
       if (blobs) {
         try {
           let stored = await blobs.get("products_list", { type: "json" });
           if (Array.isArray(stored)) {
-            stored = stored.filter(p => p.id !== id);
+            stored = stored.filter(p => {
+              if (!p) return false;
+              if (id && String(p.id).trim() === id) return false;
+              if (name && String(p.name).trim().toLowerCase() === name) return false;
+              return true;
+            });
             await blobs.setJSON("products_list", stored);
           }
         } catch (e) {}
       }
 
       try {
-        await fetch(GOOGLE_SHEET_API, {
+        fetch(GOOGLE_SHEET_API, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ action: "deleteProduct", id })
-        });
+          body: JSON.stringify({ action: "deleteProduct", id, name })
+        }).catch(() => {});
       } catch (e) {}
 
       return {

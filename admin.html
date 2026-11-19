@@ -831,11 +831,11 @@
             }
 
             .products-table-wrap {
-                display: none;
+                display: none !important;
             }
 
             .mobile-products-list {
-                display: flex;
+                display: flex !important;
             }
 
             .header-container {
@@ -1197,7 +1197,7 @@
     </div>
 
     <!-- Load Products Engine -->
-    <script src="products-engine.js"></script>
+    <script src="products-engine.js?v=20261119_v3"></script>
 
     <script>
         const AUTH_API = '/.netlify/functions/admin-auth';
@@ -1689,13 +1689,14 @@
         }
 
         async function handleDeleteProduct(id, name) {
-            if (!confirm(`Kya aap product "${name}" ko website se delete karna chahte hain?`)) {
+            const displayName = name || 'this product';
+            if (!confirm(`Kya aap product "${displayName}" ko website se delete karna chahte hain?`)) {
                 return;
             }
 
             try {
-                await ProductManager.deleteProduct(id);
-                showAlert(`Product "${name}" deleted successfully.`, 'success');
+                await ProductManager.deleteProduct(id, name);
+                showAlert(`✅ Product "${displayName}" successfully delete ho gaya!`, 'success');
                 await loadTableProducts();
             } catch (err) {
                 showAlert(`Delete karne me error aaya: ${err.message}`, 'error');
